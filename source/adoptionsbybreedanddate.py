@@ -33,3 +33,8 @@ print(age_to_float("7m"))                # Output: 0.5833333333333334
 # Convert full column and add results to the DataFrame
 df['animal_age_float'] = df['animalage'].apply(age_to_float)
 print(df[['animalage', 'animal_age_float']].head())
+
+
+df=df.drop(columns=['index','animalage','istransfer','sheltercode','identichipnumber','animalname','location','istrial','returndate','returnedreason','deceaseddate','deceasedreason','diedoffshelter','isdoa'])
+print(list(df.columns))
+
