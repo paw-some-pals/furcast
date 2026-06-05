@@ -39,8 +39,6 @@ print(f"min:", min(df["Shelter Time"]))
 print(f"mean:", df["Shelter Time"].mean())
 print("-------------------------------------------------------")
 
-
-
 #finding issue values
 index_iss = df.loc[df['Shelter Time'] == -272.0, 'Index'].values[0]
 index_iss2 = df.loc[df['Shelter Time'] == -55.0, 'Index'].values[0]
@@ -83,7 +81,11 @@ animal_type.write_html("animal_chart.html", auto_open=True)
 
 
 #scatter of shelter time vs breed, intake type, animal type 
+scatter_tvb = px.scatter(x= df["Shelter Time"], y=df["Animal_Breed"])
+scatter_tvb.show()
 
+scatter_tvi = px.scatter(x= df["Shelter Time"], y=df["Animal_Type"])
+scatter_tvi.show()
 
 #heat map of correlations 
 
