@@ -3,25 +3,26 @@
 #### Austin Dataset
 ##### Column names
 col name - type - range
-age_upon_outcome - int - ...
-animal_id_outcome - int - ...
-date_of_birth	
-outcome_type	
-sex_upon_outcome	
-age_upon_outcome_(days)	
-outcome_datetime	
-age_upon_intake	
-animal_id_intake	
-animal_type	breed	
-color	
-found_location	
-intake_condition	
-intake_type	
-sex_upon_intake	
-age_upon_intake_(days)	
-intake_datetime	
-intake_number	
-time_in_shelter
+age_upon_outcome - str - 46 unique values "10 years"
+animal_id_outcome - str - 71961 unique values "A006100"
+date_of_birth - str - 5923 unique values '2007-07-09 00:00:00'
+outcome_subtype - str - ['Partner', 'Foster', 'Suffering', 'Medical', 'Behavior', 'In Kennel', 'Aggressive', 'Rabies Risk', 'In Foster', 'At Vet', 'Offsite', 'Snr', 'Possible Theft', 'SCRP', 'Court/Investigation', 'Enroute', 'In Surgery', 'Barn', 'Underage']
+sex_upon_outcome - str - ['Neutered Male', 'Spayed Female', 'Intact Female', 'Intact Male', 'Unknown']	
+age_upon_outcome_(days) - int64 - 0 to 9125
+outcome_datetime - str - 65686 unique values '2017-12-07 14:07:00'
+age_upon_intake - str - 46 unique values "10 years"
+animal_id_intake - str - 71961 unique values 'A006100'
+animal_type - str - ['Dog', 'Cat', 'Other', 'Bird']	
+breed - str - 2155 unique values ['Spinone Italiano Mix', 'Dachshund', ...]
+color - str - 529 unique values ['Yellow/White', 'Tricolor', 'Brown/White', ...]
+found_location - str - 36576 unique values ['Colony Creek And Hunters Trace in Austin (TX)', '8700 Research Blvd in Austin (TX)', ...]
+intake_condition - str - ['Normal', 'Injured', 'Aged', 'Sick', 'Other', 'Feral', 'Pregnant', 'Nursing']	
+intake_type - str - ['Stray', 'Public Assist', 'Owner Surrender', 'Euthanasia Request', 'Wildlife']
+sex_upon_intake - str - ['Neutered Male', 'Spayed Female', 'Intact Female', 'Intact Male', 'Unknown']
+age_upon_intake_(days) - int64 - 0 to 9125
+intake_datetime - str - 56747 unique values '2017-12-07 00:00:00'
+intake_number - float64 - 1.0 to 13.0	
+time_in_shelter - str - 29319 unique values '0 days 14:07:00.000000000'
 
 ##### Removed columns
 names - reason
