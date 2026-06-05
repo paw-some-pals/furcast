@@ -39,9 +39,49 @@ names - reason
 
 #### Adoptions by breed and date dataset
 ##### Column names
-index	id	intakedate	intakereason	istransfer	sheltercode	identichipnumber	animalname	breedname	basecolour	speciesname	animalage	sexname	location	movementdate	movementtype	istrial	returndate	returnedreason	deceaseddate	deceasedreason	diedoffshelter	puttosleep	isdoa
+col name - type - range
+
+index             10290    int64  
+id                10290    int64  
+intakedate        10290    str    
+intakereason      10288    str    
+istransfer        10290    int64  
+sheltercode       10290    str    
+identichipnumber  8324     str    
+animalname        10290    str    
+breedname         10245    str    
+basecolour        10290    str    
+speciesname       10290    str    
+animalage         10290    str    
+sexname           10290    str    
+location          10290    str    
+movementdate      10290    str    
+movementtype      10290    str    
+istrial           10289    float64
+returndate        3256     str    
+returnedreason    10290    str    
+deceaseddate      326      str    
+deceasedreason    10290    str    
+diedoffshelter    10290    int64  
+puttosleep        10290    int64  
+isdoa             10290    int64 
+
 
 ##### Removed columns
-'index','animalage','istransfer','sheltercode','identichipnumber','animalname','location','istrial','returndate','returnedreason','deceaseddate','deceasedreason','diedoffshelter','isdoa'
+names - reason
+'index'- using animal ids instead
+'animalage'- changed to float, in new column 'animal_age_float'
+'istransfer'- not useful
+'sheltercode'- not useful
+'identichipnumber'- redundant
+'animalname'redunant
+'location'-not useful
+'istrial'- not useful
+'returndate'- animals returned will have another row anyways
+'returnedreason'- not useful
+'deceaseddate'- not useful
+'deceasedreason- not useful
+'diedoffshelter'-not useful
+'isdoa'- not useful
 
 ##### Added columns 
