@@ -33,3 +33,14 @@ names - reason
 "intake_month", "intake_year", "intake_monthyear", "intake_weekday", "intake_hour" - Redundant
 "time_in_shelter_days" - redundant (have timedelta obj)
 "dob_year", "dob_month", "dob_monthyear"  - Redundant
+
+
+
+#### Adoptions by breed and date dataset
+##### Column names
+index	id	intakedate	intakereason	istransfer	sheltercode	identichipnumber	animalname	breedname	basecolour	speciesname	animalage	sexname	location	movementdate	movementtype	istrial	returndate	returnedreason	deceaseddate	deceasedreason	diedoffshelter	puttosleep	isdoa
+
+##### Removed columns
+'index','animalage','istransfer','sheltercode','identichipnumber','animalname','location','istrial','returndate','returnedreason','deceaseddate','deceasedreason','diedoffshelter','isdoa'
+
+##### Added columns 
