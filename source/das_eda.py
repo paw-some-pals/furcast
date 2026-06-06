@@ -57,7 +57,7 @@ print("-------------------------------------------------------")
 # print(df["Shelter Time"][150368])
 # print(df["Shelter Time"][150365])
 
-#get rid of faulty rows 
+#get rid of faulty rows
 df = df.drop(index=150367)
 df = df.drop(index=150368)
 df = df.drop(index=150365)
@@ -100,8 +100,13 @@ scatter_tvin.show()
 scatter_tvout = px.scatter(x=df["Shelter Time"], y=df["Outcome_Type"])
 scatter_tvout.show()
 
+#heatmap of intake type vs animal type
+heatmap_iva_data = pd.crosstab(df["Animal_Type"], df["Intake_Type"])
+heatmap_iva = px.imshow(heatmap_iva_data,
+                        labels=dict(x="Intake type", y="Animal type", color="Count"),
+                        text_auto=True,
+                        color_continuous_scale="Viridis")
+heatmap_iva.show()
 #heat map of correlations between time brought in and animal type
-
-#
 
 #distibution of features 
