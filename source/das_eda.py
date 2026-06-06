@@ -14,7 +14,7 @@ from datetime import datetime
 df = pd.read_csv('datasets/dallas/shelterdata2017-2021.csv')
 
 #get rid of uneeded data 
-df = df.drop(columns= ["Kennel_Status", "Activity_Sequence", "Census_Tract", "Council_District", "Reason", "Intake_Time", "Hold_Request", "Outcome_Subtype", "Outcome_Time", "Chip_Status", "Animal_Origin", "Month", "Year"])
+df = df.drop(columns= ["Kennel_Status", "Activity_Sequence", "Census_Tract", "Council_District", "Reason", "Hold_Request", "Outcome_Subtype", "Outcome_Time", "Chip_Status", "Animal_Origin", "Month", "Year"])
 
 print("------------------------------------------------------")
 print(df.head())
@@ -56,11 +56,14 @@ print("-------------------------------------------------------")
 print(df["Shelter Time"][150367])
 print(df["Shelter Time"][150368])
 print(df["Shelter Time"][150365])
- 
+
+df = df.drop(index=150367)
+df = df.drop(index=150368)
+df = df.drop(index=150365)
 
 # histogram of time in shelter 
-# hist = px.histogram(df, x="Shelter Time")
-# hist.show()
+hist = px.histogram(df, x="Shelter Time")
+hist.show()
 
 #pie chart of cats vs dogs vs wildlife
 dog_count = (df["Animal_Type"] == 'DOG').sum()
@@ -80,13 +83,24 @@ animal_type.write_html("animal_chart.html", auto_open=True)
 #make correlation chart for distribution
 
 
-#scatter of shelter time vs breed, intake type, animal type 
+#scatter of shelter time vs breed
 scatter_tvb = px.scatter(x= df["Shelter Time"], y=df["Animal_Breed"])
 scatter_tvb.show()
 
-scatter_tvi = px.scatter(x= df["Shelter Time"], y=df["Animal_Type"])
-scatter_tvi.show()
+#time vs type
+scatter_tvt = px.scatter(x= df["Shelter Time"], y=df["Animal_Type"])
+scatter_tvt.show()
 
-#heat map of correlations 
+#time vs intake type 
+scatter_tvin = px.scatter(x= df["Shelter Time"], y=df["Intake_Type"])
+scatter_tvin.show()
+
+#time vs outtake type 
+scatter_tvout = px.scatter(x=df["Shelter Time"], y=df["Outcome_Type"])
+scatter_tvout.show()
+
+#heat map of correlations between time brought in and animal type
+
+#
 
 #distibution of features 
