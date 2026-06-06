@@ -107,6 +107,13 @@ heatmap_iva = px.imshow(heatmap_iva_data,
                         text_auto=True,
                         color_continuous_scale="Viridis")
 heatmap_iva.show()
-#heat map of correlations between time brought in and animal type
+
+#heat map of intake type and outcome type
+heatmap_iva_data = pd.crosstab(df["Outcome_Type"], df["Intake_Type"])
+heatmap_iva = px.imshow(heatmap_iva_data,
+                        labels=dict(x="Intake type", y="Outcome type", color="Count"),
+                        text_auto=True,
+                        color_continuous_scale="Viridis")
+heatmap_iva.show()
 
 #distibution of features 
