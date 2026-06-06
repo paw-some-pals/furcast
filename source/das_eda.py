@@ -39,24 +39,25 @@ print(f"min:", min(df["Shelter Time"]))
 print(f"mean:", df["Shelter Time"].mean())
 print("-------------------------------------------------------")
 
-#finding issue values
-index_iss = df.loc[df['Shelter Time'] == -272.0, 'Index'].values[0]
-index_iss2 = df.loc[df['Shelter Time'] == -55.0, 'Index'].values[0]
-index_iss3 = df.loc[df['Shelter Time'] == -333.0, 'Index'].values[0]
-sum_ind_iss = (df["Shelter Time"] <0).sum()
-print(index_iss)
-print(index_iss2)
-print(index_iss3)
-print("-------------------------------------------------------")
+# #finding issue values
+# index_iss = df.loc[df['Shelter Time'] == -272.0, 'Index'].values[0]
+# index_iss2 = df.loc[df['Shelter Time'] == -55.0, 'Index'].values[0]
+# index_iss3 = df.loc[df['Shelter Time'] == -333.0, 'Index'].values[0]
+# sum_ind_iss = (df["Shelter Time"] <0).sum()
+# print(index_iss)
+# print(index_iss2)
+# print(index_iss3)
+# print("-------------------------------------------------------")
 
-print(sum_ind_iss)
-print("-------------------------------------------------------")
+# print(sum_ind_iss)
+#print("-------------------------------------------------------")
 
 # get rid of these three rows
-print(df["Shelter Time"][150367])
-print(df["Shelter Time"][150368])
-print(df["Shelter Time"][150365])
+# print(df["Shelter Time"][150367])
+# print(df["Shelter Time"][150368])
+# print(df["Shelter Time"][150365])
 
+#get rid of faulty rows 
 df = df.drop(index=150367)
 df = df.drop(index=150368)
 df = df.drop(index=150365)
