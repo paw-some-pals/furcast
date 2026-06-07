@@ -85,3 +85,28 @@ names - reason
 'isdoa'- not useful
 
 ##### Added columns 
+
+
+
+#### Long Beach Dataset 
+Animal ID - “AXXXXXX” - 55344 str values - some duplicates 
+Animal Type - [CAT, DOG, WILD, BIRD, REPTILE, RABBIT, OTHER, LIVESTOCK, AMPHIBIAN, GUINEA PIG] - 55344 str values  
+Primary Colour - 86 unique - 55344 str values  
+Sex - [Female, Male, Unknown, Spayed, Neutered] - 55344 str values  
+Intake Date - “2017-06-21” - 55344 string values 
+Intake Condition - 17 unique - 55344 string values 
+Intake Type - 13 unique - 33344 str values 
+Outcome Date - “2017-06-21” - 55344 string values
+Outcome Type - 19 unique - 55344 string values 
+
+##### Removed columns
+Reason for intake -  because most of them i think were just defaulted to Null 
+Outcome Subtype -  There are 295 different values so i think they might be too specific and some of them look like random codes 
+Intake_is_dead -  all just alive at intake time
+DOB - used to calculte the age at inatke but then removed after 
+
+
+##### Added columns 
+Age - calcuted using DOB and Intake Date
+
+
