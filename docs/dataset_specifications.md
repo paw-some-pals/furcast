@@ -1,40 +1,61 @@
 ### Dataset Specifications
 
+##### Final Decisions
+Features
+- Age at intake: int
+- Sex:["Male", "Female", "Unknown"]
+- Spay/Neuter: ["Yes", "No", "Unknown"]
+- Chip Status: ["Scan no chip", "scan chip", "unable to scan"]
+- Intake Date: 
+    - Month: [1 12]
+    - Day: [1, 31]
+    - Year: int
+- Animal Species: ["cat", "dog"] (can come back to do new models for others later)
+- Colour: (TBD)
+- Breed:(TBD)
+- Intake Condition: ['Normal', 'Injured', 'Aged', 'Sick', 'Other', 'Feral'] *
+- Intake Type: ['Stray', 'Owner Surrender', 'Euthanasia Request', 'Other']
+
+Targets
+- Outcome type: []
+- Time in shelter: 
+
+
 #### Austin Dataset
 ##### Column names
-col name - type - range
-age_upon_outcome - str - 46 unique values "10 years"
-animal_id_outcome - str - 71961 unique values "A006100"
-date_of_birth - str - 5923 unique values '2007-07-09 00:00:00'
-outcome_subtype - str - ['Partner', 'Foster', 'Suffering', 'Medical', 'Behavior', 'In Kennel', 'Aggressive', 'Rabies Risk', 'In Foster', 'At Vet', 'Offsite', 'Snr', 'Possible Theft', 'SCRP', 'Court/Investigation', 'Enroute', 'In Surgery', 'Barn', 'Underage']
-sex_upon_outcome - str - ['Neutered Male', 'Spayed Female', 'Intact Female', 'Intact Male', 'Unknown']	
-age_upon_outcome_(days) - int64 - 0 to 9125
-outcome_datetime - str - 65686 unique values '2017-12-07 14:07:00'
-age_upon_intake - str - 46 unique values "10 years"
-animal_id_intake - str - 71961 unique values 'A006100'
-animal_type - str - ['Dog', 'Cat', 'Other', 'Bird']	
-breed - str - 2155 unique values ['Spinone Italiano Mix', 'Dachshund', ...]
-color - str - 529 unique values ['Yellow/White', 'Tricolor', 'Brown/White', ...]
-found_location - str - 36576 unique values ['Colony Creek And Hunters Trace in Austin (TX)', '8700 Research Blvd in Austin (TX)', ...]
-intake_condition - str - ['Normal', 'Injured', 'Aged', 'Sick', 'Other', 'Feral', 'Pregnant', 'Nursing']	
-intake_type - str - ['Stray', 'Public Assist', 'Owner Surrender', 'Euthanasia Request', 'Wildlife']
-sex_upon_intake - str - ['Neutered Male', 'Spayed Female', 'Intact Female', 'Intact Male', 'Unknown']
-age_upon_intake_(days) - int64 - 0 to 9125
-intake_datetime - datetime - 56747 unique values '2017-12-07 00:00:00'
-intake_month - int - [1, 12]
-intake_number - float64 - 1.0 to 13.0	
-time_in_shelter - str - 29319 unique values '0 days 14:07:00.000000000'
+- col name - type - range
+- age_upon_outcome - str - 46 unique values "10 years"
+- animal_id_outcome - str - 71961 unique values "A006100"
+- date_of_birth - str - 5923 unique values '2007-07-09 00:00:00'- [1991, 2018]
+- outcome_type - str - ['Partner', 'Foster', 'Suffering', 'Medical', 'Behavior', 'In Kennel', 'Aggressive', 'Rabies Risk', 'In Foster', 'At Vet', 'Offsite', 'Snr', 'Possible Theft', 'SCRP', 'Court/Investigation', 'Enroute', 'In Surgery', 'Barn', 'Underage']
+- sex_upon_outcome - str - ['Neutered Male', 'Spayed Female', 'Intact Female', 'Intact Male', 'Unknown']	
+- age_upon_outcome_(days) - int64 - 0 to 9125
+- outcome_datetime - str - 65686 unique values '2017-12-07 14:07:00'- [2013, 2018]
+- age_upon_intake - str - 46 unique values "10 years"
+- animal_id_intake - str - 71961 unique values 'A006100'
+- animal_type - str - ['Dog', 'Cat', 'Other', 'Bird']	
+- breed - str - 2155 unique values ['Spinone Italiano Mix', 'Dachshund', ...]
+- color - str - 529 unique values ['Yellow/White', 'Tricolor', 'Brown/White', ...]
+- found_location - str - 36576 unique values ['Colony Creek And Hunters Trace in Austin (TX)', '8700 Research Blvd in Austin (TX)', ...]
+- intake_condition - str - ['Normal', 'Injured', 'Aged', 'Sick', 'Other', 'Feral', 'Pregnant', 'Nursing']	
+- intake_type - str - ['Stray', 'Public Assist', 'Owner Surrender', 'Euthanasia Request', 'Wildlife']
+- sex_upon_intake - str - ['Neutered Male', 'Spayed Female', 'Intact Female', 'Intact Male', 'Unknown']
+- age_upon_intake_(days) - int64 - 0 to 9125
+- intake_datetime - datetime - 56747 unique values '2017-12-07 00:00:00' - [2013, 2018]
+- intake_month - int - [1, 12]
+- intake_number - float64 - 1.0 to 13.0	
+- time_in_shelter - str - 29319 unique values '0 days 14:07:00.000000000'- [0 days, 999 days]
 
 ##### Removed columns
 names - reason
-"outcome_subtype" - Use information "foster", (added to outcome col)
-"age_upon_outcome_(years)", "age_upon_outcome_age_group" - Redundant
-"outcome_month", "outcome_year", "outcome_monthyear", "outcome_weekday", "outcome_hour", "outcome_number" - redundant
-"count" (just a col of ones) - not needed
-"age_upon_intake_(years)", "age_upon_intake_age_group" (binned data) - Redundant
-"intake_year", "intake_monthyear", "intake_weekday", "intake_hour" - Redundant
-"time_in_shelter_days" - redundant (have timedelta obj)
-"dob_year", "dob_month", "dob_monthyear"  - Redundant
+- "outcome_subtype" - Use information "foster", (added to outcome col)
+- "age_upon_outcome_(years)", "age_upon_outcome_age_group" - Redundant
+- "outcome_month", "outcome_year", "outcome_monthyear", "outcome_weekday", "outcome_hour", "outcome_number" - redundant
+- "count" (just a col of ones) - not needed
+- "age_upon_intake_(years)", "age_upon_intake_age_group" (binned data) - Redundant
+- "intake_year", "intake_monthyear", "intake_weekday", "intake_hour" - Redundant
+- "time_in_shelter_days" - redundant (have timedelta obj)
+- "dob_year", "dob_month", "dob_monthyear"  - Redundant
 
 
 
@@ -285,33 +306,6 @@ Stolen                 6
 Escaped                3
 Euthanized           181
 
-
-intake reasons and counts
-Stray                                4885
-Incompatible with owner lifestyle    1341
-Litter relinquishment                1016
-Moving                                479
-Abandoned                             400
-Unsuitable Accommodation              393
-Unable to Afford                      328
-Transfer from Other Shelter           217
-Police Assist                         206
-Born in Shelter                       184
-Landlord issues                       161
-Owner Deceased                        133
-Allergies                             120
-Sick/Injured                          119
-Incompatible with other pets           67
-Biting                                 49
-Marriage/Relationship split            46
-Rabies Monitoring                      37
-TNR - Trap/Neuter/Release              34
-Owner Died                             26
-Abuse/ neglect                         20
-Behavioral Issues                      10
-Injured Wildlife                        8
-Owner requested Euthanasia              8
-DOA                                     1
 average time in shelter based on dog breed:
  TODO need to find a way to list all breeds in terminal
 
@@ -341,73 +335,4 @@ DOB - used to calculte the age at inatke but then removed after
 ##### Added columns 
 Age - calcuted using DOB and Intake Date
 
-
-#### Dallas Animal Shelter Dataset
-##### Column Names 
-Animal_Id	
-Animal_Type	
-Animal_Breed	
-Kennel_Status	
-Activity_Sequence	
-Census_Tract	
-Council_District	
-Intake_Type	
-Intake_Subtype	
-Reason	
-Intake_Date	
-Intake_Time	
-Intake_Condition	
-Hold_Request	
-Outcome_Type	
-Outcome_Subtype	
-Outcome_Date	
-Outcome_Time	
-Outcome_Condition	
-Chip_Status	
-Animal_Origin	
-Month	
-Year
-
-##### Removed Columns 
-Kennel_Status 
-Activity_Sequence
-Census_Tract
-Council_District
-Reason
-Hold_Request
-Outcome_Subtype
-Outcome_Time
-Chip_Status
-Animal_Origin
-Month
-Year
-
-##### Added Columns 
-Shelter Time
-
-##### Stats 
-population of dogs - 115194
-population of cats - 38961
-population of wildlife - 4208
-population of birds - 1439
-population of livestock -108
-
-maximum shelter time - 310 days
-minimum shelter time - 0.0 days  
-mean shelter time - 6.1597 days 
-mode shelter time - 0.0
-median shelter time - 3.0 
-
-number of animals with 0 day stay - 20.713k
-number of animals with 1 day stay - 8371
-number of animals with 2 day stay - 5298
-number of animals with 3 day stay - 3672
-number of animals with 4 day stay - 7503
-number of animals with 5 day stay - 4221
-
-animal with longest stay - stray, dog, PitBull, 310 days
-
-intakes on stray 
-intakes on return 
-intakes on 
 
