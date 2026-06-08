@@ -274,6 +274,19 @@ White and Orange          24.080000
 White and Tabby           26.133333
 White and Tan              4.000000
 
+outcome types and counts
+Adoption            5810
+Foster              2509
+Reclaimed           1423
+Transfer             532
+Released To Wild       7
+Stolen                 6
+Escaped                3
+Euthanized           181
+
+##### Statistics
+want to run some kind of t-test but researching indicates i will need to select a proper statistical measure for this dataset bc its not normally distributed and we are comparing many means to eachother
+
 
 
 #### Long Beach Dataset 
