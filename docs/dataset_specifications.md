@@ -20,7 +20,8 @@ intake_condition - str - ['Normal', 'Injured', 'Aged', 'Sick', 'Other', 'Feral',
 intake_type - str - ['Stray', 'Public Assist', 'Owner Surrender', 'Euthanasia Request', 'Wildlife']
 sex_upon_intake - str - ['Neutered Male', 'Spayed Female', 'Intact Female', 'Intact Male', 'Unknown']
 age_upon_intake_(days) - int64 - 0 to 9125
-intake_datetime - str - 56747 unique values '2017-12-07 00:00:00'
+intake_datetime - datetime - 56747 unique values '2017-12-07 00:00:00'
+intake_month - int - [1, 12]
 intake_number - float64 - 1.0 to 13.0	
 time_in_shelter - str - 29319 unique values '0 days 14:07:00.000000000'
 
@@ -31,7 +32,7 @@ names - reason
 "outcome_month", "outcome_year", "outcome_monthyear", "outcome_weekday", "outcome_hour", "outcome_number" - redundant
 "count" (just a col of ones) - not needed
 "age_upon_intake_(years)", "age_upon_intake_age_group" (binned data) - Redundant
-"intake_month", "intake_year", "intake_monthyear", "intake_weekday", "intake_hour" - Redundant
+"intake_year", "intake_monthyear", "intake_weekday", "intake_hour" - Redundant
 "time_in_shelter_days" - redundant (have timedelta obj)
 "dob_year", "dob_month", "dob_monthyear"  - Redundant
 
