@@ -315,3 +315,72 @@ DOB - used to calculte the age at inatke but then removed after
 Age - calcuted using DOB and Intake Date
 
 
+#### Dallas Animal Shelter Dataset
+##### Column Names 
+Animal_Id	
+Animal_Type	
+Animal_Breed	
+Kennel_Status	
+Activity_Sequence	
+Census_Tract	
+Council_District	
+Intake_Type	
+Intake_Subtype	
+Reason	
+Intake_Date	
+Intake_Time	
+Intake_Condition	
+Hold_Request	
+Outcome_Type	
+Outcome_Subtype	
+Outcome_Date	
+Outcome_Time	
+Outcome_Condition	
+Chip_Status	
+Animal_Origin	
+Month	
+Year
+
+##### Removed Columns 
+Kennel_Status 
+Activity_Sequence
+Census_Tract
+Council_District
+Reason
+Hold_Request
+Outcome_Subtype
+Outcome_Time
+Chip_Status
+Animal_Origin
+Month
+Year
+
+##### Added Columns 
+Shelter Time
+
+##### Stats 
+population of dogs - 115194
+population of cats - 38961
+population of wildlife - 4208
+population of birds - 1439
+population of livestock -108
+
+maximum shelter time - 310 days
+minimum shelter time - 0.0 days  
+mean shelter time - 6.1597 days 
+mode shelter time - 0.0
+median shelter time - 3.0 
+
+number of animals with 0 day stay - 20.713k
+number of animals with 1 day stay - 8371
+number of animals with 2 day stay - 5298
+number of animals with 3 day stay - 3672
+number of animals with 4 day stay - 7503
+number of animals with 5 day stay - 4221
+
+animal with longest stay - stray, dog, PitBull, 310 days
+
+intakes on stray 
+intakes on return 
+intakes on 
+
