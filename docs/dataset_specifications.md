@@ -284,6 +284,33 @@ Stolen                 6
 Escaped                3
 Euthanized           181
 
+
+intake reasons and counts
+Stray                                4885
+Incompatible with owner lifestyle    1341
+Litter relinquishment                1016
+Moving                                479
+Abandoned                             400
+Unsuitable Accommodation              393
+Unable to Afford                      328
+Transfer from Other Shelter           217
+Police Assist                         206
+Born in Shelter                       184
+Landlord issues                       161
+Owner Deceased                        133
+Allergies                             120
+Sick/Injured                          119
+Incompatible with other pets           67
+Biting                                 49
+Marriage/Relationship split            46
+Rabies Monitoring                      37
+TNR - Trap/Neuter/Release              34
+Owner Died                             26
+Abuse/ neglect                         20
+Behavioral Issues                      10
+Injured Wildlife                        8
+Owner requested Euthanasia              8
+DOA                                     1
 average time in shelter based on dog breed:
  TODO need to find a way to list all breeds in terminal
 
