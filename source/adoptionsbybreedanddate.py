@@ -142,4 +142,15 @@ print(colour_kitties)
 colour_kitties_avg_days = df[df['speciesname'] == 'Cat'].groupby('basecolour')['days_in_shelter'].mean()
 print(colour_kitties_avg_days)
 
+outcome_counts = df['movementtype'].value_counts()
+print(outcome_counts)
+
+#count how many yes and no euthansia outcomes there are (1 = yes, 0 = no)
+euthanasia_count = df['puttosleep'].value_counts()
+print(euthanasia_count)
+
+#add yes euthanized counts to the outcome counts
+outcome_counts['Euthanized'] = euthanasia_count.get(1, 0)
+print(outcome_counts)
+
 
