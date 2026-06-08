@@ -40,12 +40,256 @@ names - reason
 
 #### Adoptions by breed and date dataset
 ##### Column names
-index	id	intakedate	intakereason	istransfer	sheltercode	identichipnumber	animalname	breedname	basecolour	speciesname	animalage	sexname	location	movementdate	movementtype	istrial	returndate	returnedreason	deceaseddate	deceasedreason	diedoffshelter	puttosleep	isdoa
+col name - type - range
+
+index             10290    int64  
+id                10290    int64  
+intakedate        10290    str    
+intakereason      10288    str    
+istransfer        10290    int64  
+sheltercode       10290    str    
+identichipnumber  8324     str    
+animalname        10290    str    
+breedname         10245    str    
+basecolour        10290    str    
+speciesname       10290    str    
+animalage         10290    str    
+sexname           10290    str    
+location          10290    str    
+movementdate      10290    str    
+movementtype      10290    str    
+istrial           10289    float64
+returndate        3256     str    
+returnedreason    10290    str    
+deceaseddate      326      str    
+deceasedreason    10290    str    
+diedoffshelter    10290    int64  
+puttosleep        10290    int64  
+isdoa             10290    int64 
+
 
 ##### Removed columns
-'index','animalage','istransfer','sheltercode','identichipnumber','animalname','location','istrial','returndate','returnedreason','deceaseddate','deceasedreason','diedoffshelter','isdoa'
+names - reason
+'index'- using animal ids instead
+'animalage'- changed to float, in new column 'animal_age_float'
+'istransfer'- not useful
+'sheltercode'- not useful
+'identichipnumber'- redundant
+'animalname'redunant
+'location'-not useful
+'istrial'- not useful
+'returndate'- animals returned will have another row anyways
+'returnedreason'- not useful
+'deceaseddate'- not useful
+'deceasedreason- not useful
+'diedoffshelter'-not useful
+'isdoa'- not useful
 
 ##### Added columns 
+days_in_shelter
+animal_age_float
+age_at_outcome
+
+##### Interesting stats
+average days in shelter: 37.91 days
+minimum days in shelter: 0
+maximum days in shelter: 2723
+average time in shelter: 13.87
+unique species names and counts:
+Cat             5749
+Dog             3900
+House Rabbit     218
+Rat              130
+Guinea Pig        93
+Bird              38
+Livestock         18
+Hamster           17
+Hedgehog          15
+Mouse             13
+Gerbil            12
+Ferret            11
+Pig               11
+Chicken           10
+Snake              8
+Wildlife           7
+Lizard             7
+Opossum            6
+Fish               6
+Goat               5
+Sugar Glider       5
+Turtle             4
+Tortoise           2
+Chinchilla         2
+Squirrel           1
+Tarantula          1
+Raccoon            1
+
+average time spent in shelter based on species:
+Bird             5.078947
+Cat             33.867629
+Chicken         10.800000
+Chinchilla      17.000000
+Dog             37.882564
+Ferret           3.363636
+Fish             3.000000
+Gerbil          21.333333
+Goat             3.200000
+Guinea Pig       9.107527
+Hamster          4.058824
+Hedgehog        13.466667
+House Rabbit    50.344037
+Livestock       15.833333
+Lizard           4.428571
+Mouse           46.000000
+Opossum          0.000000
+Pig             38.363636
+Raccoon          0.000000
+Rat              9.669231
+Snake            5.500000
+Squirrel         0.000000
+Sugar Glider     2.200000
+Tarantula        0.000000
+Tortoise         0.500000
+Turtle           1.500000
+Wildlife         0.142857
+
+unique cat colours and count:
+Black                     917
+Orange                    542
+Grey                      507
+Black and White           501
+Black and Brown           480
+Tortie                    335
+Grey and White            274
+Brown and Black           273
+Orange and White          218
+Calico                    189
+Buff                      174
+Brown, Black and White    166
+Black and grey            161
+Torbie                    144
+Tabbico                    97
+White and Black            84
+Dilute tortoiseshell       83
+Dilute calico              77
+White                      57
+Buff and white             51
+White and Grey             38
+Grey and black             34
+Brown                      29
+Flame Point                25
+White and Orange           25
+Grey Black and White       24
+Silver                     22
+Lynx point                 21
+Brown and White            20
+Chocolate Point            19
+White and Brown            15
+Lilac Point                15
+White and Tabby            15
+Seal Point                 14
+Black, Brown and White      9
+Cream                       8
+Fawn                        7
+Blue                        7
+Blue Point                  6
+Chocolate                   6
+Tricolour                   6
+Seal                        5
+Tabby and White             5
+Tan and Black               5
+Various                     4
+Tabby                       4
+White and Tan               4
+Siver and Black             4
+Black and Tan               4
+Black Tortie                3
+Tortie and White            3
+Tortie Point                3
+Tan and Brown               3
+Smoke                       2
+Golden                      1
+Lilac                       1
+Brindle and Black           1
+Cinnamon                    1
+Tan and White               1
+
+average stay based on cat colour:
+Black                     35.899673
+Black Tortie              26.333333
+Black and Brown           30.529167
+Black and Tan             56.250000
+Black and White           33.471058
+Black and grey            38.024845
+Black, Brown and White    18.666667
+Blue                       7.714286
+Blue Point                40.000000
+Brindle and Black          7.000000
+Brown                     29.827586
+Brown and Black           35.838828
+Brown and White           28.100000
+Brown, Black and White    26.801205
+Buff                      31.298851
+Buff and white            29.980392
+Calico                    35.465608
+Chocolate                  9.000000
+Chocolate Point           41.789474
+Cinnamon                   5.000000
+Cream                     18.250000
+Dilute calico             33.337662
+Dilute tortoiseshell      67.554217
+Fawn                      31.571429
+Flame Point               23.960000
+Golden                    11.000000
+Grey                      32.285996
+Grey Black and White      24.750000
+Grey and White            27.667883
+Grey and black            29.941176
+Lilac                     77.000000
+Lilac Point               22.800000
+Lynx point                22.857143
+Orange                    35.599631
+Orange and White          28.931193
+Seal                      44.600000
+Seal Point                15.714286
+Silver                    53.727273
+Siver and Black           18.750000
+Smoke                     48.000000
+Tabbico                   23.371134
+Tabby                      7.000000
+Tabby and White            4.000000
+Tan and Black             45.600000
+Tan and Brown             35.000000
+Tan and White              0.000000
+Torbie                    37.465278
+Tortie                    43.417910
+Tortie Point              37.666667
+Tortie and White           2.666667
+Tricolour                 32.833333
+Various                   56.500000
+White                     27.561404
+White and Black           41.202381
+White and Brown           15.066667
+White and Grey            22.789474
+White and Orange          24.080000
+White and Tabby           26.133333
+White and Tan              4.000000
+
+outcome types and counts
+Adoption            5810
+Foster              2509
+Reclaimed           1423
+Transfer             532
+Released To Wild       7
+Stolen                 6
+Escaped                3
+Euthanized           181
+
+average time in shelter based on dog breed:
+ TODO need to find a way to list all breeds in terminal
+
+##### Statistics
+want to run some kind of t-test but researching indicates i will need to select a proper statistical measure for this dataset bc its not normally distributed and we are comparing many means to eachother
 
 
 
