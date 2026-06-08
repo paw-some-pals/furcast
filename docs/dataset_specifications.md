@@ -284,6 +284,9 @@ Stolen                 6
 Escaped                3
 Euthanized           181
 
+average time in shelter based on dog breed:
+ TODO need to find a way to list all breeds in terminal
+
 ##### Statistics
 want to run some kind of t-test but researching indicates i will need to select a proper statistical measure for this dataset bc its not normally distributed and we are comparing many means to eachother
 

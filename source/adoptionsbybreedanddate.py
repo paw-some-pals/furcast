@@ -151,6 +151,12 @@ print(euthanasia_count)
 
 #add yes euthanized counts to the outcome counts
 outcome_counts['Euthanized'] = euthanasia_count.get(1, 0)
-print(outcome_counts)
+print(outcome_counts) 
+
+#average time in shelterbased on dog breed
+dog_breed_avg_days = df[df['speciesname'] == 'Dog'].groupby('breedname')['days_in_shelter'].mean()
+print(dog_breed_avg_days)
+
+
 
 
