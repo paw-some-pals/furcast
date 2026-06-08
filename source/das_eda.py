@@ -81,23 +81,36 @@ anim_data = {"anim_counts" : [dog_count, cat_count, wild_count, bird_count, live
 animal_type = px.pie(anim_data, values='anim_counts', names='anim_type', title='Animal type breakdown')
 animal_type.write_html("animal_chart.html", auto_open=True)
 
-#make correlation chart for distribution
-
-
 #scatter of shelter time vs breed
 scatter_tvb = px.scatter(x= df["Shelter Time"], y=df["Animal_Breed"])
+scatter_tvb.update_layout(
+    xaxis_title="Shelter Time",
+    yaxis_title="Animal Breed"
+)
 scatter_tvb.show()
 
 #time vs type
 scatter_tvt = px.scatter(x= df["Shelter Time"], y=df["Animal_Type"])
+scatter_tvt.update_layout(
+    xaxis_title="Shelter Time",
+    yaxis_title="Animal Type"
+)
 scatter_tvt.show()
 
 #time vs intake type 
 scatter_tvin = px.scatter(x= df["Shelter Time"], y=df["Intake_Type"])
+scatter_tvin.update_layout(
+    xaxis_title="Shelter Time",
+    yaxis_title="Intake Type"
+)
 scatter_tvin.show()
 
 #time vs outtake type 
 scatter_tvout = px.scatter(x=df["Shelter Time"], y=df["Outcome_Type"])
+scatter_tvout.update_layout(
+    xaxis_title="Shelter Time",
+    yaxis_title="Outcome Type"
+)
 scatter_tvout.show()
 
 #heatmap of intake type vs animal type
@@ -117,3 +130,5 @@ heatmap_iva = px.imshow(heatmap_iva_data,
 heatmap_iva.show()
 
 #distibution of features 
+
+#averages and numerical counts 
