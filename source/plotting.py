@@ -55,8 +55,8 @@ def mutual_info_regression_matrix(
 
     return pd.DataFrame(mi, index=cols, columns=cols)
 
-
-def plot_mutual_info_heatmap(mi_df, figsize=(10, 8), annot=False):
+# added save_path argument so does not overwrite the same file when run for our different datasets
+def plot_mutual_info_heatmap(mi_df, figsize=(10, 8), annot=False, save_path="figures/MI_heatmap.png"): 
     plt.figure(figsize=figsize)
     sns.heatmap(
         mi_df,
@@ -68,42 +68,39 @@ def plot_mutual_info_heatmap(mi_df, figsize=(10, 8), annot=False):
     )
     plt.title("Pairwise Mutual Information Heatmap between Continuous Features")
     plt.tight_layout()
-    plt.savefig("figures/MI_heatmap.png", dpi=300, bbox_inches="tight")
+    plt.savefig(save_path, dpi=300, bbox_inches="tight")
 
+# add so it doesnt run when imported as a module, but only when run directly
+if __name__ == "__main__":
+    # ------------------- USAGE EXAMPLE ------------------
+    rng = np.random.default_rng(0)
+    n = 500
 
+    x = rng.normal(size=n)
 
-# ------------------- USAGE EXAMPLE ------------------
-import numpy as np
-import pandas as pd
+    toy_df = pd.DataFrame({
+        # Base continuous feature
+        "x": x,
 
-rng = np.random.default_rng(0)
-n = 500
+        # Strong linear relationship with x
+        "linear_x": 2.0 * x + 0.2 * rng.normal(size=n),
 
-x = rng.normal(size=n)
+        # Nonlinear relationship with x
+        "quadratic_x": x**2 + 0.2 * rng.normal(size=n),
 
-toy_df = pd.DataFrame({
-    # Base continuous feature
-    "x": x,
+        # Periodic nonlinear relationship with x
+        "sin_x": np.sin(3 * x) + 0.1 * rng.normal(size=n),
 
-    # Strong linear relationship with x
-    "linear_x": 2.0 * x + 0.2 * rng.normal(size=n),
+        # Mostly independent noise
+        "noise": rng.normal(size=n),
 
-    # Nonlinear relationship with x
-    "quadratic_x": x**2 + 0.2 * rng.normal(size=n),
+        # Discretized/binned version of x
+        "x_bin": pd.qcut(x, q=4, labels=False),
 
-    # Periodic nonlinear relationship with x
-    "sin_x": np.sin(3 * x) + 0.1 * rng.normal(size=n),
+        # Another categorical-ish variable partially dependent on x
+        "category_like": np.where(x > 0.5, 2, np.where(x < -0.5, 0, 1)),
+    })
 
-    # Mostly independent noise
-    "noise": rng.normal(size=n),
-
-    # Discretized/binned version of x
-    "x_bin": pd.qcut(x, q=4, labels=False),
-
-    # Another categorical-ish variable partially dependent on x
-    "category_like": np.where(x > 0.5, 2, np.where(x < -0.5, 0, 1)),
-})
-
-toy_df.head()
-mi_df = mutual_info_regression_matrix(toy_df)
-plot_mutual_info_heatmap(mi_df, annot=True)
+    toy_df.head()
+    mi_df = mutual_info_regression_matrix(toy_df)
+    plot_mutual_info_heatmap(mi_df, annot=True)
