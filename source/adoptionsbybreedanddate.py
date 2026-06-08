@@ -157,6 +157,8 @@ print(outcome_counts)
 dog_breed_avg_days = df[df['speciesname'] == 'Dog'].groupby('breedname')['days_in_shelter'].mean()
 print(dog_breed_avg_days)
 
-
+#
+intake_reason = df['intakereason'].value_counts()
+print(intake_reason)
 
 
