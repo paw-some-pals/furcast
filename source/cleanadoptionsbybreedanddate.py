@@ -1,0 +1,101 @@
+import pandas as pd
+import data_utils
+df = pd.read_csv('datasets/animal-data-1.csv')
+print(df.head())
+print (df.info())
+
+
+
+#code from google ai and claude
+#function converts age string to floating point value
+import re
+
+def age_to_float(age_str):
+    if pd.isna(age_str):
+        return None
+
+    # Ensure we are working with a string
+    age_str = str(age_str)
+
+    # Find all integers in the string
+    numbers = re.findall(r'\d+', age_str)
+    
+    # Extract years and months (defaulting to 0 if not present)
+    years = int(numbers[0]) if len(numbers) > 0 else 0
+    months = int(numbers[1]) if len(numbers) > 1 else 0
+    
+    # Calculate and return float
+    return float(years + (months / 12))
+
+# Test
+print(age_to_float("5 years 3 months"))  # Output: 5.25
+print(age_to_float("7m"))                # Output: 0.5833333333333334
+
+# Convert full column and add results to the DataFrame
+df['animal_age_float'] = df['animalage'].apply(age_to_float)
+print(df[['animalage', 'animal_age_float']].head())
+
+#drop columns that arent necessary
+df=df.drop(columns=['index','animalage','istransfer','sheltercode','identichipnumber','animalname','location','istrial','returndate','returnedreason','deceaseddate','deceasedreason','diedoffshelter','isdoa'])
+print(list(df.columns))
+
+df.rename(columns={'speciesname': 'animal_species'}, inplace=True)
+df['animal_species'] = df['animal_species'].str.lower()
+df=data_utils.simplify_animal_species(df)
+print('------------------------------')
+
+
+#only keep a unique ids first intake date
+df = df.drop_duplicates(subset=['id'], keep='first')
+print(df)
+
+
+
+print(df)
+#TODO add time stayed column in days
+df['intakedate'] = pd.to_datetime(df['intakedate'])
+df['movementdate'] = pd.to_datetime(df['movementdate'])
+
+df['days_in_shelter'] = (df['movementdate'] - df['intakedate']).dt.days
+print(df[['id', 'intakedate', 'movementdate', 'days_in_shelter']].head())
+
+shelter_minimum = df['days_in_shelter'].min()
+shelter_maximum = df['days_in_shelter'].max()
+print(f"Minimum days in shelter: {shelter_minimum}")
+print(f"Maximum days in shelter: {shelter_maximum}")
+
+#find negative values and their rows
+#find the problematic negative minimum value and print the corresponding rows
+negative_days = df[df['days_in_shelter'] < 0]
+print(negative_days[['id', 'intakedate', 'movementdate', 'days_in_shelter']])
+
+messed_up_intake_values = df[df['days_in_shelter'] < 0]
+print(messed_up_intake_values[['id', 'intakedate', 'movementdate', 'days_in_shelter']])
+for row in messed_up_intake_values.itertuples():
+    df.at[row.Index, 'intakedate'] = row.movementdate
+    df.at[row.Index, 'movementdate'] = row.intakedate
+df['days_in_shelter'] = (df['movementdate'] - df['intakedate']).dt.days
+print(df[['id', 'intakedate', 'movementdate', 'days_in_shelter']].head())
+
+#TODO convert the intakedate and movement date to 6 separate intakeyear intake month intake day and same for movement
+df["intakeyear"] = df["intakedate"].dt.year
+df["intakemonth"] = df["intakedate"].dt.month
+df["intakedown"] = df["intakedate"].dt.day
+df["movementyear"] = df["movementdate"].dt.year
+df["movementmonth"] = df["movementdate"].dt.month
+df["movementday"] = df["movementdate"].dt.day
+
+
+
+df=df.drop(columns=['intakedate', 'movementdate'])
+print('----')
+print(df.columns)
+
+
+
+
+
+
+
+
+
