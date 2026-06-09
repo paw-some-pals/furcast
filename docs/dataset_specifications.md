@@ -306,6 +306,9 @@ Stolen                 6
 Escaped                3
 Euthanized           181
 
+total dog breeds: 659
+total cat breed: 64
+
 average time in shelter based on dog breed:
  TODO need to find a way to list all breeds in terminal
 

@@ -161,4 +161,16 @@ print(dog_breed_avg_days)
 intake_reason = df['intakereason'].value_counts()
 print(intake_reason)
 
+print(df.head(10))
 
+print(df[df['speciesname'] == 'Dog']['breedname'].nunique())
+
+print(f'---------')
+
+print(df[df['speciesname'] == 'Cat']['breedname'].nunique())
+
+print(df[df['speciesname'] == 'Cat']['breedname'].value_counts().head(30))
+
+
+#TODO convert days_in_shelter to how long each stay was, not adding up multiple stays to get a total.
+#TODO Need to treat every entry like a unique data point, but also then need to add a column for total days, and change the intake dates to match movement dates for repeats
