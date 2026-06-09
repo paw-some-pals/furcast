@@ -88,3 +88,122 @@ def categorize_color(color):
     return "Multi/Unknown"
 
     #df["color"] = df["color"].apply(categorize_color)
+
+def categorize_breed(breed):
+        breed = str(breed).upper()
+
+        # Mix / Unknown
+        if "MIX" in breed or "UNKNOWN" in breed:
+            return "Mix/Unknown"
+
+        # Sporting
+        if (
+            "GOLDEN RETRIEVER" in breed or
+            "LABRADOR RETRIEVER" in breed or
+            "COCKER SPANIEL" in breed or
+            "FLAT COAT RETRIEVER" in breed or
+            "WEIMARANER" in breed or
+            "VIZSLA" in breed or
+            "POINTER" in breed or
+            "SETTER" in breed or
+            "SPANIEL" in breed
+        ):
+            return "Sporting"
+
+        # Hounds
+        if (
+            "BEAGLE" in breed or
+            "DACHSHUND" in breed or
+            "BASSET" in breed or
+            "GREYHOUND" in breed or
+            "WHIPPET" in breed or
+            "BLOODHOUND" in breed or
+            "COONHOUND" in breed or
+            "RIDGEBACK" in breed
+        ):
+            return "Hounds"
+
+        # Working
+        if (
+            "ROTTWEILER" in breed or
+            "BOXER" in breed or
+            "DOBERMAN" in breed or
+            "MASTIFF" in breed or
+            "ST BERNARD" in breed or
+            "SAINT BERNARD" in breed or
+            "HUSKY" in breed or
+            "MALAMUTE" in breed or
+            "BERNESE" in breed or
+            "GREAT DANE" in breed or
+            "NEWFOUNDLAND" in breed or
+            "AKITA" in breed or
+            "GREAT PYRENEES" in breed
+        ):
+            return "Working"
+
+        # Terriers
+        if (
+            "PIT BULL" in breed or
+            "AM PIT BULL" in breed or
+            "STAFFORDSHIRE" in breed or
+            "BULL TERRIER" in breed or
+            "FOX TERRIER" in breed or
+            "PARSON RUSSELL" in breed or
+            "JACK RUSSELL" in breed or
+            "CAIRN TERRIER" in breed or
+            "SCOTTISH TERRIER" in breed or
+            "TERRIER" in breed
+        ):
+            return "Terriers"
+
+        # Toys
+        if (
+            "CHIHUAHUA" in breed or
+            "SHIH TZU" in breed or
+            "MALTESE" in breed or
+            "POMERANIAN" in breed or
+            "PUG" in breed or
+            "MIN PINSCHER" in breed or
+            "MINIATURE PINSCHER" in breed or
+            "CAVALIER" in breed or
+            "YORKSHIRE TERRIER" in breed or
+            "TOY POODLE" in breed
+        ):
+            return "Toys"
+
+        # Non-Sporting
+        if (
+            "BULLDOG" in breed or
+            "FRENCH BULLDOG" in breed or
+            "STANDARD POODLE" in breed or
+            "MINIATURE POODLE" in breed or
+            "DALMATIAN" in breed or
+            "BOSTON TERRIER" in breed or
+            "BICHON" in breed or
+            "CHOW CHOW" in breed or
+            "SHARPEI" in breed or
+            "SHAR-PEI" in breed or
+            "SHIBA INU" in breed
+        ):
+            return "Non-Sporting"
+
+        # Herding
+        if (
+            "GERMAN SHEPHERD" in breed or
+            "BORDER COLLIE" in breed or
+            "AUST CATTLE DOG" in breed or
+            "AUSTRALIAN CATTLE DOG" in breed or
+            "HEELER" in breed or
+            "CORGI" in breed or
+            "SHELTIE" in breed or
+            "SHETLAND SHEEPDOG" in breed or
+            "COLLIE" in breed or
+            "BELGIAN MALINOIS" in breed or
+            "AUSTRALIAN SHEPHERD" in breed
+        ):
+            return "Herding"
+
+        # Anything else
+        return "Mix/Unknown"
+
+    #df["breed"] = df["breed"].apply(categorize_breed)
