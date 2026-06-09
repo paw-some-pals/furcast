@@ -4,7 +4,15 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, date
 import matplotlib.pyplot as plt
-import seaborn
+from data_utils import simplify_animal_species
+
+
+#only keeping cat and dog using function from utils 
+def keep_cat_dog(df):
+    df.rename(columns={'Animal Type': 'animal_species'}, inplace=True) # make consistent with other datasets
+    df['animal_species'] = df['animal_species'].str.lower()
+    new_df = simplify_animal_species(df)  
+    return new_df   
 
 
 def read_file(path):
@@ -46,7 +54,8 @@ def main():
     cleaned_df = spay_neuter(cleaned_df)
     cleaned_df = simplifying_intake_condition(cleaned_df)
     cleaned_df = simplifying_intake_type(cleaned_df)
-    print(cleaned_df["Intake Type"].value_counts())
+    cleaned_df = keep_cat_dog(cleaned_df)
+    print(cleaned_df["animal_species"].value_counts())
 
 
 def spay_neuter(df):
