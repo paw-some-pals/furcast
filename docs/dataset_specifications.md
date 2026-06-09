@@ -2,7 +2,7 @@
 
 ##### Final Decisions
 Features
-- Age at intake: int
+- Age at intake: float (years)
 - Sex:["Male", "Female", "Unknown"]
 - Spay/Neuter: ["Yes", "No", "Unknown"]
 - Chip Status: ["Scan no chip", "scan chip", "unable to scan"]
