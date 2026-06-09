@@ -26,3 +26,65 @@ def simplify_animal_species(df):
     '''
     return df[df['animal_species'].isin(['dog', 'cat'])]
 
+
+# Categorize color into broader color groups based on specs
+def categorize_color(color):
+    color = str(color).upper()
+
+    # Multi / Unknown
+    if "UNKNOWN" in color or "VARIOUS" in color:
+        return "Multi/Unknown"
+
+    # Point / Lynx
+    if "POINT" in color or "LYNX" in color:
+        return "Point/Lynx"
+
+    # Tabby / Tortie
+    if (
+        "TABBY" in color or 
+        "TORTIE" in color or 
+        "TORBIE" in color or 
+        "CALICO" in color or
+        "TRICOLOR" in color or
+        "TRICOLOUR" in color
+    ):
+        return "Tabby/Tortie"
+
+    # Gray / Blue
+    if (
+        "GRAY" in color or 
+        "GREY" in color or 
+        "BLUE" in color or 
+        "SILVER" in color or 
+        "SMOKE" in color or 
+        "LILAC" in color
+    ):
+        return "Gray/Blue"
+
+    # Orange / Red / Flame
+    if (
+        "ORANGE" in color or 
+        "RED" in color or 
+        "FLAME" in color or 
+        "RUDDY" in color
+    ):
+        return "Orange/Red/Flame"
+
+    # White
+    if (
+        "WHITE" in color or 
+        "CREAM" in color or 
+        "IVORY" in color or 
+        "BUFF" in color or 
+        "APRICOT" in color
+    ):
+        return "White"
+
+    # Black
+    if "BLACK" in color or "BLK" in color:
+        return "Black"
+
+    # Anything else
+    return "Multi/Unknown"
+
+    #df["color"] = df["color"].apply(categorize_color)
