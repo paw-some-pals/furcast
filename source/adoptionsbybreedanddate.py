@@ -1,4 +1,5 @@
 import pandas as pd
+import data_utils
 df = pd.read_csv('datasets/animal-data-1.csv')
 print(df.head())
 print (df.info())
@@ -170,6 +171,11 @@ print(f'---------')
 print(df[df['speciesname'] == 'Cat']['breedname'].nunique())
 
 print(df[df['speciesname'] == 'Cat']['breedname'].value_counts().head(30))
+
+df.rename(columns={'speciesname': 'animal_species'}, inplace=True)
+df['animal_species'] = df['animal_species'].str.lower()
+df=data_utils.simplify_animal_species(df)
+
 
 
 #TODO convert days_in_shelter to how long each stay was, not adding up multiple stays to get a total.
