@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, date
 import matplotlib.pyplot as plt
-from data_utils import simplify_animal_species
+from data_utils import simplify_animal_species, simplifying_intake_type
 
 
 #only keeping cat and dog using function from utils 
@@ -47,15 +47,7 @@ def clean_data(df):
 
     return df 
 
-def main():
 
-    my_df = read_file("/Users/heerperchani/Desktop/AI4Good/furcast/datasets/animal-shelter-intakes-and-outcomes.csv")
-    cleaned_df = clean_data(my_df)
-    cleaned_df = spay_neuter(cleaned_df)
-    cleaned_df = simplifying_intake_condition(cleaned_df)
-    cleaned_df = simplifying_intake_type(cleaned_df)
-    cleaned_df = keep_cat_dog(cleaned_df)
-    print(cleaned_df["animal_species"].value_counts())
 
 
 def spay_neuter(df):
@@ -80,7 +72,6 @@ def spay_neuter(df):
     return df
 
 
-
 # # all ill mapped to sick
 # # underage/weight mapped to sick
 # # everything else is other 
@@ -101,20 +92,79 @@ def simplifying_intake_condition(df):
             df.at[index, "Intake Condition"] = "Other"
     return df 
 
-# simplifying intake type
-def simplifying_intake_type(df):
-    for index in df.index:
-        type = df.at[index, "Intake Type"]
-        if type == "STRAY":
-            df.at[index, "Intake Type"] = "Stray"
-        elif type in ["OWNER SURRENDER"]:
-            df.at[index, "Intake Type"] = "Owner Surrender"
-        elif type in ["OWNER SURRENDER"]:
-            df.at[index, "Intake Type"] = "Euthanasia Request"
-        elif type in ["WILDLIFE", "WELFARE SEIZED", "CONFISCATE", "RETURN", "QUARANTINE", "SAFE KEEP", "TRAP, NEUTER, RETURN", "FOSTER", "TRANSFER", "Adopted Animal Return"]:
-            df.at[index, "Intake Type"] = "Other"
 
-    return df
+
+
+def main():
+
+    my_df = read_file("/Users/heerperchani/Desktop/AI4Good/furcast/datasets/animal-shelter-intakes-and-outcomes.csv")
+    cleaned_df = clean_data(my_df)
+    cleaned_df = spay_neuter(cleaned_df)
+    cleaned_df = simplifying_intake_condition(cleaned_df)
+    cleaned_df = simplifying_intake_type(cleaned_df)
+    cleaned_df = keep_cat_dog(cleaned_df)
+    print(cleaned_df["intake_type"].value_counts())
+
+
+
+'''
+
+
+
+
+Adoption  by breed 
+Adoption            5810
+Foster              2509
+             532
+Released To Wild       7
+Stolen                 6
+Escaped                3
+           181
+
+Dallas 
+[         '',          'ADOPTION',            'FOSTER',
+        '',       'LOST REPORT', 
+      'FOUND REPORT',   'DEAD ON ARRIVAL',              'DIED',
+           'MISSING',         'FOUND EXP',          'LOST EXP',
+          'DISPOSAL',         'TREATMENT']
+
+
+Long Beach 
+',                  'FOSTER',
+                '',         
+                'ADOPTION', ,
+               '',                  'RESCUE',
+                       nan,               'HOMEFIRST',
+           'COMMUNITY CAT',                    'DIED',
+  'RETURN TO WILD HABITAT',                'DISPOSAL',
+                 'MISSING',         'FOSTER TO ADOPT',
+   'TRAP, NEUTER, RELEASE',               'DUPLICATE',
+        'RETURN TO RESCUE']
+
+Goal 
+['Return to Owner', 'Transfer', 'Foster','Euthanasia', 'Adoption', 'Other']
+
+
+def simplifying_outcome_type(df):
+    
+    requires col name to be ouctome_type
+    
+    for index in df.index:
+        type = df.at[index, "outcome_type"]
+        if type in ["Reclaimed","RETURNED TO OWNER","RETURN TO OWNER", 'SHELTER, NEUTER, RETURN']:
+            df.at[index, "outcome_type"] = "Return to Owner"
+        elif type in ["Transfer","TRANSFER","TRANSPORT",""]:
+            df.at[index, "outcome_type"] = "Transfer"
+        elif type in ["",""]:
+            df.at[index, "outcome_type"] = "Foster"
+        elif type in ["Euthanized","EUTHANIZED","EUTHANASIA"]:
+            df.at[index, "outcome_type"] = "Euthanasia"
+        elif type in ["",""]:
+            df.at[index, "outcome_type"] = "Adoption"
+        else:
+            df.at[index, "outcome_type"] = "Other"
+
+'''
 
 
 main()
