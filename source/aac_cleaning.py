@@ -49,10 +49,10 @@ df = df[df["intake_condition"].isin(["Normal", "Injured", "Aged", "Sick", "Other
 df = df[df["animal_type"].isin(["Dog", "Cat"])]
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 df["intake_datetime"] = pd.to_datetime(df["intake_datetime"])
-df["intake_date"] = df["intake_datetime"].dt.date
+df['intake_day'] = df['intake_datetime'].dt.day
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #Remove columns
-df = df.drop(columns=["age_upon_outcome_(years)", "age_upon_outcome_age_group", "outcome_month", "outcome_year", "outcome_monthyear", "outcome_weekday", "outcome_hour", "outcome_number", "dob_monthyear", "count", "age_upon_intake_age_group", "intake_year", "intake_monthyear", "intake_weekday", "intake_hour", "dob_year", "dob_month", "outcome_subtype", "age_upon_outcome", "animal_id_intake", "animal_id_outcome", "date_of_birth", "outcome_datetime", "found_location", "intake_number", "age_upon_outcome_(years)", "age_upon_intake", "time_in_shelter", "sex_upon_outcome", "intake_datetime", "age_upon_outcome_(days)", "age_upon_intake_(days)"])
+df = df.drop(columns=["age_upon_outcome_(years)", "age_upon_outcome_age_group", "outcome_month", "outcome_year", "outcome_monthyear", "outcome_weekday", "outcome_hour", "outcome_number", "dob_monthyear", "count", "age_upon_intake_age_group", "intake_monthyear", "intake_weekday", "intake_hour", "dob_year", "dob_month", "outcome_subtype", "age_upon_outcome", "animal_id_intake", "animal_id_outcome", "date_of_birth", "outcome_datetime", "found_location", "intake_number", "age_upon_outcome_(years)", "age_upon_intake", "time_in_shelter", "sex_upon_outcome", "intake_datetime", "age_upon_outcome_(days)", "age_upon_intake_(days)"])
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # change column names 
 
@@ -63,8 +63,8 @@ df = df[[
         "sex",
         "neuter_status",
         "intake_month",
-        "intake_day"
-        "intake_year"
+        "intake_day",
+        "intake_year",
         "animal_type",
         "color",
         "breed",
