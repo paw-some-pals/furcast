@@ -25,3 +25,4 @@ def simplify_animal_species(df):
     Assumes column named "animal_species" exists in the dataframe, and values are in the format of "dog" or "cat" (case-sensitive).
     '''
     return df[df['animal_species'].isin(['dog', 'cat'])]
+

@@ -2,23 +2,23 @@
 
 ##### Final Decisions
 Features
-- Age at intake: float (years)
-- Sex:["Male", "Female", "Unknown"]
-- Spay/Neuter: ["Yes", "No", "Unknown"]
-- Chip Status: ["Scan no chip", "scan chip", "unable to scan"]
+- age_intake: float (years)
+- sex:["Male", "Female", "Unknown"]
+- spay_neuter: ["Yes", "No", "Unknown"]
+- chip_status: ["Scan no chip", "scan chip", "unable to scan"]
 - Intake Date: 
-    - Month: [1 12]
-    - Day: [1, 31]
-    - Year: int
-- Animal Species: ["cat", "dog"] (can come back to do new models for others later)
-- Colour: (TBD)
-- Breed:(TBD)
-- Intake Condition: ['Normal', 'Injured', 'Aged', 'Sick', 'Other', 'Feral'] *
-- Intake Type: ['Stray', 'Owner Surrender', 'Euthanasia Request', 'Other']
+    - intake_month: [1, 12]
+    - intake_day: [1, 31]
+    - intake_year: int
+- animal_species: ["cat", "dog"] (can come back to do new models for others later)
+- colour: (TBD)
+- breed:(TBD)
+- intake_condition: ['Normal', 'Injured', 'Aged', 'Sick', 'Other', 'Feral'] *
+- intake_type: ['Stray', 'Owner Surrender', 'Euthanasia Request', 'Other']
 
 Targets
-- Outcome type: ['Return to Owner','Transfer','Foster','Euthanasia', 'Adoption', 'Other']
-- Time in shelter: float - num days
+- outcome_type: ['Return to Owner', 'Transfer', 'Foster','Euthanasia', 'Adoption', 'Other']
+- time_in_shelter: float - num days
 
 
 #### Austin Dataset
