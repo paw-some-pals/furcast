@@ -23,25 +23,17 @@ df['Shelter Time'] = df['Shelter Time'].dt.days
 #remove negative times 
 df = df[df["Shelter Time"] >= 0]
 
-print("-------------------------------------------------------")
-print(f"max:", max(df["Shelter Time"]))
-print(f"min:", min(df["Shelter Time"]))
-print(f"mean:", df["Shelter Time"].mean())
-print("-------------------------------------------------------")
-
-# convert intake date to day month year 
-
 #keep only dog and cat columns 
 df.rename(columns={'Animal_Type': 'animal_species'}, inplace=True) # make consistent with other datasets
 df['animal_species'] = df['animal_species'].str.lower()
 df = data_utils.simplify_animal_species(df)
 
-#drop treatment columns and euthenasia columns 
+#drop treatment columns and euthenasia columns
 df = df[df["Intake_Type"] != "TREATMENT"]
 df = df[df['Intake_Subtype'] != "TREATMENT"]
-df = df[df["Intake_Subtype"] != "EUTHANASIA REQUESTED"]
-df = df[df["Intake_Subtype"] != "'- DEAD ON ARRIVAL"]
 
+#when intake sub is euth change type to EUTHANIZIA
+df.loc[df['Intake_Subtype'] == 'EUTHANASIA REQUESTED', 'Intake_Type'] = 'EUTHENASIA'
 
 counts = df['Animal_Id'].value_counts()
 
@@ -50,8 +42,10 @@ repeated_counts = counts[counts > 1]
 print(repeated_counts)
 print("-------------------------------------------------------")
 
-print(df[df['Animal_Id'] == 'A1084959'])
+#split intake date into year month day
+df = data_utils.split_date(df, "Intake_Date")
 
-#def split_date(df):
-
-
+print(df["Outcome_Type"].unique())
+print("-------------------------------------------------------")
+print(df["Intake_Type"].unique())
+print("-------------------------------------------------------")
