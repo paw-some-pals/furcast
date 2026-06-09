@@ -17,8 +17,8 @@ Features
 - Intake Type: ['Stray', 'Owner Surrender', 'Euthanasia Request', 'Other']
 
 Targets
-- Outcome type: []
-- Time in shelter: 
+- Outcome type: ['Return to Owner','Transfer','Foster','Euthanasia', 'Adoption', 'Other']
+- Time in shelter: float - num days
 
 
 #### Austin Dataset
