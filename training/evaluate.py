@@ -1,5 +1,6 @@
 """
-Model evaluation utilities — works with any fitted sklearn pipeline.
+Model evaluation utilities works with any fitted sklearn pipeline.
+For regression, computes MAE and RMSE. For classification, computes accuracy and a classification report.
 """
 import pandas as pd
 from sklearn.pipeline import Pipeline
