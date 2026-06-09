@@ -24,7 +24,7 @@ def train_random_forest(X: pd.DataFrame, y: pd.Series) -> Pipeline:
 
     Returns the trained model.
     """
-
+    # Identify categorical columns (object or category dtype)
     categorical_cols = X.select_dtypes(include=["object", "category"]).columns.tolist()
 
     # One-hot encode categorical features, passthrough numeric features
@@ -37,6 +37,7 @@ def train_random_forest(X: pd.DataFrame, y: pd.Series) -> Pipeline:
 
     # Determine if it's a regression or classification problem based on the target dtype
     is_regression = pd.api.types.is_numeric_dtype(y)
+    # Choose the appropriate random forest estimator
     estimator = (
         RandomForestRegressor(n_estimators=100, random_state=42)
         if is_regression
