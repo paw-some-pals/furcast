@@ -21,9 +21,9 @@ def neuter_status(sex):
     Categorizes animals by neuter/spay status
     '''
     if "Neutered" in str(sex) or "Spayed" in str(sex):
-        return "Neutered/Spayed"
+        return "Yes"
     elif "Intact" in str(sex):
-        return "Not Neutered/Spayed"
+        return "No"
     else:
         return "Unknown"
 
@@ -45,6 +45,13 @@ df["sex"] = df["sex_upon_intake"].apply(sex_status)
 # Remove pregnant and nursing from intake_condition
 df = df[df["intake_condition"].isin(["Normal", "Injured", "Aged", "Sick", "Other", "Feral"])]
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+def clean_intake_type(intake_type):
+    if intake_type in ["Stray", "Owner Surrender", "Euthanasia Request"]:
+        return intake_type
+    else:
+        return "Other"
+df["intake_type"] = df["intake_type"].apply(clean_intake_type)
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Keep only Dog and Cat in animal_type
 df = df[df["animal_type"].isin(["Dog", "Cat"])]
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -55,26 +62,26 @@ df['intake_day'] = df['intake_datetime'].dt.day
 df = df.drop(columns=["age_upon_outcome_(years)", "age_upon_outcome_age_group", "outcome_month", "outcome_year", "outcome_monthyear", "outcome_weekday", "outcome_hour", "outcome_number", "dob_monthyear", "count", "age_upon_intake_age_group", "intake_monthyear", "intake_weekday", "intake_hour", "dob_year", "dob_month", "outcome_subtype", "age_upon_outcome", "animal_id_intake", "animal_id_outcome", "date_of_birth", "outcome_datetime", "found_location", "intake_number", "age_upon_outcome_(years)", "age_upon_intake", "time_in_shelter", "sex_upon_outcome", "intake_datetime", "age_upon_outcome_(days)", "age_upon_intake_(days)"])
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # change column names 
-
+df = df.rename(columns={"age_upon_intake_(years)": "age_intake", "neuter_status": "spay_neuter", "animal_type": "animal_species", "time_in_shelter_days": "time_in_shelter", "color": "colour"})
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # reorder columns based on dataset_specifications
 df = df[[
-        "age_upon_intake_(years)",
+        "age_intake",
         "sex",
-        "neuter_status",
+        "spay_neuter",
         "intake_month",
         "intake_day",
         "intake_year",
-        "animal_type",
-        "color",
+        "animal_species",
+        "colour",
         "breed",
         "intake_condition",
         "intake_type",
         "outcome_type", 
-        "time_in_shelter_days"
+        "time_in_shelter"
     ]
 ]
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #print(df.columns.tolist())
-print(df['age_intake'].unique())
+print(df['intake_type'].unique())
