@@ -8,13 +8,14 @@
 
 import pandas as pd 
 import plotly.express as px
+import statistics
 
 from datetime import datetime
 
 df = pd.read_csv('datasets/dallas/shelterdata2017-2021.csv')
 
 #get rid of uneeded data 
-df = df.drop(columns= ["Kennel_Status", "Activity_Sequence", "Census_Tract", "Council_District", "Reason", "Hold_Request", "Outcome_Subtype", "Outcome_Time", "Chip_Status", "Animal_Origin", "Month", "Year"])
+df = df.drop(columns= ["Kennel_Status", "Activity_Sequence", "Census_Tract", "Council_District", "Reason", "Hold_Request", "Outcome_Subtype", "Outcome_Time", "Animal_Origin", "Month", "Year"])
 
 print("------------------------------------------------------")
 print(df.head())
@@ -37,6 +38,8 @@ print("-------------------------------------------------------")
 print(f"max:", max(df["Shelter Time"]))
 print(f"min:", min(df["Shelter Time"]))
 print(f"mean:", df["Shelter Time"].mean())
+print(f"median:", df["Shelter Time"].median())
+print(f"mode:", statistics.mode(df["Shelter Time"]))
 print("-------------------------------------------------------")
 
 # #finding issue values
@@ -73,7 +76,8 @@ wild_count = (df["Animal_Type"] == "WILDLIFE").sum()
 bird_count = (df["Animal_Type"] == "BIRD").sum()
 livestock_count = (df["Animal_Type"] == "LIVESTOCK").sum()
 
-print(f"Dogs: {dog_count}, Cats: {cat_count}, Wildlife: {wild_count}")
+print("Animal Type Population")
+print(f" Dogs: {dog_count}\n Cats: {cat_count}\n Wildlife: {wild_count}\n Bird: {bird_count}\n Livestock: {livestock_count}")
 
 anim_data = {"anim_counts" : [dog_count, cat_count, wild_count, bird_count, livestock_count],
               "anim_type" : ["Dog", "Cat", "Wildlife", "Bird", "Livestock"]}
@@ -129,6 +133,10 @@ heatmap_iva = px.imshow(heatmap_iva_data,
                         color_continuous_scale="Viridis")
 heatmap_iva.show()
 
-#distibution of features 
+#intake subtype 
+hist_intake_type = px.histogram(df, x="Intake_Type")
+hist_intake_type.show()
 
-#averages and numerical counts 
+hist_intake_sub  = px.histogram(df, x="Intake_Subtype")
+hist_intake_sub.show()
+
