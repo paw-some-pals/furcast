@@ -227,3 +227,17 @@ def simplifying_intake_type(df):
             df.at[index, "intake_type"] = "Other"
 
     return df
+
+def split_date(df, col_name):
+   '''
+   Input:  Dataframe with datetime column.
+           Name of datetime column.
+   Output: Dataframe with additional "year", "month", "day" columns and removed original columns
+   Splits intake date into 3 columns seperating the year month and day of the given date
+   assumes that specified column name will exist in dataframe
+   '''
+   df['year'] = df[col_name].dt.year
+   df['month'] = df[col_name].dt.month
+   df['day'] = df[col_name].dt.day
+   df.drop(columns= [col_name])
+   return df
