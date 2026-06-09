@@ -15,6 +15,8 @@ df.loc[foster_adoptions, "outcome_type"] = "Foster"
 df["time_in_shelter"] = pd.to_timedelta(df["time_in_shelter"])
 df["time_in_shelter_days"] = df["time_in_shelter"].dt.total_seconds() / (60 * 60 * 24)
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+df['age_upon_intake_(years)'] = df['age_upon_intake_(years)'].astype(float)
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #Compare neutered vs not neutered and time_in_shelter
 def neuter_status(sex):
     '''
@@ -52,11 +54,80 @@ def clean_intake_type(intake_type):
         return "Other"
 df["intake_type"] = df["intake_type"].apply(clean_intake_type)
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+def clean_outcome_type(outcome_type):
+    if outcome_type in ["Return to Owner", "Transfer", "Foster", "Euthanasia", "Adoption"]:
+        return outcome_type
+    else:
+        return "Other"
+df["outcome_type"] = df["outcome_type"].apply(clean_outcome_type)
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Keep only Dog and Cat in animal_type
 df = df[df["animal_type"].isin(["Dog", "Cat"])]
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 df["intake_datetime"] = pd.to_datetime(df["intake_datetime"])
 df['intake_day'] = df['intake_datetime'].dt.day
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Categorize color into broader color groups based on specs
+
+def categorize_color(color):
+    color = str(color).upper()
+
+    # Multi / Unknown
+    if "UNKNOWN" in color or "VARIOUS" in color:
+        return "Multi/Unknown"
+
+    # Point / Lynx
+    if "POINT" in color or "LYNX" in color:
+        return "Point/Lynx"
+
+    # Tabby / Tortie
+    if (
+        "TABBY" in color or 
+        "TORTIE" in color or 
+        "TORBIE" in color or 
+        "CALICO" in color or
+        "TRICOLOR" in color or
+        "TRICOLOUR" in color
+    ):
+        return "Tabby/Tortie"
+
+    # Gray / Blue
+    if (
+        "GRAY" in color or 
+        "GREY" in color or 
+        "BLUE" in color or 
+        "SILVER" in color or 
+        "SMOKE" in color or 
+        "LILAC" in color
+    ):
+        return "Gray/Blue"
+
+    # Orange / Red / Flame
+    if (
+        "ORANGE" in color or 
+        "RED" in color or 
+        "FLAME" in color or 
+        "RUDDY" in color
+    ):
+        return "Orange/Red/Flame"
+
+    # White
+    if (
+        "WHITE" in color or 
+        "CREAM" in color or 
+        "IVORY" in color or 
+        "BUFF" in color or 
+        "APRICOT" in color
+    ):
+        return "White"
+
+    # Black
+    if "BLACK" in color or "BLK" in color:
+        return "Black"
+
+    # Anything else
+    return "Multi/Unknown"
+df["color_category"] = df["color"].apply(categorize_color)
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #Remove columns
 df = df.drop(columns=["age_upon_outcome_(years)", "age_upon_outcome_age_group", "outcome_month", "outcome_year", "outcome_monthyear", "outcome_weekday", "outcome_hour", "outcome_number", "dob_monthyear", "count", "age_upon_intake_age_group", "intake_monthyear", "intake_weekday", "intake_hour", "dob_year", "dob_month", "outcome_subtype", "age_upon_outcome", "animal_id_intake", "animal_id_outcome", "date_of_birth", "outcome_datetime", "found_location", "intake_number", "age_upon_outcome_(years)", "age_upon_intake", "time_in_shelter", "sex_upon_outcome", "intake_datetime", "age_upon_outcome_(days)", "age_upon_intake_(days)"])
@@ -84,4 +155,6 @@ df = df[[
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #print(df.columns.tolist())
-print(df['intake_type'].unique())
+#print(df['colour'].unique())
+print(df["age_intake"].value_counts())
+print(type("age_intake"))
