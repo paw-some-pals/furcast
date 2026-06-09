@@ -1,6 +1,5 @@
 """
 Model evaluation utilities works with any fitted sklearn pipeline.
-For regression, computes MAE and RMSE. For classification, computes accuracy and a classification report.
 """
 import pandas as pd
 from sklearn.pipeline import Pipeline
@@ -10,14 +9,16 @@ from sklearn.metrics import (
 )
 
 
-def evaluate(pipeline: Pipeline, X_test: pd.DataFrame, y_test: pd.Series) -> dict:
+def evaluate(model: Pipeline, X_test: pd.DataFrame, y_test: pd.Series) -> dict:
     """
     Evaluate a fitted pipeline on a held-out test set.
 
     Returns a metrics dict. For numeric targets: mae, rmse.
     For categorical targets: accuracy, report.
     """
-    y_pred = pipeline.predict(X_test)
+    # Predict on the test set
+    y_pred = model.predict(X_test)
+    # Determine if it's a regression or classification problem based on the target dtype
     is_regression = pd.api.types.is_numeric_dtype(y_test)
 
     if is_regression:
