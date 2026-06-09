@@ -207,3 +207,23 @@ def categorize_breed(breed):
         return "Mix/Unknown"
 
     #df["breed"] = df["breed"].apply(categorize_breed)
+
+# simplifying intake type
+def simplifying_intake_type(df):
+    '''
+    Input: Data frame 
+    Output: Returns the Dataframe with simplied intake types according to the data specifications
+    '''
+    df.rename(columns={'Intake Type': 'intake_type'}, inplace=True)
+    for index in df.index:
+        type = df.at[index, "intake_type"]
+        if type == "STRAY":
+            df.at[index, "intake_type"] = "Stray"
+        elif type in ["OWNER SURRENDER"]:
+            df.at[index, "intake_type"] = "Owner Surrender"
+        elif type in ["Euthenasia Required", "EUTHENASIA"]:
+            df.at[index, "intake_type"] = "Euthanasia Request"
+        else:
+            df.at[index, "intake_type"] = "Other"
+
+    return df
