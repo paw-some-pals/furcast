@@ -44,10 +44,19 @@ df['animal_species'] = df['animal_species'].str.lower()
 df=data_utils.simplify_animal_species(df)
 print('------------------------------')
 
+#jenna use this line of code to find euthanasia outcomes but after you drop all your unneeded rows
+euthanasia_count = df[df['puttosleep'] == 1]
+print(euthanasia_count)
 
-#only keep a unique ids first intake date
+print("----------------------------------------------------------------------------------------")
+#change movement type to 'euthanasia' if puttosleep is 1, but only for unique values in the id column
+id_counts = df['id'].value_counts()
+df.loc[(df['puttosleep'] == 1) & (df['id'].map(id_counts) == 1), 'movementtype'] = 'Euthanasia'
+print(df[df['puttosleep'] == 1][['id', 'puttosleep', 'movementtype']].head(15))
+
+#jenna dont use this line, as it only keep a unique ids first intake date
 df = df.drop_duplicates(subset=['id'], keep='first')
-print(df)
+#print(df)
 
 
 
@@ -57,25 +66,25 @@ df['intakedate'] = pd.to_datetime(df['intakedate'])
 df['movementdate'] = pd.to_datetime(df['movementdate'])
 
 df['days_in_shelter'] = (df['movementdate'] - df['intakedate']).dt.days
-print(df[['id', 'intakedate', 'movementdate', 'days_in_shelter']].head())
+#print(df[['id', 'intakedate', 'movementdate', 'days_in_shelter']].head())
 
 shelter_minimum = df['days_in_shelter'].min()
 shelter_maximum = df['days_in_shelter'].max()
-print(f"Minimum days in shelter: {shelter_minimum}")
-print(f"Maximum days in shelter: {shelter_maximum}")
+#print(f"Minimum days in shelter: {shelter_minimum}")
+#print(f"Maximum days in shelter: {shelter_maximum}")
 
 #find negative values and their rows
 #find the problematic negative minimum value and print the corresponding rows
 negative_days = df[df['days_in_shelter'] < 0]
-print(negative_days[['id', 'intakedate', 'movementdate', 'days_in_shelter']])
+#print(negative_days[['id', 'intakedate', 'movementdate', 'days_in_shelter']])
 
 messed_up_intake_values = df[df['days_in_shelter'] < 0]
-print(messed_up_intake_values[['id', 'intakedate', 'movementdate', 'days_in_shelter']])
+#print(messed_up_intake_values[['id', 'intakedate', 'movementdate', 'days_in_shelter']])
 for row in messed_up_intake_values.itertuples():
     df.at[row.Index, 'intakedate'] = row.movementdate
     df.at[row.Index, 'movementdate'] = row.intakedate
 df['days_in_shelter'] = (df['movementdate'] - df['intakedate']).dt.days
-print(df[['id', 'intakedate', 'movementdate', 'days_in_shelter']].head())
+#print(df[['id', 'intakedate', 'movementdate', 'days_in_shelter']].head())
 
 #TODO convert the intakedate and movement date to 6 separate intakeyear intake month intake day and same for movement
 df["intakeyear"] = df["intakedate"].dt.year
@@ -89,11 +98,16 @@ df["movementday"] = df["movementdate"].dt.day
 
 df=df.drop(columns=['intakedate', 'movementdate'])
 print('----')
-print(df.columns)
+#print(df.columns)
 
 df=df.rename(columns={'animal_age_float': 'age_intake', 'sexname':'sex', 'intakeyear':'intake_year', 'intakemonth':'intake_month', 'intakedown':'intake_day', 'movementyear':'movement_year', 'movementmonth':'movement_month', 'movementday':'movement_day', 'basecolour':'colour', 'breedname':'breed'})
 df=df._rename(columns={'intakereason':'intake_type'})
-print(df.columns)
+#print(df.columns)
+print('--------------------')
+pd.set_option('display.max_columns', None)
+print(df)
+
+
 
 
 
