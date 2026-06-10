@@ -39,7 +39,7 @@ print(df[['animalage', 'animal_age_float']].head())
 df=df.drop(columns=['index','animalage','istransfer','sheltercode','identichipnumber','animalname','location','istrial','returndate','returnedreason','deceaseddate','deceasedreason','diedoffshelter','isdoa'])
 print(list(df.columns))
 
-df.rename(columns={'speciesname': 'animal_species'}, inplace=True)
+df=df.rename(columns={'speciesname': 'animal_species'})
 df['animal_species'] = df['animal_species'].str.lower()
 df=data_utils.simplify_animal_species(df)
 print('------------------------------')
@@ -90,6 +90,10 @@ df["movementday"] = df["movementdate"].dt.day
 df=df.drop(columns=['intakedate', 'movementdate'])
 print('----')
 print(df.columns)
+
+df=df.rename(columns={'animal_age_float': 'age_intake', 'sexname':'sex', 'intakeyear':'intake_year', 'intakemonth':'intake_month', 'intakedown':'intake_day', 'movementyear':'movement_year', 'movementmonth':'movement_month', 'movementday':'movement_day', 'basecolour':'colour', 'breedname':'breed'})
+print(df.columns)
+
 
 
 
