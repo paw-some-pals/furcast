@@ -100,7 +100,7 @@ df=df.drop(columns=['intakedate', 'movementdate'])
 print('----')
 #print(df.columns)
 
-df=df.rename(columns={'animal_age_float': 'age_intake', 'sexname':'sex', 'intakeyear':'intake_year', 'intakemonth':'intake_month', 'intakedown':'intake_day', 'movementyear':'movement_year', 'movementmonth':'movement_month', 'movementday':'movement_day', 'basecolour':'colour', 'breedname':'breed'})
+df=df.rename(columns={'animal_age_float': 'age_intake','movementtype':'outcome_type', 'days_in_shelter': 'time_in_shelter', 'sexname':'sex', 'intakeyear':'intake_year', 'intakemonth':'intake_month', 'intakedown':'intake_day', 'movementyear':'movement_year', 'movementmonth':'movement_month', 'movementday':'movement_day', 'basecolour':'colour', 'breedname':'breed'})
 df=df._rename(columns={'intakereason':'intake_type'})
 #print(df.columns)
 print('--------------------')
