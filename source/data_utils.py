@@ -277,7 +277,6 @@ def categorize_breed_by_species(row):
     Input: one row from the dataframe
     Output: simplified breed category based on whether the animal is a dog or cat
     How to use:  df["breed"] = df.apply(categorize_breed_by_species, axis=1)
-
     '''
     animal_type = str(row["animal_type"]).lower()
 
