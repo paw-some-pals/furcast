@@ -55,7 +55,7 @@ def mutual_info_regression_matrix(
     np.fill_diagonal(mi, fill_diag)
 
     mutal_info_df = pd.DataFrame(mi, index=cols, columns=cols)
-    plot_mutual_info_heatmap(mutal_info_df, filename=filename)
+    plot_mutual_info_heatmap(mutal_info_df, save_path=filename)
 
     return pd.DataFrame(mi, index=cols, columns=cols)
 
