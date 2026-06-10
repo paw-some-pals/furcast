@@ -64,6 +64,7 @@ def categorize_color(color):
     '''
     Input: color - A string containing the original animal color value from the dataset
     Output: A simplified color category as a string.
+    How to use it: df["color"] = df["color"].apply(categorize_color)
     '''
     color = str(color).upper()
 
@@ -275,6 +276,8 @@ def categorize_breed_by_species(row):
     '''
     Input: one row from the dataframe
     Output: simplified breed category based on whether the animal is a dog or cat
+    How to use:  df["breed"] = df.apply(categorize_breed_by_species, axis=1)
+
     '''
     animal_type = str(row["animal_type"]).lower()
 
