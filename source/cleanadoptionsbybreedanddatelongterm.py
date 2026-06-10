@@ -119,11 +119,11 @@ df=df._rename(columns={'intakereason':'intake_type'})
 #pd.set_option('display.max_columns', None)
 #print(df)
 
-import plotting 
-mi_df = plotting.mutual_info_regression_matrix(df)
-plotting.plot_mutual_info_heatmap(mi_df, save_path='figures/ABD_long_MI_heatmap.png')
+# import plotting 
+# mi_df = plotting.mutual_info_regression_matrix(df)
+# plotting.plot_mutual_info_heatmap(mi_df, save_path='figures/ABD_long_MI_heatmap.png')
 
-
+df.to_csv("datasets/ABDLT_output.csv", index=False)
 
 
 
