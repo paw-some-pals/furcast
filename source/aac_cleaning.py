@@ -173,7 +173,7 @@ def remove_columns(df):
     Output: df - dataframe with unused columns removed
     Drop columns that are not needed in the final dataset
     '''
-    df = df.drop(columns=["age_upon_outcome_(years)", "age_upon_outcome_age_group", "outcome_month", "outcome_year", "outcome_monthyear", "outcome_weekday", "outcome_hour", "outcome_number", "dob_monthyear", "count", "age_upon_intake_age_group", "intake_monthyear", "intake_weekday", "intake_hour", "dob_year", "dob_month", "outcome_subtype", "age_upon_outcome", "animal_id_intake", "animal_id_outcome", "date_of_birth", "outcome_datetime", "found_location", "age_upon_intake", "time_in_shelter", "sex_upon_outcome", "intake_datetime", "age_upon_outcome_(days)", "age_upon_intake_(days)"])
+    df = df.drop(columns=["age_upon_outcome_(years)", "age_upon_outcome_age_group", "outcome_month", "outcome_year", "outcome_monthyear", "outcome_weekday", "outcome_hour", "outcome_number", "dob_monthyear", "count", "age_upon_intake_age_group", "intake_monthyear", "intake_weekday", "intake_hour", "dob_year", "dob_month", "outcome_subtype", "age_upon_outcome", "animal_id_intake", "animal_id_outcome", "date_of_birth", "outcome_datetime", "found_location", "age_upon_intake", "time_in_shelter", "sex_upon_outcome", "intake_datetime", "age_upon_outcome_(days)", "age_upon_intake_(days)", "intake_number"])
     return df
 
 def rename_columns(df):
@@ -182,7 +182,7 @@ def rename_columns(df):
     Output: df - dataframe with renamed columns
     Rename columns to match the final dataset specifications
     '''
-    df = df.rename(columns={"age_upon_intake_(years)": "age_intake", "neuter_status": "spay_neuter", "animal_type": "animal_species", "time_in_shelter_days": "time_in_shelter", "color": "colour"})
+    df = df.rename(columns={"age_upon_intake_(years)": "age_intake", "neuter_status": "spay_neuter", "animal_type": "animal_species", "time_in_shelter_days": "time_in_shelter", "color": "colour",})
     return df
 
 def reorder_columns(df):
@@ -201,7 +201,6 @@ def reorder_columns(df):
         "intake_type",
         "outcome_type", 
         "time_in_shelter",
-        "intake_number"
     ]]
     return df
 
@@ -230,8 +229,7 @@ def heatmap(df):
         "intake_type",
         "outcome_type", 
         "time_in_shelter",
-        "intake_number"
-]
+        ]
     df_heatmap = df_plot[heatmap_cols].dropna()
     df_heatmap.head()
     mi_df = mutual_info_regression_matrix(df_heatmap)
@@ -257,8 +255,8 @@ def main():
     df = rename_columns(df)
     df = reorder_columns(df)
     save_data(df)
-    heatmap(df)
-    print(df.columns.tolist())
+    #heatmap(df)
+    #print(df.columns.tolist())
     #print(df['breed'].unique())
     #print(df["animal_size"].value_counts())
     #print(df[["animal_species", "breed"]].head(20))
