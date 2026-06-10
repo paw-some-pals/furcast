@@ -92,6 +92,7 @@ print('----')
 print(df.columns)
 
 df=df.rename(columns={'animal_age_float': 'age_intake', 'sexname':'sex', 'intakeyear':'intake_year', 'intakemonth':'intake_month', 'intakedown':'intake_day', 'movementyear':'movement_year', 'movementmonth':'movement_month', 'movementday':'movement_day', 'basecolour':'colour', 'breedname':'breed'})
+df=df._rename(columns={'intakereason':'intake_type'})
 print(df.columns)
 
 
