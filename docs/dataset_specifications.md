@@ -5,7 +5,6 @@ Features
 - age_intake: float (years)
 - sex:["Male", "Female", "Unknown"]
 - spay_neuter: ["Yes", "No", "Unknown"]
-- chip_status: ["Scan no chip", "scan chip", "unable to scan"]
 - Intake Date: 
     - intake_month: [1, 12]
     - intake_day: [1, 31]
