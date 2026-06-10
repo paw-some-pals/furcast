@@ -1,8 +1,8 @@
 import pandas as pd
 import data_utils
 df = pd.read_csv('datasets/animal-data-1.csv')
-print(df.head())
-print (df.info())
+#print(df.head())
+#print (df.info())
 
 
 
@@ -28,21 +28,21 @@ def age_to_float(age_str):
     return float(years + (months / 12))
 
 # Test
-print(age_to_float("5 years 3 months"))  # Output: 5.25
-print(age_to_float("7m"))                # Output: 0.5833333333333334
+#print(age_to_float("5 years 3 months"))  # Output: 5.25
+#print(age_to_float("7m"))                # Output: 0.5833333333333334
 
 # Convert full column and add results to the DataFrame
 df['animal_age_float'] = df['animalage'].apply(age_to_float)
-print(df[['animalage', 'animal_age_float']].head())
+#print(df[['animalage', 'animal_age_float']].head())
 
 #drop columns that arent necessary
 df=df.drop(columns=['index','animalage','istransfer','sheltercode','identichipnumber','animalname','location','istrial','returndate','returnedreason','deceaseddate','deceasedreason','diedoffshelter','isdoa'])
-print(list(df.columns))
+#print(list(df.columns))
 
 df=df.rename(columns={'speciesname': 'animal_species'})
 df['animal_species'] = df['animal_species'].str.lower()
 df=data_utils.simplify_animal_species(df)
-print('------------------------------')
+#print('------------------------------')
 
 
 #keep the last or end outcome
@@ -63,8 +63,7 @@ print("---------------------------------------------------")
 
 
 
-
-print(df)
+#print(df)
 #TODO add time stayed column in days
 df['intakedate'] = pd.to_datetime(df['intakedate'])
 df['movementdate'] = pd.to_datetime(df['movementdate'])
@@ -101,15 +100,23 @@ df["movementday"] = df["movementdate"].dt.day
 
 
 df=df.drop(columns=['intakedate', 'movementdate'])
-print('----')
+#print('----')
 #print(df.columns)
+
+
+#replace movement type values of Stolen, Escaped, and Released To Wild to Other
+df['movementtype'] = df['movementtype'].replace(['Stolen', 'Escaped', 'Released To Wild'], 'Other')
+#replace reclaimed to Return to Owner
+df['movementtype'] = df["movementtype"].replace(['Reclaimed'], 'Return to Owner')
+# outcome_type: ['Return to Owner', 'Transfer', 'Foster','Euthanasia', 'Adoption', 'Other']
+print(df["movementtype"].unique())
 
 df=df.rename(columns={'animal_age_float': 'age_intake','movementtype':'outcome_type', 'days_in_shelter': 'time_in_shelter', 'sexname':'sex', 'intakeyear':'intake_year', 'intakemonth':'intake_month', 'intakedown':'intake_day', 'movementyear':'movement_year', 'movementmonth':'movement_month', 'movementday':'movement_day', 'basecolour':'colour', 'breedname':'breed'})
 df=df._rename(columns={'intakereason':'intake_type'})
 #print(df.columns)
-print('--------------------')
-pd.set_option('display.max_columns', None)
-print(df)
+#print('--------------------')
+#pd.set_option('display.max_columns', None)
+#print(df)
 
 
 
