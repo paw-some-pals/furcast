@@ -1,5 +1,6 @@
 import pandas as pd
 import data_utils
+import seaborn as sns
 df = pd.read_csv('datasets/animal-data-1.csv')
 #print(df.head())
 #print (df.info())
@@ -118,7 +119,9 @@ df=df._rename(columns={'intakereason':'intake_type'})
 #pd.set_option('display.max_columns', None)
 #print(df)
 
-
+import plotting 
+mi_df = plotting.mutual_info_regression_matrix(df)
+plotting.plot_mutual_info_heatmap(mi_df, save_path='figures/ABD_long_MI_heatmap.png')
 
 
 
