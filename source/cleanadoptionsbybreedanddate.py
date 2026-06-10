@@ -1,10 +1,11 @@
 import pandas as pd
 import data_utils
+import seaborn as sns
 df = pd.read_csv('datasets/animal-data-1.csv')
 print(df.head())
 print (df.info())
 
-
+ogdf=df.copy()
 
 #code from google ai and claude
 #function converts age string to floating point value
@@ -110,8 +111,13 @@ print(df)
 #intake_type: ['Stray', 'Owner Surrender', 'Euthanasia Request', 'Other']
 print(df['intake_type'].value_counts())
 #'Stray' just maps naturally, also map police assist to stray, transfer from other shelter, born in shelter to stray
-#map 'Incompatible with owner lifestyle', 'litter relinquishment', 'moving', 'unsuitable accomodation', 'unable to afford', 'abandoned, 'landlord issues', 'Owner deceased', 'sick/injured', 'allergie' , 'incompatible with other pets
+#map 'Incompatible with owner lifestyle', 'litter relinquishment', 'moving', 'unsuitable accomodation', 'unable to afford', 'abandoned, 'landlord issues', 'Owner deceased', 'sick/injured', 'allergie' , 'incompatible with other pets', 'biting', 'rabies monitoring',
 
+import os
+import plotting
+os.makedirs('figures', exist_ok=True)
+mi_df = plotting.mutual_info_regression_matrix(ogdf.dropna())
+plotting.plot_mutual_info_heatmap(mi_df, save_path='figures/ogdfABD_MI_heatmap.png')
 
 
 
