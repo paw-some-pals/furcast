@@ -13,6 +13,7 @@ from sklearn.feature_selection import mutual_info_regression
 def mutual_info_regression_matrix(
     df,
     *,
+    filename="figures/MI_heatmap.png",
     discrete_features="auto",
     n_neighbors=3,
     random_state=0,
@@ -52,6 +53,9 @@ def mutual_info_regression_matrix(
         mi = 0.5 * (mi + mi.T)
 
     np.fill_diagonal(mi, fill_diag)
+
+    mutal_info_df = pd.DataFrame(mi, index=cols, columns=cols)
+    plot_mutual_info_heatmap(mutal_info_df, filename=filename)
 
     return pd.DataFrame(mi, index=cols, columns=cols)
 
