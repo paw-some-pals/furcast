@@ -10,7 +10,7 @@ model_reg = train_random_forest(X_train, y_time_in_shelter)    # regressor
 
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
-from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import OrdinalEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 
@@ -30,7 +30,7 @@ def train_random_forest(X: pd.DataFrame, y: pd.Series) -> Pipeline:
     # One-hot encode categorical features, passthrough numeric features
     preprocessor = ColumnTransformer(
         transformers=[
-            ("cat", OneHotEncoder(handle_unknown="ignore", sparse_output=False), categorical_cols),
+            ("cat", OrdinalEncoder(handle_unknown="use_encoded_value", unknown_value=-1), categorical_cols),
         ],
         remainder="passthrough",
     )
@@ -41,7 +41,7 @@ def train_random_forest(X: pd.DataFrame, y: pd.Series) -> Pipeline:
     estimator = (
         RandomForestRegressor(n_estimators=100, random_state=42)
         if is_regression
-        else RandomForestClassifier(n_estimators=100, random_state=42)
+        else RandomForestClassifier(n_estimators=100, random_state=42, class_weight="balanced")
     )
 
     # Create a pipeline that first preprocesses the data, then fits the model
