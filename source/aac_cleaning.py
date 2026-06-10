@@ -159,7 +159,7 @@ def categorize_color_and_breed(df):
     
     
     df["color"] = df["color"].apply(categorize_color)
-    df["breed"] = df.apply(categorize_breed_by_species, axis=1)
+    #df["breed"] = df.apply(categorize_breed_by_species, axis=1)
     return df
     
     
