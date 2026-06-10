@@ -1,5 +1,5 @@
 import pandas as pd
-from data_utils import categorize_color, categorize_breed_by_species
+from data_utils import categorize_color, categorize_breed_by_species, categorize_size
 
 def load_data():
     df = pd.read_csv("datasets/aac_intakes_outcomes.csv")
@@ -156,8 +156,15 @@ def categorize_color_and_breed(df):
     Output: df - dataframe with categorized color and breed values
     Apply shared color and breed categorization functions
     '''
+    
+    
     df["color"] = df["color"].apply(categorize_color)
-    df["breed"] = df.apply(categorize_breed_by_species, axis=1)
+    #df["breed"] = df.apply(categorize_breed_by_species, axis=1)
+    return df
+    
+    
+def apply_categorize_size(df):
+    df["animal_size"] = df.apply(categorize_size, axis=1)
     return df
 
 def remove_columns(df):
@@ -179,23 +186,22 @@ def rename_columns(df):
     return df
 
 def reorder_columns(df):
-    # reorder columns based on dataset_specifications
     df = df[[
-            "age_intake",
-            "sex",
-            "spay_neuter",
-            "intake_month",
-            "intake_day",
-            "intake_year",
-            "animal_species",
-            "colour",
-            "breed",
-            "intake_condition",
-            "intake_type",
-            "outcome_type", 
-            "time_in_shelter"
-        ]
-    ]
+        "age_intake",
+        "sex",
+        "spay_neuter",
+        "intake_month",
+        "intake_day",
+        "intake_year",
+        "animal_species",
+        "animal_size",
+        "colour",
+        "breed",
+        "intake_condition",
+        "intake_type",
+        "outcome_type", 
+        "time_in_shelter"
+    ]]
     return df
 
 
@@ -218,13 +224,14 @@ def main():
     df = keep_dogs_and_cats(df)
     df = add_intake_day(df)
     df = categorize_color_and_breed(df)
+    df = apply_categorize_size(df)
     df = remove_columns(df)
     df = rename_columns(df)
     df = reorder_columns(df)
     save_data(df)
     #print(df.columns.tolist())
     #print(df['breed'].unique())
-    #print(df["breed"].value_counts())
+    print(df["animal_size"].value_counts())
     #print(df[["animal_species", "breed"]].head(20))
 
 if __name__ == "__main__":
