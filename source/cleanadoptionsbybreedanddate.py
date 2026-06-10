@@ -100,7 +100,11 @@ df["movementday"] = df["movementdate"].dt.day
 df=df.drop(columns=['intakedate', 'movementdate'])
 print('----')
 #print(df.columns)
-
+#replace movement type values of Stolen, Escaped, and Released To Wild to Other
+df['movementtype'] = df['movementtype'].replace(['Stolen', 'Escaped', 'Released To Wild'], 'Other')
+#replace reclaimed to Return to Owner
+df['movementtype'] = df["movementtype"].replace(['Reclaimed'], 'Return to Owner')
+# outcome_type: ['Return to Owner', 'Transfer', 'Foster','Euthanasia', 'Adoption', 'Other']
 df=df.rename(columns={'animal_age_float': 'age_intake','movementtype':'outcome_type', 'days_in_shelter': 'time_in_shelter', 'sexname':'sex', 'intakeyear':'intake_year', 'intakemonth':'intake_month', 'intakedown':'intake_day', 'movementyear':'movement_year', 'movementmonth':'movement_month', 'movementday':'movement_day', 'basecolour':'colour', 'breedname':'breed'})
 df=df._rename(columns={'intakereason':'intake_type'})
 #print(df.columns)
@@ -113,11 +117,13 @@ print(df['intake_type'].value_counts())
 #'Stray' just maps naturally, also map police assist to stray, transfer from other shelter, born in shelter to stray
 #map 'Incompatible with owner lifestyle', 'litter relinquishment', 'moving', 'unsuitable accomodation', 'unable to afford', 'abandoned, 'landlord issues', 'Owner deceased', 'sick/injured', 'allergie' , 'incompatible with other pets', 'biting', 'rabies monitoring',
 
+df.to_csv(r'datasets/shorttermABD.csv', index=False)
+
 import os
 import plotting
-os.makedirs('figures', exist_ok=True)
-mi_df = plotting.mutual_info_regression_matrix(ogdf.dropna())
-plotting.plot_mutual_info_heatmap(mi_df, save_path='figures/ogdfABD_MI_heatmap.png')
+#os.makedirs('figures', exist_ok=True)
+#mi_df = plotting.mutual_info_regression_matrix(ogdf.dropna())
+#plotting.plot_mutual_info_heatmap(mi_df, save_path='figures/ogdfABD_MI_heatmap.png')
 
 
 
