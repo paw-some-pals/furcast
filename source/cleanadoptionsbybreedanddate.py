@@ -110,7 +110,7 @@ print(df)
 #intake_type: ['Stray', 'Owner Surrender', 'Euthanasia Request', 'Other']
 print(df['intake_type'].value_counts())
 #'Stray' just maps naturally, also map police assist to stray, transfer from other shelter, born in shelter to stray
-#map 'Incompatible with owner lifestyle', 'litter relinquishment', 'moving', 'unsuitable accomodation', 'unable to afford', 'abandoned, 'landlord issues', 'Owner deceased', 'sick/injured', 'allergie' , 'incompatible with other pets
+#map 'Incompatible with owner lifestyle', 'litter relinquishment', 'moving', 'unsuitable accomodation', 'unable to afford', 'abandoned, 'landlord issues', 'Owner deceased', 'sick/injured', 'allergie' , 'incompatible with other pets', 'biting', 'rabies monitoring',
 
 
 
