@@ -1,13 +1,13 @@
 """
-Run training pipeline for the ABD (adoption based on breed) Long term dataset.
+Run training pipeline for the Adoptions by breed and date dataset.
 
-Assumes cleanadoptionsbybreedanddatelongterm.py has already been run and datasets/ABDLT_output.csv exists.
+Assumes cleanadoptionsbybreedanddate.py has already been run and datasets/catshorttermABD.csv exists.
 
 Trains a Random Forest for both:
   - outcome_type (classification)
   - time_in_shelter (regression)
 
-Saves trained models to models/ABDLT_outcome_type.pkl and models/ABDLT_time_in_shelter.pkl.
+Saves trained models to models/aac_outcome_type.pkl and models/aac_time_in_shelter.pkl.
 """
 
 import sys
@@ -26,7 +26,7 @@ from random_forest_training import train_random_forest
 from evaluate import evaluate
 
 # Paths to the cleaned input data and the folder where trained models will be saved
-CLEANED_DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "datasets", "ABDLT_output.csv")
+CLEANED_DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "datasets", "catshorttermABD.csv")
 MODELS_DIR = os.path.join(os.path.dirname(__file__), "..", "models")
 
 # The columns the model uses as inputs — these are facts known about an animal at intake
@@ -40,7 +40,7 @@ FEATURE_COLS = [
     "animal_species",   # dog or cat
     "colour",           # colour
     "breed",            # Breed of the animal
-    #"intake_condition", # Health condition at arrival (e.g. Normal, Injured)
+    #intake_condition", # Health condition at arrival (e.g. Normal, Injured)
     "intake_type",      # How the animal arrived (e.g. Stray, Owner Surrender)
 ]
 
@@ -59,7 +59,7 @@ def save_model(model, filename):
 
 
 def main():
-    print("=== Loading ABDLT cleaned data ===")
+    print("=== Loading shorttermABD cleaned data ===")
     df = pd.read_csv(CLEANED_DATA_PATH)
     print(f"{len(df)} rows loaded\n")
 
@@ -76,7 +76,7 @@ def main():
 
     # Print accuracy metrics on the held-out test set
     evaluate(model_clf, X_test, y_test)
-    save_model(model_clf, "ABDLT_outcome_type.pkl")
+    save_model(model_clf, "catshorttermABD.pkl")
 
     # --- Model 2: Predict how many days an animal will stay (regression) ---
 
@@ -97,7 +97,7 @@ def main():
     # MAE: average prediction error in days; RMSE: penalizes large errors more heavily
     print(f"MAE:  {mean_absolute_error(y_test_orig, y_pred):.2f}")
     print(f"RMSE: {root_mean_squared_error(y_test_orig, y_pred):.2f}")
-    save_model(model_reg, "ABDLT_time_in_shelter.pkl")
+    save_model(model_reg, "catshorttermabdmodel.pkl")
 
 
 if __name__ == "__main__":

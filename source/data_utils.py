@@ -544,5 +544,12 @@ def categorize_size(row):
     else:
         return "Unknown"
 
+def split_cat_dog(df):
+    df_cat = df.copy()
+    df_dog = df.copy()
 
+    df_cat = df_cat.drop(df[df["animal_species"] == "dog"].index)
+    df_dog = df_dog.drop(df[df["animal_species"] == "cat"].index)
+
+    return df_cat, df_dog
 
