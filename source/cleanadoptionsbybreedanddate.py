@@ -117,7 +117,11 @@ print(df['intake_type'].value_counts())
 #'Stray' just maps naturally, also map police assist to stray, transfer from other shelter, born in shelter to stray
 #map 'Incompatible with owner lifestyle', 'litter relinquishment', 'moving', 'unsuitable accomodation', 'unable to afford', 'abandoned, 'landlord issues', 'Owner deceased', 'sick/injured', 'allergie' , 'incompatible with other pets', 'biting', 'rabies monitoring',
 
-df.to_csv(r'datasets/shorttermABD.csv', index=False)
+#df.to_csv(r'datasets/shorttermABD.csv', index=False)
+
+#print size of df
+print (len(df))
+
 
 import os
 import plotting
