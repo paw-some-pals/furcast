@@ -1,6 +1,7 @@
 import pandas as pd
 from data_utils import categorize_color, categorize_breed_by_species, categorize_size
 from plotting import mutual_info_regression_matrix, plot_mutual_info_heatmap
+
 def load_data():
     df = pd.read_csv("datasets/aac_intakes_outcomes.csv")
     return df
@@ -160,6 +161,7 @@ def categorize_color_and_breed(df):
     
     df["color"] = df["color"].apply(categorize_color)
     #df["breed"] = df.apply(categorize_breed_by_species, axis=1)
+
     return df
     
     
@@ -230,10 +232,11 @@ def heatmap(df):
         "outcome_type", 
         "time_in_shelter",
         ]
-    df_heatmap = df_plot[heatmap_cols].dropna()
-    df_heatmap.head()
-    mi_df = mutual_info_regression_matrix(df_heatmap)
-    plot_mutual_info_heatmap(mi_df, figsize=(10, 8), annot=True, save_path = "figures/aac_heatmap.png")
+    df_heatmap = df[heatmap_cols].dropna()
+
+    mi_df = mutual_info_regression_matrix(df_heatmap, filename="figures/aac_cleaned_heatmap.png")
+
+    return mi_df
 
 def main():
     df = load_data()
@@ -255,7 +258,7 @@ def main():
     df = rename_columns(df)
     df = reorder_columns(df)
     save_data(df)
-    #heatmap(df)
+    heatmap(df)
     #print(df.columns.tolist())
     #print(df['breed'].unique())
     #print(df["animal_size"].value_counts())

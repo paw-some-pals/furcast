@@ -5,6 +5,7 @@ import numpy as np
 from datetime import datetime, date
 import matplotlib.pyplot as plt
 from data_utils import simplify_animal_species, simplifying_intake_type, categorize_color, split_date
+import plotting
 
 
 #only keeping cat and dog using function from utils 
@@ -43,15 +44,16 @@ def remove_duplicates(df):
     
 
 def create_long_short_datasets(df):
-    df_sorted = df.sort_values(by=['animal_id', 'intake_date'])
-    df_first = df_sorted.drop_duplicates(subset=['animal_id'], keep='first')
-    df_last = df_sorted.drop_duplicates(subset=['animal_id'], keep='last')
-    # df_last.drop(columns=["animal_id"],inplace=True)
-    # df_first.drop(columns=["animal_id"],inplace=True)
+   df_sorted = df.sort_values(by=['animal_id', 'intake_date'])
+   df_first = df_sorted.drop_duplicates(subset=['animal_id'], keep='first')
+   df_last = df_sorted.drop_duplicates(subset=['animal_id'], keep='last')
+   df_last.drop(columns=["animal_id", "intake_date"],inplace=True)
+   df_first.drop(columns=["animal_id", "intake_date"],inplace=True)
 
-    df_first.to_csv("datasets/long_beach_short_term.csv", index=False)
-    df_last.to_csv("datasets/long_beach_long_term.csv", index=False)
+   df_first.to_csv("datasets/long_beach_short_term.csv", index=False)
+   df_last.to_csv("datasets/long_beach_long_term.csv", index=False)
 
+   return df_last, df_first
 
 
 
@@ -149,23 +151,25 @@ def intake_date_split(df):
     df["intake_date"] = pd.to_datetime(df["intake_date"])
     split_date(df,"intake_date")
     df.rename(columns={'year': 'intake_year'}, inplace=True)
-    df.rename(columns={'month': 'intake_year'}, inplace=True)
+    df.rename(columns={'month': 'intake_month'}, inplace=True)
     df.rename(columns={'day': 'intake_day'}, inplace=True)
+
 
     return df 
 
+   
 
 def main():
 
-    my_df = read_file("/Users/heerperchani/Desktop/AI4Good/furcast/datasets/animal-shelter-intakes-and-outcomes.csv")
+    my_df = read_file("datasets/animal-shelter-intakes-and-outcomes.csv")
     drop_missing_values(my_df)
     cleaned_df = keep_cat_dog(my_df)
     cleaned_df = changing_col_names(cleaned_df)
-    
-    #adding cols 
+
+    #adding cols
     calc_age(cleaned_df)
     cleaned_df = spay_neuter(cleaned_df)
-    
+
     #removing cols
     cleaned_df = remove_columns(cleaned_df)
 
@@ -177,25 +181,12 @@ def main():
     cleaned_df = simplifying_outcome_type(cleaned_df)
     change_color(cleaned_df)
     cleaned_df = intake_date_split(cleaned_df)
-    
-    create_long_short_datasets(cleaned_df)
-    
-    
+
+    lb_long_cleaned, lb_short_cleaned = create_long_short_datasets(cleaned_df)
+
+    plotting.mutual_info_regression_matrix(lb_long_cleaned,filename="figures/LB_heatmap.png")
 
     
-    
-    
-
-
-
-
-
-
-
-
-
-
-
 main()
 
 
