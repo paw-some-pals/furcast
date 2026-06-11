@@ -206,10 +206,17 @@ def reorder_columns(df):
     ]]
     return df
 
+def split_cat_and_dog(df):
+    df_cat = df[df["animal_species"] == "cat"].copy()
+    df_dog = df[df["animal_species"] == "dog"].copy()
+    return df_cat, df_dog, df
 
-def save_data(df):
+
+def save_data(df_cat, df_dog, df):
     # Save cleaned dataframe to a new CSV file in the datasets folder
-    df.to_csv("datasets/aac_cleaned.csv", index=False)
+    #df.to_csv("datasets/aac_cleaned.csv", index=False)
+    df_cat.to_csv("datasets/acc_cat_cleaned.csv", index = False)
+    df_dog.to_csv("datasets/acc_dog_cleaned.csv", index = False)
 
 def heatmap(df):
 
@@ -257,7 +264,8 @@ def main():
     df = remove_columns(df)
     df = rename_columns(df)
     df = reorder_columns(df)
-    save_data(df)
+    df_cat, df_dog, df = split_cat_and_dog(df)
+    save_data(df_cat, df_dog, df)
     heatmap(df)
     #print(df.columns.tolist())
     #print(df['breed'].unique())
