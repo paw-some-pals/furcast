@@ -1,13 +1,13 @@
 """
-Run training pipeline for the AAC (Austin Animal Center) dataset.
+Run training pipeline for the ABD (adoption based on breed) Long term dataset.
 
-Assumes aac_cleaning.py has already been run and datasets/aac_cleaned.csv exists.
+Assumes cleanadoptionsbybreedanddatelongterm.py has already been run and datasets/ABDLT_output.csv exists.
 
 Trains a Random Forest for both:
   - outcome_type (classification)
   - time_in_shelter (regression)
 
-Saves trained models to models/aac_outcome_type.pkl and models/aac_time_in_shelter.pkl.
+Saves trained models to models/ABDLT_outcome_type.pkl and models/ABDLT_time_in_shelter.pkl.
 """
 
 import sys
