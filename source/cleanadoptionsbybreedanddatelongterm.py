@@ -50,17 +50,17 @@ df=data_utils.simplify_animal_species(df)
 df = df.drop_duplicates(subset=['id'], keep='last')
 #print(df)
 
-print(df.head(30))
+#print(df.head(30))
 
-print("----------------------------------------------------------------------------------------")
+#print("----------------------------------------------------------------------------------------")
 #change movement type to 'euthanasia' if puttosleep is 1, but only for unique values in the id column
 id_counts = df['id'].value_counts()
 df.loc[(df['puttosleep'] == 1), 'movementtype'] = 'Euthanasia'
-print(df[df['puttosleep'] == 1][['id', 'puttosleep', 'movementtype']].head(15))
-print("------------------------------")
+#print(df[df['puttosleep'] == 1][['id', 'puttosleep', 'movementtype']].head(15))
+#print("------------------------------")
 euthanasia_count = df[df['puttosleep'] == 1]
-print(euthanasia_count.head(30))
-print("---------------------------------------------------")
+#print(euthanasia_count.head(30))
+#print("---------------------------------------------------")
 
 
 
@@ -110,7 +110,7 @@ df['movementtype'] = df['movementtype'].replace(['Stolen', 'Escaped', 'Released 
 #replace reclaimed to Return to Owner
 df['movementtype'] = df["movementtype"].replace(['Reclaimed'], 'Return to Owner')
 # outcome_type: ['Return to Owner', 'Transfer', 'Foster','Euthanasia', 'Adoption', 'Other']
-print(df["movementtype"].unique())
+#print(df["movementtype"].unique())
 
 df=df.rename(columns={'animal_age_float': 'age_intake','movementtype':'outcome_type', 'days_in_shelter': 'time_in_shelter', 'sexname':'sex', 'intakeyear':'intake_year', 'intakemonth':'intake_month', 'intakedown':'intake_day', 'movementyear':'movement_year', 'movementmonth':'movement_month', 'movementday':'movement_day', 'basecolour':'colour', 'breedname':'breed'})
 df=df._rename(columns={'intakereason':'intake_type'})
@@ -123,9 +123,11 @@ df=df._rename(columns={'intakereason':'intake_type'})
 # mi_df = plotting.mutual_info_regression_matrix(df)
 # plotting.plot_mutual_info_heatmap(mi_df, save_path='figures/ABD_long_MI_heatmap.png')
 
-df.to_csv("datasets/ABDLT_output.csv", index=False)
+#df.to_csv("datasets/ABDLT_output.csv", index=False)
 
+df_cat, df_dog = data_utils.split_cat_dog(df)
 
+print(df_cat.head(15))
 
 
 
