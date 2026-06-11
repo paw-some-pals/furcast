@@ -127,7 +127,9 @@ df=df._rename(columns={'intakereason':'intake_type'})
 
 df_cat, df_dog = data_utils.split_cat_dog(df)
 
-print(df_cat.head(15))
+df_cat.to_csv("datasets/ABDLT_output_cat.csv", index=False)
+df_dog.to_csv("datasets/ABDLT_output_dog.csv", index=False)
+
 
 
 
