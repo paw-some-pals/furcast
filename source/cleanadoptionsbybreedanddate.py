@@ -123,13 +123,24 @@ print(df['intake_type'].value_counts())
 print (len(df))
 
 
+
+
 import os
 import plotting
 #os.makedirs('figures', exist_ok=True)
 #mi_df = plotting.mutual_info_regression_matrix(ogdf.dropna())
 #plotting.plot_mutual_info_heatmap(mi_df, save_path='figures/ogdfABD_MI_heatmap.png')
 
+#print all dog breeds
+pd.set_option('display.max_columns', None)
+print(df[df['animal_species'] == 'dog']['breed'].value_counts())
 
+print(df[df['animal_species']=='cat']['breed'].value_counts())
+
+#split dataset into cat and dog
+df_cat, df_dog= data_utils.split_cat_dog(df)
+
+print(df_cat.head())
 
 
 
