@@ -138,12 +138,35 @@ print(df[df['animal_species'] == 'dog']['breed'].value_counts())
 print(df[df['animal_species']=='cat']['breed'].value_counts())
 
 #split dataset into cat and dog
+pd.set_option('display.max_rows', None)
 df_cat, df_dog= data_utils.split_cat_dog(df)
 
-df_cat.to_csv(r'datasets/catshorttermABD.csv', index=False)
-df_dog.to_csv(r'datasets/dogshorttermABD.csv', index=False)
+#df_cat.to_csv(r'datasets/catshorttermABD.csv', index=False)
+#df_dog.to_csv(r'datasets/dogshorttermABD.csv', index=False)
 
 #print(df_cat.head())
+
+#names will be: DSH, DLH, DMH, 
+
+print(df_cat['breed'].unique().sum)
+
+df_cat['breed']= df_cat['breed'].replace(['Domestic Short Hair','Bombay','Munchkin','British Shorthair/Domestic Short Hair','Egyptian Mau/Domestic Short Hair','Domestic Short Hair/Russian Blue','DMH/DSH', 'DSH/Unknown', 'Calico', 'Exotic Shorthair/Extra-Toes Cat (Hemingway Polydactyl)', ],'DSH')
+df_cat['breed']=df_cat['breed'].replace(['Domestic Long Hair','Norwegian Forest Cat', 'Siberian','Himalayan','DLH/Unknown','DMH/DLH',  ],'DLH')
+df_cat['breed']=df_cat['breed'].replace(['Domestic Medium Hair','Domestic Long Hair/Domestic Short Hair',  'Domestic Short Hair/DLH',], 'DMH')
+df_cat['breed']=df_cat['breed'].replace(['British Shorthair/Unknown', 'British Shorthair/Mix', ],'British Shorthair')
+df_cat['breed']=df_cat['breed'].replace(['Siamese/Mix', 'Siamese/Snowshoe', 'Siamese/Egyptian Mau', 'Domestic Short Hair/Snowshoe','Siamese/Balinese','Snowshoe/Domestic Short Hair','Domestic Medium Hair/Siamese','Siamese/DSH','Domestic Short Hair/Siamese', 'Balinese/Domestic Medium Hair', 'Domestic Long Hair/Siamese', 'Siamese/Domestic Short Hair', 'Snowshoe', ], 'Siamese')
+df_cat['breed']=df_cat['breed'].replace([], 'Bengal')
+df_cat['breed']=df_cat['breed'].replace(['Manx/DSH','Manx/Domestic Short Hair', 'Domestic Short Hair/Manx','Domestic Long Hair/Manx', 'Domestic Medium Hair/Manx', 'Snowshoe/Mix','Siamese/Domestic Long Hair', 'Siamese/Manx', 'Balinese/Manx','Manx/Mix','Manx/Domestic Long Hair',], 'Manx')
+df_cat['breed']=df_cat['breed'].replace(['Persian/DMH', 'Domestic Long Hair/Persian', 'Turkish Angora/Persian'], 'Persian')
+df_cat['breed']=df_cat['breed'].replace(['American Curl/DSH',], 'American Curl')
+df_cat['breed']=df_cat['breed'].replace(['Domestic Long Hair/Maine Coon', 'Maine Coon/Domestic Long Hair','Maine Coon/Mix',], 'Maine Coon')
+df_cat['breed']=df_cat['breed'].replace(['Oriental Shorthair/Domestic Short Hair', 'Oriental Shorthair',], 'Oriental')
+df_cat['breed']=df_cat['breed'].replace(['Domestic Short Hair/Bengal',], 'Bengal')
+df_cat['breed']=df_cat['breed'].replace(['Siamese/Ragdoll','Ragamuffin/Domestic Long Hair',], 'Ragdoll')
+
+#TODO snowshoe gets its own cateogry, siamese needs to be siamese cat, 
+
+
 
 
 
