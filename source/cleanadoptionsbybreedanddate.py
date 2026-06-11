@@ -143,7 +143,7 @@ df_cat, df_dog= data_utils.split_cat_dog(df)
 df_cat.to_csv(r'datasets/catshorttermABD.csv', index=False)
 df_dog.to_csv(r'datasets/dogshorttermABD.csv', index=False)
 
-print(df_cat.head())
+#print(df_cat.head())
 
 
 
