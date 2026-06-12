@@ -152,7 +152,7 @@ print(df_cat['breed'].unique().sum)
 
 df_cat['breed']= df_cat['breed'].replace(['Domestic Short Hair','Munchkin','British Shorthair/Domestic Short Hair','Egyptian Mau/Domestic Short Hair','DMH/DSH', 'DSH/Unknown', 'Calico', 'DSH', 'Exotic Shorthair/Extra-Toes Cat (Hemingway Polydactyl)', ],'American Shorthair')
 df_cat['breed']=df_cat['breed'].replace(['Domestic Long Hair','Norwegian Forest Cat', 'Himalayan','DLH/Unknown','DMH/DLH', 'DLH'],'American Longhair')
-df_cat['breed']=df_cat['breed'].replace(['Russian Blue']),'Domestic Short Hair/Russian Blue'
+df_cat['breed']=df_cat['breed'].replace(['Russian Blue'],'Domestic Short Hair/Russian Blue')
 df_cat['breed']=df_cat['breed'].replace(['Domestic Medium Hair','Domestic Long Hair/Domestic Short Hair',  'Domestic Short Hair/DLH','DMH'], 'American Longhair')
 df_cat['breed']=df_cat['breed'].replace(['British Shorthair/Unknown', 'British Shorthair/Mix', ],'British Shorthair')
 df_cat['breed']=df_cat['breed'].replace(['Siamese/Mix', 'Siamese/Egyptian Mau', 'Siamese/Balinese','Domestic Medium Hair/Siamese','Siamese/DSH','Domestic Short Hair/Siamese', 'Balinese/Domestic Medium Hair', 'Domestic Long Hair/Siamese', 'Siamese/Domestic Short Hair'], 'Siamese Cat')
