@@ -15,6 +15,24 @@ from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 
 
+def build_random_forest_pipeline(X: pd.DataFrame, y: pd.Series) -> Pipeline:
+    """Return an unfitted pipeline (for use with cross_val_score)."""
+    categorical_cols = X.select_dtypes(include=["object", "category"]).columns.tolist()
+    preprocessor = ColumnTransformer(
+        transformers=[
+            ("cat", OrdinalEncoder(handle_unknown="use_encoded_value", unknown_value=-1), categorical_cols),
+        ],
+        remainder="passthrough",
+    )
+    is_regression = pd.api.types.is_numeric_dtype(y)
+    estimator = (
+        RandomForestRegressor(n_estimators=100, random_state=42)
+        if is_regression
+        else RandomForestClassifier(n_estimators=100, random_state=42, class_weight="balanced")
+    )
+    return Pipeline([("preprocessor", preprocessor), ("model", estimator)])
+
+
 def train_random_forest(X: pd.DataFrame, y: pd.Series) -> Pipeline:
     """
     Train a random forest on features X and target y.
@@ -24,28 +42,6 @@ def train_random_forest(X: pd.DataFrame, y: pd.Series) -> Pipeline:
 
     Returns the trained model.
     """
-    # Identify categorical columns (object or category dtype)
-    categorical_cols = X.select_dtypes(include=["object", "category"]).columns.tolist()
-
-    # One-hot encode categorical features, passthrough numeric features
-    preprocessor = ColumnTransformer(
-        transformers=[
-            ("cat", OrdinalEncoder(handle_unknown="use_encoded_value", unknown_value=-1), categorical_cols),
-        ],
-        remainder="passthrough",
-    )
-
-    # Determine if it's a regression or classification problem based on the target dtype
-    is_regression = pd.api.types.is_numeric_dtype(y)
-    # Choose the appropriate random forest estimator
-    estimator = (
-        RandomForestRegressor(n_estimators=100, random_state=42)
-        if is_regression
-        else RandomForestClassifier(n_estimators=100, random_state=42, class_weight="balanced")
-    )
-
-    # Create a pipeline that first preprocesses the data, then fits the model
-    model = Pipeline([("preprocessor", preprocessor), ("model", estimator)])
+    model = build_random_forest_pipeline(X, y)
     model.fit(X, y)
-
     return model

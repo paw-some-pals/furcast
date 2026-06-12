@@ -553,3 +553,15 @@ def split_cat_dog(df):
 
     return df_cat, df_dog
 
+
+def get_seasons(month):
+    if month in [3,4,5]:
+        return "Spring"
+    elif month in [6,7,8]:
+        return "Summer"
+    elif month in [9,10,11]:
+        return "Fall"
+    elif month in [1,2,12]:
+        return "Winter"
+
+
