@@ -158,12 +158,10 @@ def categorize_color_and_breed(df):
     Apply shared color and breed categorization functions
     '''
     
-    
     df["color"] = df["color"].apply(categorize_color)
     #df["breed"] = df.apply(categorize_breed_by_species, axis=1)
 
     return df
-    
     
 def apply_categorize_size(df):
     df["animal_size"] = df.apply(categorize_size, axis=1)
@@ -215,13 +213,47 @@ def split_cat_and_dog(df):
 def save_data(df_cat, df_dog, df):
     # Save cleaned dataframe to a new CSV file in the datasets folder
     #df.to_csv("datasets/aac_cleaned.csv", index=False)
-    df_cat.to_csv("datasets/acc_cat_cleaned.csv", index = False)
-    df_dog.to_csv("datasets/acc_dog_cleaned.csv", index = False)
+    df_cat.to_csv("datasets/aac_cat_cleaned.csv", index = False)
+    df_dog.to_csv("datasets/aac_dog_cleaned.csv", index = False)
+
+def clean_kaggle():
+    df = pd.read_csv("datasets/dog_breeds.csv")
+    df = df.drop(columns=['min_life_expectancy', 'max_life_expectancy', 'max_height_male', 'max_height_female', 'max_weight_male', 'max_weight_female', 'min_height_male', 'min_height_female', 'min_weight_male', 'min_weight_female'])
+    return df
+
+def fill_values(df_kaggle):
+    df = pd.read_csv("datasets/acc_dog_breed_split.csv")
+    
+    kaggle_feature_cols = [c for c in df_kaggle.columns if c != 'Name']
+
+    pure_mask = df['breed_2'].isna() | (df['breed_2'] == 'None')
+
+    # Pure breeds: merge directly on breed_1
+    df_pure = df[pure_mask].merge(
+        df_kaggle, how='left', left_on='breed_1', right_on='Name'
+    ).drop(columns=['Name'])
+
+    # Mixed breeds: average kaggle features for breed_1 and breed_2
+    df_mixed = df[~pure_mask].copy()
+
+    b1_vals = df_mixed[['breed_1']].merge(
+        df_kaggle, how='left', left_on='breed_1', right_on='Name'
+    )[kaggle_feature_cols].to_numpy()
+
+    b2_vals = df_mixed[['breed_2']].merge(
+        df_kaggle, how='left', left_on='breed_2', right_on='Name'
+    )[kaggle_feature_cols].to_numpy()
+
+    df_mixed[kaggle_feature_cols] = (b1_vals + b2_vals) / 2
+
+    return pd.concat([df_pure, df_mixed]).sort_index().reset_index(drop=True)
+
+
 
 def heatmap(df):
 
     df_plot = df.copy()
-
+    '''
     # Select interpretable features  (drop IDs, raw datetimes, string age columns, features with many unique values)
     heatmap_cols = [
         "age_intake",
@@ -240,8 +272,11 @@ def heatmap(df):
         "time_in_shelter",
         ]
     df_heatmap = df[heatmap_cols].dropna()
+    '''
 
-    mi_df = mutual_info_regression_matrix(df_heatmap, filename="figures/aac_cleaned_heatmap.png")
+    #mi_df = mutual_info_regression_matrix(df_heatmap, filename="figures/aac_cleaned_heatmap.png")
+    mi_df = mutual_info_regression_matrix(df, filename="figures/aac_cleaned_heatmap.png")
+
 
     return mi_df
 
@@ -266,7 +301,11 @@ def main():
     df = reorder_columns(df)
     df_cat, df_dog, df = split_cat_and_dog(df)
     save_data(df_cat, df_dog, df)
-    heatmap(df)
+    df_kaggle = clean_kaggle()
+    final_df_aac_dogs = fill_values(df_kaggle)
+    final_df_aac_dogs.to_csv("datasets/final_df_aac_dogs.csv", index = False)
+    #print(final_df_aac_dogs.head(10))
+    heatmap(final_df_aac_dogs)
     #print(df.columns.tolist())
     #print(df['breed'].unique())
     #print(df["animal_size"].value_counts())
