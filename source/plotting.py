@@ -60,7 +60,7 @@ def mutual_info_regression_matrix(
     return pd.DataFrame(mi, index=cols, columns=cols)
 
 # added save_path argument so does not overwrite the same file when run for our different datasets
-def plot_mutual_info_heatmap(mi_df, figsize=(10, 8), annot=False, save_path="figures/MI_heatmap.png"): 
+def plot_mutual_info_heatmap(mi_df, figsize=(10, 8), annot=True, save_path="figures/MI_heatmap.png"):
     plt.figure(figsize=figsize)
     sns.heatmap(
         mi_df,
