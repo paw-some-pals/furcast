@@ -165,16 +165,39 @@ df_cat['breed']=df_cat['breed'].replace(['Oriental Shorthair/Domestic Short Hair
 df_cat['breed']=df_cat['breed'].replace(['Domestic Short Hair/Bengal', 'Bengal'], 'Bengal Cats')
 df_cat['breed']=df_cat['breed'].replace(['Siamese/Ragdoll','Ragamuffin/Domestic Long Hair',], 'Ragdoll Cats')
 
-df_cat.to_csv(r'datasets/newcatshorttermABD.csv', index=False)
+
 
 #TODO snowshoe gets its own cateogry, siamese needs to be siamese cat, 
 
+bloompop= pd.read_csv('datasets/bloompop.csv')
+
+print(bloompop)
+#bloompop.columns = ["year", "population"]
+
+#populate 'population' column based on the year in intake_year with the values from bloompop.csv
+
+#df_cat['population']= None
 
 
 
+# Dictionary containing your rules
+# year_map = {2009:71848, 2012:82208, 2013:82524, 2015:83698, 2016:84481, 2017:84945, 2018:85228, 2019:85610}
 
+# # Populate the new column
+# df_cat['population'] = df['year'].map(year_map)
 
+bloompop['year'] = bloompop['year'].astype(int)
+df_cat['intake_year'] = df_cat['intake_year'].astype(int)
+df_cat = df_cat.merge(bloompop[["year", "population"]], left_on="intake_year", right_on="year", how='left')
 
+#year_map_m = bloompop.set_index("year")["pop"]
+#df_cat["population"] = df_cat["intake_year"].map(year_map_m).fillna(df_cat["population"])
+print(df_cat[['year','population']].head(15))
+
+print(df_cat['intake_year'].unique())
+print(bloompop['year'].unique())
+
+df_cat.to_csv(r'datasets/newcatshorttermABD.csv', index=False)
 
 
 
