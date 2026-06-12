@@ -36,6 +36,24 @@ def convert_time_in_shelter(df):
     df["time_in_shelter_days"] = df["time_in_shelter"].dt.total_seconds() / (60 * 60 * 24) # convert the time into days
     return df
 
+def stay_category(days):
+   if pd.isna(days):
+       return pd.NA
+   if days <= 1:
+       return "1 day or less"
+   elif days <= 7:
+       return "2-7 days"
+   elif days <= 14:
+       return "8-14 days"
+   elif days <= 20:
+       return "15-20 days"
+   else:
+       return "21 or more days"
+
+def apply_stay_category(df):
+   df["stay_category"] = df["time_in_shelter"].apply(stay_category)
+   return df
+
 def convert_age_to_float(df):
     '''
     Input: df - dataframe containing age_upon_intake_(years)
@@ -194,7 +212,6 @@ def reorder_columns(df):
         "intake_day",
         "intake_year",
         "animal_species",
-        "animal_size",
         "colour",
         "breed",
         "intake_condition",
@@ -263,7 +280,6 @@ def heatmap(df):
         "intake_day",
         "intake_year",
         "animal_species",
-        "animal_size",
         "colour",
         "breed",
         "intake_condition",
@@ -295,21 +311,26 @@ def main():
     df = keep_dogs_and_cats(df)
     df = add_intake_day(df)
     df = categorize_color_and_breed(df)
-    df = apply_categorize_size(df)
+    #df = apply_categorize_size(df)
     df = remove_columns(df)
     df = rename_columns(df)
     df = reorder_columns(df)
     df_cat, df_dog, df = split_cat_and_dog(df)
+    df_cat = apply_stay_category(df_cat)
+    df_dog = apply_stay_category(df_dog)
+
     save_data(df_cat, df_dog, df)
-    df_kaggle = clean_kaggle()
-    final_df_aac_dogs = fill_values(df_kaggle)
-    final_df_aac_dogs.to_csv("datasets/final_df_aac_dogs.csv", index = False)
+    #df_kaggle = clean_kaggle()
+    #final_df_aac_dogs = fill_values(df_kaggle)
+    #final_df_aac_dogs.to_csv("datasets/final_df_aac_dogs.csv", index = False)
     #print(final_df_aac_dogs.head(10))
-    heatmap(final_df_aac_dogs)
+    #heatmap(final_df_aac_dogs)
     #print(df.columns.tolist())
     #print(df['breed'].unique())
     #print(df["animal_size"].value_counts())
     #print(df[["animal_species", "breed"]].head(20))
 
+    print(df_dog.head(5))
+    
 if __name__ == "__main__":
     main()
