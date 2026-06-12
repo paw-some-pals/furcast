@@ -129,10 +129,3 @@ df_cat, df_dog = data_utils.split_cat_dog(df)
 
 df_cat.to_csv("datasets/ABDLT_output_cat.csv", index=False)
 df_dog.to_csv("datasets/ABDLT_output_dog.csv", index=False)
-
-
-
-
-
-
-
