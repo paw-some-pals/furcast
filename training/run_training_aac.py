@@ -26,7 +26,7 @@ from random_forest_training import train_random_forest
 from evaluate import evaluate
 
 # Paths to the cleaned input data and the folder where trained models will be saved
-CLEANED_DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "datasets", "aac_cleaned.csv")
+CLEANED_DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "datasets", "final_df_aac_dogs.csv")
 MODELS_DIR = os.path.join(os.path.dirname(__file__), "..", "models")
 
 # The columns the model uses as inputs — these are facts known about an animal at intake
@@ -47,6 +47,7 @@ FEATURE_COLS = [
 # targets
 TARGET_CLF = "outcome_type"     # Category: Adoption, Transfer, Euthanasia, etc.
 TARGET_REG = "time_in_shelter"  # Number of days the animal stayed in the shelter
+TARGET_CLF2 = "stay_category"
 
 
 def save_model(model, filename):
@@ -98,6 +99,18 @@ def main():
     print(f"MAE:  {mean_absolute_error(y_test_orig, y_pred):.2f}")
     print(f"RMSE: {root_mean_squared_error(y_test_orig, y_pred):.2f}")
     save_model(model_reg, "aac_time_in_shelter.pkl")
+
+    # --- Model 3: Predict what outcome an animal will have (classification) ---
+    print("=== Training: outcome_type (classification) ===")
+    y_clf = df[TARGET_CLF2]
+
+    # Split data: 80% train and 20% test sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y_clf, test_size=0.2, random_state=42)
+    model_clf = train_random_forest(X_train, y_train)
+
+    # Print accuracy metrics on the held-out test set
+    evaluate(model_clf, X_test, y_test)
+    save_model(model_clf, "aac_outcome_type.pkl")
 
 
 if __name__ == "__main__":

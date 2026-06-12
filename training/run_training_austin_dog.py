@@ -75,7 +75,7 @@ FEATURE_COLS = [
 # targets
 TARGET_CLF = "outcome_type"     # Category: Adoption, Transfer, Euthanasia, etc.
 TARGET_REG = "time_in_shelter"  # Number of days the animal stayed in the shelter
-
+TARGET_CLF2 = "stay_category"
 
 def save_model(model, filename):
     """Serialize the trained model to disk so it can be loaded and used later."""
@@ -121,7 +121,9 @@ def main():
     y_reg = np.log1p(df[TARGET_REG])
 
     cv_mae = -cross_val_score(build_random_forest_pipeline(X, y_reg), X, y_reg, cv=5, scoring="neg_mean_absolute_error")
-    print(f"CV MAE (log scale): {cv_mae.mean():.4f} ± {cv_mae.std():.4f}")
+
+    print(f"CV MAE: {np.expm1(cv_mae.mean()):.4f} ± {np.expm1(cv_mae.std()):.4f}")
+
 
     X_train, X_test, y_train, y_test = train_test_split(X, y_reg, test_size=0.2, random_state=42)
     model_reg = train_random_forest(X_train, y_train)
@@ -135,6 +137,20 @@ def main():
     print(f"RMSE: {root_mean_squared_error(y_test_orig, y_pred):.2f}")
     save_model(model_reg, "aac_time_in_shelter_dog.pkl")
 
+    # --- Model 1: Predict what outcome an animal will have (classification) ---
+    print("=== Training: stay category (classification) dog ===")
+    y_clf = df[TARGET_CLF2]
+
+    cv_scores = cross_val_score(build_random_forest_pipeline(X, y_clf), X, y_clf, cv=5, scoring="accuracy")
+    print(f"CV Accuracy: {cv_scores.mean():.4f} ± {cv_scores.std():.4f}")
+
+    # Split data: 80% train and 20% test sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y_clf, test_size=0.2, random_state=42)
+    model_clf = train_random_forest(X_train, y_train)
+
+    # Print accuracy metrics on the held-out test set
+    evaluate(model_clf, X_test, y_test)
+    save_model(model_clf, "aac_outcome_type_dog.pkl")
 
 if __name__ == "__main__":
     main()

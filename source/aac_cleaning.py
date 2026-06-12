@@ -1,6 +1,7 @@
 import pandas as pd
 from data_utils import categorize_color, categorize_breed_by_species, categorize_size
 from plotting import mutual_info_regression_matrix, plot_mutual_info_heatmap
+import os
 
 def load_data():
     df = pd.read_csv("datasets/aac_intakes_outcomes.csv")
@@ -232,6 +233,7 @@ def save_data(df_cat, df_dog, df):
     #df.to_csv("datasets/aac_cleaned.csv", index=False)
     df_cat.to_csv("datasets/aac_cat_cleaned.csv", index = False)
     df_dog.to_csv("datasets/aac_dog_cleaned.csv", index = False)
+    print(os.getcwd())
 
 def clean_kaggle():
     df = pd.read_csv("datasets/dog_breeds.csv")
@@ -315,22 +317,25 @@ def main():
     df = remove_columns(df)
     df = rename_columns(df)
     df = reorder_columns(df)
-    df_cat, df_dog, df = split_cat_and_dog(df)
-    df_cat = apply_stay_category(df_cat)
-    df_dog = apply_stay_category(df_dog)
 
+    df_cat, df_dog, df = split_cat_and_dog(df)
+    #df_cat = apply_stay_category(df_cat)
+    #df_dog = apply_stay_category(df_dog)
     save_data(df_cat, df_dog, df)
-    #df_kaggle = clean_kaggle()
-    #final_df_aac_dogs = fill_values(df_kaggle)
-    #final_df_aac_dogs.to_csv("datasets/final_df_aac_dogs.csv", index = False)
+
+
+    df_kaggle = clean_kaggle()
+    final_df_aac_dogs = fill_values(df_kaggle)
+    final_df_aac_dogs = apply_stay_category(final_df_aac_dogs)
+    final_df_aac_dogs.to_csv("datasets/final_df_aac_dogs.csv", index = False)
     #print(final_df_aac_dogs.head(10))
     #heatmap(final_df_aac_dogs)
-    #print(df.columns.tolist())
+    print(final_df_aac_dogs.columns.tolist())
     #print(df['breed'].unique())
     #print(df["animal_size"].value_counts())
     #print(df[["animal_species", "breed"]].head(20))
 
-    print(df_dog.head(5))
+    #print(final_df_aac_dogs.head(5))
     
 if __name__ == "__main__":
     main()
