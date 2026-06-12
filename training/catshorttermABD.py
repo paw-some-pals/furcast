@@ -1,7 +1,7 @@
 """
 Run training pipeline for the Adoptions by breed and date dataset.
 
-Assumes cleanadoptionsbybreedanddate.py has already been run and datasets/catshorttermABD.csv exists.
+Assumes cleanadoptionsbybreedanddate.py has already been run and datasets/newcatshorttermABD.csv exists.
 
 Trains a Random Forest for both:
   - outcome_type (classification)
@@ -26,7 +26,7 @@ from random_forest_training import train_random_forest
 from evaluate import evaluate
 
 # Paths to the cleaned input data and the folder where trained models will be saved
-CLEANED_DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "datasets", "catshorttermABD.csv")
+CLEANED_DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "datasets", "newcatshorttermABD.csv")
 MODELS_DIR = os.path.join(os.path.dirname(__file__), "..", "models")
 
 # The columns the model uses as inputs — these are facts known about an animal at intake
@@ -76,7 +76,7 @@ def main():
 
     # Print accuracy metrics on the held-out test set
     evaluate(model_clf, X_test, y_test)
-    save_model(model_clf, "catshorttermABD.pkl")
+    save_model(model_clf, "newcatshorttermABD.pkl")
 
     # --- Model 2: Predict how many days an animal will stay (regression) ---
 

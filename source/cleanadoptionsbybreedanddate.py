@@ -141,7 +141,7 @@ print(df[df['animal_species']=='cat']['breed'].value_counts())
 pd.set_option('display.max_rows', None)
 df_cat, df_dog= data_utils.split_cat_dog(df)
 
-#df_cat.to_csv(r'datasets/catshorttermABD.csv', index=False)
+#df_cat.to_csv(r'datasets/newcatshorttermABD.csv', index=False)
 #df_dog.to_csv(r'datasets/dogshorttermABD.csv', index=False)
 
 #print(df_cat.head())
@@ -164,6 +164,8 @@ df_cat['breed']=df_cat['breed'].replace(['Domestic Long Hair/Maine Coon', 'Maine
 df_cat['breed']=df_cat['breed'].replace(['Oriental Shorthair/Domestic Short Hair', 'Oriental Shorthair', 'Oriental'], 'Oriental Bicolor')
 df_cat['breed']=df_cat['breed'].replace(['Domestic Short Hair/Bengal', 'Bengal'], 'Bengal Cats')
 df_cat['breed']=df_cat['breed'].replace(['Siamese/Ragdoll','Ragamuffin/Domestic Long Hair',], 'Ragdoll Cats')
+
+df_cat.to_csv(r'datasets/newcatshorttermABD.csv', index=False)
 
 #TODO snowshoe gets its own cateogry, siamese needs to be siamese cat, 
 
