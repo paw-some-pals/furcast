@@ -248,7 +248,6 @@ def save_data(df_cat, df_dog, df):
     #df.to_csv("datasets/aac_cleaned.csv", index=False)
     df_cat.to_csv("datasets/aac_cat_cleaned.csv", index = False)
     df_dog.to_csv("datasets/aac_dog_cleaned.csv", index = False)
-    print(os.getcwd())
 
 def clean_kaggle():
     df = pd.read_csv("datasets/dog_breeds.csv")
@@ -358,7 +357,7 @@ def main():
     final_df_aac_dogs = add_population(final_df_aac_dogs)
     final_df_aac_dogs.to_csv("datasets/final_df_aac_dogs.csv", index = False)
     #print(final_df_aac_dogs.head(10))
-    #heatmap(final_df_aac_dogs)
+    heatmap(final_df_aac_dogs)
     print(final_df_aac_dogs.columns.tolist())
     #print(df['breed'].unique())
     #print(df["animal_size"].value_counts())
