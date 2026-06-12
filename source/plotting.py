@@ -3,11 +3,8 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-from sklearn.feature_selection import mutual_info_classif
+from sklearn.feature_selection import mutual_info_classif, mutual_info_regression
 from sklearn.preprocessing import LabelEncoder
-
-
-from sklearn.feature_selection import mutual_info_regression
 
 
 def mutual_info_regression_matrix(
@@ -21,13 +18,18 @@ def mutual_info_regression_matrix(
     fill_diag=0.0,
 ):
     """
-    Pairwise MI matrix for mostly continuous-valued features.
+    Pairwise MI matrix. Uses mutual_info_classif for columns that were
+    originally categorical (object/bool dtype) and mutual_info_regression
+    for numeric columns, so the estimator matches each target's type.
     """
 
-    df_num = df.copy()
+    categorical_cols = {
+        col for col in df.columns if not pd.api.types.is_numeric_dtype(df[col])
+    }
 
+    df_num = df.copy()
     for col in df_num.columns:
-        if not pd.api.types.is_numeric_dtype(df_num[col]):
+        if col in categorical_cols:
             df_num[col] = LabelEncoder().fit_transform(df_num[col].astype(str))
 
     cols = df_num.columns
@@ -39,13 +41,22 @@ def mutual_info_regression_matrix(
     for j, target_col in enumerate(cols):
         y = df_num[target_col].to_numpy()
 
-        scores = mutual_info_regression(
-            X_all,
-            y,
-            discrete_features=discrete_features,
-            n_neighbors=n_neighbors,
-            random_state=random_state,
-        )
+        if target_col in categorical_cols:
+            scores = mutual_info_classif(
+                X_all,
+                y,
+                discrete_features=discrete_features,
+                n_neighbors=n_neighbors,
+                random_state=random_state,
+            )
+        else:
+            scores = mutual_info_regression(
+                X_all,
+                y,
+                discrete_features=discrete_features,
+                n_neighbors=n_neighbors,
+                random_state=random_state,
+            )
 
         mi[:, j] = scores
 
