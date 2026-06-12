@@ -565,3 +565,17 @@ def get_seasons(month):
         return "Winter"
 
 
+def check_colour(row):
+    '''
+    Usage df[['black', 'white']] = df.apply(check_colour, axis=1, result_type='expand')
+    '''
+    if row['colour'] == 'Black':
+        return 1, 0  
+    elif row['colour'] == 'White':
+        return 0, 1
+    else:
+        return 0, 0
+    
+
+
+
