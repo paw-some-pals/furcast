@@ -222,6 +222,21 @@ def reorder_columns(df):
     ]]
     return df
 
+def get_seasons(month):
+    if month in [3,4,5]:
+        return "Spring"
+    elif month in [6,7,8]:
+        return "Summer"
+    elif month in [9,10,11]:
+        return "Fall"
+    elif month in [1,2,12]:
+        return "Winter"
+    
+def apply_get_season(df):
+    df["season"] = df["intake_month"].apply(get_seasons)
+    return df
+
+
 def split_cat_and_dog(df):
     df_cat = df[df["animal_species"] == "cat"].copy()
     df_dog = df[df["animal_species"] == "dog"].copy()
@@ -267,6 +282,17 @@ def fill_values(df_kaggle):
 
     return pd.concat([df_pure, df_mixed]).sort_index().reset_index(drop=True)
 
+
+def add_population(df):
+    populations = pd.read_csv("datasets/aac_populations.csv")
+    populations = populations[["Year", "Population"]].rename(
+        columns={"Year": "intake_year", "Population": "population"}
+    )
+    populations["population"] = (
+        populations["population"].astype(str).str.replace(",", "", regex=False).astype(int)
+    )
+
+    return df.merge(populations, how="left", on="intake_year")
 
 
 def heatmap(df):
@@ -318,6 +344,7 @@ def main():
     df = rename_columns(df)
     df = reorder_columns(df)
 
+    df = apply_get_season(df)
     df_cat, df_dog, df = split_cat_and_dog(df)
     #df_cat = apply_stay_category(df_cat)
     #df_dog = apply_stay_category(df_dog)
@@ -327,6 +354,8 @@ def main():
     df_kaggle = clean_kaggle()
     final_df_aac_dogs = fill_values(df_kaggle)
     final_df_aac_dogs = apply_stay_category(final_df_aac_dogs)
+    final_df_aac_dogs = apply_get_season(final_df_aac_dogs)
+    final_df_aac_dogs = add_population(final_df_aac_dogs)
     final_df_aac_dogs.to_csv("datasets/final_df_aac_dogs.csv", index = False)
     #print(final_df_aac_dogs.head(10))
     #heatmap(final_df_aac_dogs)
