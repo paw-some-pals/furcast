@@ -77,6 +77,86 @@ MANUAL_BREED_MAP = {
     "Toy Poodle": "Poodle (Miniature)",
 }
 
+# breed_mapping = {
+#     'Bouvier des Flanders': 'Bergamasco Sheepdog',
+#     'Brussels Griffon/Havanese': 'Norfolk Terrier',
+#     'Bully Breed': 'American Staffordshire Terrier',
+#     'Bully Breed Mix': 'American Staffordshire Terrier',
+#     'Labrador Retriever/Bully Breed Mix': 'American Staffordshire Terrier',
+#     'Bully Breed Mix/Mastiff': 'American Staffordshire Terrier',
+#     'Beagle/Bully Breed Mix': 'American Staffordshire Terrier',
+#     'Boxer/Bully Breed Mix': 'American Staffordshire Terrier',
+
+
+#     'Pitbull': 'American Staffordshire Terrier',
+#     'Chesapeake Bay Retriever': 'Labrador Retriever',
+#     'Curly-coated Retriever': 'Labrador Retriever',
+#     'Cockapoo': 'Poodle (Miniature)',
+#     'Poodle': 'Poodle (Miniature)',
+#     'Poodle, Standard': 'Poodle (Miniature)',
+#     'Poodle, Toy': 'Poodle (Miniature)',
+#     'Collie, Smooth': 'Border Collie',
+#     'Corgi': 'Pembroke Welsh Corgi',
+#     'German Shorthaired Pointer': 'German Longhaired Pointer',
+#     'Wire-haired Pointing Griffon': 'German Longhaired Pointer',
+#     'Heeler': 'Australian Cattle Dog',
+#     'Husky': 'Siberian Husky',
+#     'Manchester Terrier, Toy': 'Miniature Pinscher',
+#     'Saint Bernard': 'Newfoundland',
+#     'Saint Bernard St. Bernard': 'Newfoundland',
+#     'Schnauzer, Standard': 'Giant Schnauzer',
+#     'Shar Pei': 'Chinese Shar-Pei',
+#     'Sheltie': 'Shetland Sheepdog',
+#     'Shep': 'Belgian Malinois',
+#     'Shepherd': 'Belgian Malinois',
+#     'Soft Coated Wheaten Terrier': 'Irish Terrier',
+#     'Spitz': 'Keeshond',
+#     'Springer Spaniel': 'Field Spaniel'
+# }
+
+#shelter_df['breed'] = shelter_df['breed'].replace(breed_mapping)
+
+breed_substitutions = {
+    'Bouvier des Flanders': 'Bergamasco Sheepdog',
+    'Brussels Griffon': 'Norfolk Terrier',
+    'Bully Breed': 'American Staffordshire Terrier',
+    'Pitbull': 'American Staffordshire Terrier',
+    'Chesapeake Bay Retriever': 'Labrador Retriever',
+    'Cockapoo': 'Poodle (Miniature)',
+    'Collie, Smooth': 'Border Collie',
+    'Corgi': 'Pembroke Welsh Corgi',
+    'Curly- coated Retriever': 'Labrador Retriever',
+    'German Shorthaired Pointer': 'German Longhaired Pointer',
+    'Wire-haired Pointing Griffon': 'German Longhaired Pointer',
+    'Heeler': 'Australian Cattle Dog',
+    'Husky': 'Siberian Husky',
+    'Manchester Terrier, Toy': 'Miniature Pinscher',
+    'Poodle, Standard': 'Poodle (Miniature)',
+    'Poodle, Toy': 'Poodle (Miniature)',
+    'Poodle': 'Poodle (Miniature)',
+    'Saint Bernard St. Bernard': 'Newfoundland',
+    'Saint Bernard': 'Newfoundland',
+    'Schnauzer, Standard': 'Giant Schnauzer',
+    'Shar Pei': 'Chinese Shar-Pei',
+    'Sheltie': 'Shetland Sheepdog',
+    'Soft Coated Wheaton Terrier': 'Irish Terrier',
+    'Shep Mix': 'Belgian Malinois',
+    'German Shepherd Dog': 'Belgian Malinois',
+    'Belgian Shepherd': 'Belgian Malinois',
+    'Shepherd': 'Belgian Malinois',
+    'Soft Coated Wheaten Terrier': 'Irish Terrier',
+    'Spitz': 'Keeshond',
+    'Springer Spaniel': 'Field Spaniel',
+    'English Springer Spaniel': 'Field Spaniel'
+}
+
+for old, new in breed_substitutions.items():
+    shelter_df['breed'] = shelter_df['breed'].str.replace(
+        old,
+        new,
+        regex=False
+    )
+
 KAGGLE_BREEDS = (
     dog_traits[KAGGLE_BREED_COL]
     .dropna()
@@ -166,7 +246,7 @@ breeds_for_gemini = (
 shelter_df = shelter_df.drop(columns=["raw_breed_1", "raw_breed_2"])
 
 # Save files
-shelter_df.to_csv("datasets/acc_dog_breed_split.csv", index=False)
+shelter_df.to_csv("datasets/ABDLT_output_dog_matched.csv", index=False)
 breeds_for_gemini.to_csv("datasets/breeds_for_gemini.csv", index=False)
 breed_lookup.to_csv("datasets/breed_match_audit.csv", index=False)
 
@@ -177,4 +257,4 @@ print(f"Breeds needing Gemini: {len(breeds_for_gemini)}")
 print(breeds_for_gemini.head(30))
 
 
-print(dog_traits['Name'].unique())
+#print(dog_traits['Name'].unique())

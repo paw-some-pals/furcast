@@ -1,6 +1,7 @@
 import pandas as pd
 from data_utils import categorize_color, categorize_breed_by_species, categorize_size
 from plotting import mutual_info_regression_matrix, plot_mutual_info_heatmap
+import os
 
 def load_data():
     df = pd.read_csv("datasets/aac_intakes_outcomes.csv")
@@ -35,6 +36,24 @@ def convert_time_in_shelter(df):
     df["time_in_shelter"] = pd.to_timedelta(df["time_in_shelter"])
     df["time_in_shelter_days"] = df["time_in_shelter"].dt.total_seconds() / (60 * 60 * 24) # convert the time into days
     return df
+
+def stay_category(days):
+   if pd.isna(days):
+       return pd.NA
+   if days <= 1:
+       return "1 day or less"
+   elif days <= 7:
+       return "2-7 days"
+   elif days <= 14:
+       return "8-14 days"
+   elif days <= 20:
+       return "15-20 days"
+   else:
+       return "21 or more days"
+
+def apply_stay_category(df):
+   df["stay_category"] = df["time_in_shelter"].apply(stay_category)
+   return df
 
 def convert_age_to_float(df):
     '''
@@ -194,7 +213,6 @@ def reorder_columns(df):
         "intake_day",
         "intake_year",
         "animal_species",
-        "animal_size",
         "colour",
         "breed",
         "intake_condition",
@@ -203,6 +221,21 @@ def reorder_columns(df):
         "time_in_shelter",
     ]]
     return df
+
+def get_seasons(month):
+    if month in [3,4,5]:
+        return "Spring"
+    elif month in [6,7,8]:
+        return "Summer"
+    elif month in [9,10,11]:
+        return "Fall"
+    elif month in [1,2,12]:
+        return "Winter"
+    
+def apply_get_season(df):
+    df["season"] = df["intake_month"].apply(get_seasons)
+    return df
+
 
 def split_cat_and_dog(df):
     df_cat = df[df["animal_species"] == "cat"].copy()
@@ -215,6 +248,7 @@ def save_data(df_cat, df_dog, df):
     #df.to_csv("datasets/aac_cleaned.csv", index=False)
     df_cat.to_csv("datasets/aac_cat_cleaned.csv", index = False)
     df_dog.to_csv("datasets/aac_dog_cleaned.csv", index = False)
+    print(os.getcwd())
 
 def clean_kaggle():
     df = pd.read_csv("datasets/dog_breeds.csv")
@@ -249,6 +283,17 @@ def fill_values(df_kaggle):
     return pd.concat([df_pure, df_mixed]).sort_index().reset_index(drop=True)
 
 
+def add_population(df):
+    populations = pd.read_csv("datasets/aac_populations.csv")
+    populations = populations[["Year", "Population"]].rename(
+        columns={"Year": "intake_year", "Population": "population"}
+    )
+    populations["population"] = (
+        populations["population"].astype(str).str.replace(",", "", regex=False).astype(int)
+    )
+
+    return df.merge(populations, how="left", on="intake_year")
+
 
 def heatmap(df):
 
@@ -263,7 +308,6 @@ def heatmap(df):
         "intake_day",
         "intake_year",
         "animal_species",
-        "animal_size",
         "colour",
         "breed",
         "intake_condition",
@@ -295,21 +339,32 @@ def main():
     df = keep_dogs_and_cats(df)
     df = add_intake_day(df)
     df = categorize_color_and_breed(df)
-    df = apply_categorize_size(df)
+    #df = apply_categorize_size(df)
     df = remove_columns(df)
     df = rename_columns(df)
     df = reorder_columns(df)
+
+    df = apply_get_season(df)
     df_cat, df_dog, df = split_cat_and_dog(df)
+    #df_cat = apply_stay_category(df_cat)
+    #df_dog = apply_stay_category(df_dog)
     save_data(df_cat, df_dog, df)
+
+
     df_kaggle = clean_kaggle()
     final_df_aac_dogs = fill_values(df_kaggle)
+    final_df_aac_dogs = apply_stay_category(final_df_aac_dogs)
+    final_df_aac_dogs = apply_get_season(final_df_aac_dogs)
+    final_df_aac_dogs = add_population(final_df_aac_dogs)
     final_df_aac_dogs.to_csv("datasets/final_df_aac_dogs.csv", index = False)
     #print(final_df_aac_dogs.head(10))
-    heatmap(final_df_aac_dogs)
-    #print(df.columns.tolist())
+    #heatmap(final_df_aac_dogs)
+    print(final_df_aac_dogs.columns.tolist())
     #print(df['breed'].unique())
     #print(df["animal_size"].value_counts())
     #print(df[["animal_species", "breed"]].head(20))
 
+    #print(final_df_aac_dogs.head(5))
+    
 if __name__ == "__main__":
     main()
