@@ -127,12 +127,54 @@ df=df._rename(columns={'intakereason':'intake_type'})
 
 df_cat, df_dog = data_utils.split_cat_dog(df)
 
+'''
+Bouvier des Flanders           -> Bergamasco Sheepdog
+Brussels Griffon              -> Norfolk Terrier
+Bully Breed                   -> American Staffordshire Terrier
+Chesapeake Bay Retriever      -> Labrador Retriever
+Cockapoo                      -> Poodle (Miniature)
+Collie, Smooth                -> Border Collie
+Corgi                         -> Pembroke Welsh Corgi
+Curly-coated Retriever        -> Labrador Retriever
+German Shorthaired Pointer    -> German Longhaired Pointer
+Heeler                        -> Australian Cattle Dog
+Husky                         -> Siberian Husky
+Manchester Terrier, Toy       -> Miniature Pinscher
+Pitbull                       -> American Staffordshire Terrier
+Poodle                        -> Poodle (Miniature)
+Poodle, Standard              -> Poodle (Miniature)
+Poodle, Toy                   -> Poodle (Miniature)
+Saint Bernard                 -> Newfoundland
+Saint Bernard St. Bernard     -> Newfoundland
+Schnauzer, Standard           -> Giant Schnauzer
+Shar Pei                      -> Chinese Shar-Pei
+Sheltie                       -> Shetland Sheepdog
+Shep                          -> Belgian Malinois
+Shepherd                      -> Belgian Malinois
+Soft Coated Wheaten Terrier   -> Irish Terrier
+Spitz                         -> Keeshond
+Springer Spaniel              -> Field Spaniel
+Wire-haired Pointing Griffon  -> German Longhaired Pointer
+'''
+df_dog['breed']=df_dog['breed'].replace(['Bouvier des Flanders'], 'Bergamasco Sheepdog')
+df_dog['breed']=df_dog['breed'].replace(['Brussels Griffon'], 'Norfolk Terrier')
+df_dog['breed']=df_dog['breed'].replace(['Bully Breed', 'Pitbull'], 'American Staffordshire Terrier')
+df_dog['breed']=df_dog['breed'].replace(['Chesapeake Bay Retriever', 'Curly-coated Retriever'], 'Labrador Retriever')
+df_dog['breed']=df_dog['breed'].replace(['Cockapoo', 'Poodle', 'Poodle, Standard', 'Poodle, Toy'], 'Poodle (Miniature)')
+df_dog['breed']=df_dog['breed'].replace(['Collie, Smooth'], 'Border Collie')
+df_dog['breed']=df_dog['breed'].replace(['Corgi'], 'Pembroke Welsh Corgi')
+df_dog['breed']=df_dog['breed'].replace(['German Shorthaired Pointer', 'Wire-haired Pointing Griffon'], 'German Longhaired Pointer')
+df_dog['breed']=df_dog['breed'].replace(['Heeler'], 'Australian Cattle Dog')
+df_dog['breed']=df_dog['breed'].replace(['Husky'], 'Siberian Husky')
+df_dog['breed']=df_dog['breed'].replace(['Manchester Terrier, Toy'], 'Miniature Pinscher')
+df_dog['breed']=df_dog['breed'].replace(['Saint Bernard', 'Saint Bernard St. Bernard'], 'Newfoundland')
+df_dog['breed']=df_dog['breed'].replace(['Schnauzer, Standard'], 'Giant Schnauzer')
+df_dog['breed']=df_dog['breed'].replace(['Shar Pei'], 'Chinese Shar-Pei')
+df_dog['breed']=df_dog['breed'].replace(['Sheltie'], 'Shetland Sheepdog')
+df_dog['breed']=df_dog['breed'].replace(['Shep', 'Shepherd'], 'Belgian Malinois')
+df_dog['breed']=df_dog['breed'].replace(['Soft Coated Wheaten Terrier'], 'Irish Terrier')
+df_dog['breed']=df_dog['breed'].replace(['Spitz'], 'Keeshond')
+df_dog['breed']=df_dog['breed'].replace(['Springer Spaniel'], 'Field Spaniel')
+
 df_cat.to_csv("datasets/ABDLT_output_cat.csv", index=False)
 df_dog.to_csv("datasets/ABDLT_output_dog.csv", index=False)
-
-
-
-
-
-
-

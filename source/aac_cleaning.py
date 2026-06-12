@@ -226,7 +226,7 @@ def fill_values(df_kaggle):
     
     kaggle_feature_cols = [c for c in df_kaggle.columns if c != 'Name']
 
-    pure_mask = df['breed_2'] == 'None'
+    pure_mask = df['breed_2'].isna() | (df['breed_2'] == 'None')
 
     # Pure breeds: merge directly on breed_1
     df_pure = df[pure_mask].merge(
@@ -253,7 +253,7 @@ def fill_values(df_kaggle):
 def heatmap(df):
 
     df_plot = df.copy()
-
+    '''
     # Select interpretable features  (drop IDs, raw datetimes, string age columns, features with many unique values)
     heatmap_cols = [
         "age_intake",
@@ -272,8 +272,11 @@ def heatmap(df):
         "time_in_shelter",
         ]
     df_heatmap = df[heatmap_cols].dropna()
+    '''
 
-    mi_df = mutual_info_regression_matrix(df_heatmap, filename="figures/aac_cleaned_heatmap.png")
+    #mi_df = mutual_info_regression_matrix(df_heatmap, filename="figures/aac_cleaned_heatmap.png")
+    mi_df = mutual_info_regression_matrix(df, filename="figures/aac_cleaned_heatmap.png")
+
 
     return mi_df
 
@@ -301,9 +304,8 @@ def main():
     df_kaggle = clean_kaggle()
     final_df_aac_dogs = fill_values(df_kaggle)
     final_df_aac_dogs.to_csv("datasets/final_df_aac_dogs.csv", index = False)
-
-
-    heatmap(df)
+    #print(final_df_aac_dogs.head(10))
+    heatmap(final_df_aac_dogs)
     #print(df.columns.tolist())
     #print(df['breed'].unique())
     #print(df["animal_size"].value_counts())
