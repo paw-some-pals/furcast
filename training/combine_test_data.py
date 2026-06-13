@@ -80,12 +80,15 @@ TARGET_CLF = "outcome_type"     # Category: Adoption, Transfer, Euthanasia, etc.
 TARGET_REG = "time_in_shelter"
 
 
-def make_split_sets(feature_cols, df1,df2,testsize = 0.15, randomstate=42,cat):
+def make_split_sets(feature_cols, label_col, df1,df2,testsize = 0.15, randomstate=42,cat):
     
 
     df1_X = df1[feature_cols] #pass the austin one
     df2_X = df2[feature_cols] #pass the ADB one
 
+    df1_y = df1[label_col]
+    df2_y = df2[label_col]
+    
     X_train_1, X_test_1, y_train_1, y_test_1 = train_test_split(df1_X, df1_y, test_size=testsize, random_state=randomstate)
     X_train_2, X_test_2, y_train_2, y_test_2 = train_test_split(df2_X, df2_y, test_size=testsize, random_state=randomstate)
 
@@ -107,19 +110,27 @@ def make_split_sets(feature_cols, df1,df2,testsize = 0.15, randomstate=42,cat):
     copy_X_test_2["intake_condition"] = "Other"
 
 
-    #mix x1 copy with x2 and mix x2 copy with x1 
+    #mix x1 copy with x2 and mix x2 copy with x1
+    #mix y1 copy with y2 and mix y2 copy with y1 
+    
     if cat ==1:
-        ABD_cat_test = pd.concat([copy_X_test_1, X_test_2], ignore_index=True)  #this is the one without spay neuter for ABD
-        AAC_cat_test = pd.concat([X_test_1, copy_X_test_2], ignore_index=True)  #this is the one with spay neuter for ACC 
+        ABD_cat_test_X = pd.concat([copy_X_test_1, X_test_2], ignore_index=True)  #this is the one without spay neuter for ABD
+        AAC_cat_test_X = pd.concat([X_test_1, copy_X_test_2], ignore_index=True)  #this is the one with spay neuter for ACC 
+        ABD_cat_test_y = pd.concat([copy_y_test_1, y_test_2], ignore_index=True)  #this is the one without spay neuter for ABD
+        AAC_cat_test_y = pd.concat([y_test_1, copy_y_test_2], ignore_index=True)  #this is the one with spay neuter for ACC 
+        
+
     else:
-        ABD_dog_test = pd.concat([copy_X_test_1, X_test_2], ignore_index=True)  #this is the one without spay neuter for ABD
-        AAC_dog_test = pd.concat([X_test_1, copy_X_test_2], ignore_index=True)  #this is the one with spay neuter for ACC
+        ABD_dog_test_X = pd.concat([copy_X_test_1, X_test_2], ignore_index=True)  #this is the one without spay neuter for ABD
+        AAC_dog_test_X = pd.concat([X_test_1, copy_X_test_2], ignore_index=True)  #this is the one with spay neuter for ACC
 
 
     #SAVING FINAL DATA SETS 
-    ABD_cat_test.to_csv("datasets/FINAL/ABD_MODEL_CAT_TEST.csv", index=False)
-    ABD_dog_test.to_csv("datasets/FINAL/ABD_MODEL_DOG_TEST.csv", index=False)
-    AAC_cat_test.to_csv("datasets/FINAL/AAC_MODEL_CAT_TEST.csv", index=False)
-    AAC_dog_test.to_csv("datasets/FINAL/AAC_MODEL_DOG_TEST.csv", index=False)
+    ABD_cat_test_X.to_csv("datasets/FINAL/ABD_MODEL_CAT_TEST.csv", index=False)
+    ABD_dog_test_X.to_csv("datasets/FINAL/ABD_MODEL_DOG_TEST.csv", index=False)
+    AAC_cat_test_X.to_csv("datasets/FINAL/AAC_MODEL_CAT_TEST.csv", index=False)
+    AAC_dog_test_X.to_csv("datasets/FINAL/AAC_MODEL_DOG_TEST.csv", index=False)
+
+
 
 
