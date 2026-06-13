@@ -3,6 +3,7 @@ Helper functions for data processing and feature simplification.
 As datasets come from multiple sources, there are often differences in how features are represented. 
 These functions help to standardize and simplify the data for analysis and modeling.
 """
+import pandas as pd
 
 def neuter_status(sex):
     '''
@@ -576,6 +577,33 @@ def check_colour(row):
     else:
         return 0, 0
     
+
+def fill_values(df_kaggle):
+    df = pd.read_csv("datasets/acc_dog_breed_split.csv")
+    
+    kaggle_feature_cols = [c for c in df_kaggle.columns if c != 'Name']
+
+    pure_mask = df['breed_2'].isna() | (df['breed_2'] == 'None')
+
+    # Pure breeds: merge directly on breed_1
+    df_pure = df[pure_mask].merge(
+        df_kaggle, how='left', left_on='breed_1', right_on='Name'
+    ).drop(columns=['Name'])
+
+    # Mixed breeds: average kaggle features for breed_1 and breed_2
+    df_mixed = df[~pure_mask].copy()
+
+    b1_vals = df_mixed[['breed_1']].merge(
+        df_kaggle, how='left', left_on='breed_1', right_on='Name'
+    )[kaggle_feature_cols].to_numpy()
+
+    b2_vals = df_mixed[['breed_2']].merge(
+        df_kaggle, how='left', left_on='breed_2', right_on='Name'
+    )[kaggle_feature_cols].to_numpy()
+
+    df_mixed[kaggle_feature_cols] = (b1_vals + b2_vals) / 2
+
+    return pd.concat([df_pure, df_mixed]).sort_index().reset_index(drop=True)
 
 
 

@@ -119,10 +119,11 @@ def main():
     # https://medium.com/@noorfatimaafzalbutt/understanding-np-log-and-np-log1p-in-numpy-99cefa89cd30#:~:text=transformation%20of%20skewed%20data%20(like%20when%20dealing%20with%20highly%20skewed%20distributions%20in%20data%20preprocessing)%20is%20necessary.
     
     y_reg = np.log1p(df[TARGET_REG])
+    y_reg_orig = df[TARGET_REG]
 
-    cv_mae = -cross_val_score(build_random_forest_pipeline(X, y_reg), X, y_reg, cv=5, scoring="neg_mean_absolute_error")
+    cv_mae = -cross_val_score(build_random_forest_pipeline(X, y_reg_orig), X, y_reg_orig, cv=5, scoring="neg_mean_absolute_error")
 
-    print(f"CV MAE: {np.expm1(cv_mae.mean()):.4f} ± {np.expm1(cv_mae.std()):.4f}")
+    print(f"CV MAE: {cv_mae.mean():.4f} ± {cv_mae.std():.4f}")
 
 
     X_train, X_test, y_train, y_test = train_test_split(X, y_reg, test_size=0.2, random_state=42)
