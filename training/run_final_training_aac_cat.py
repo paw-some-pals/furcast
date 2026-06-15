@@ -31,7 +31,6 @@ FEATURE_COLS = [
     "animal_species",
     "animal_size",
     "colour",
-    "breed",
     "intake_condition",
     "intake_type",
     "is_mixed",
