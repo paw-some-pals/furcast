@@ -14,6 +14,10 @@ def clean_kaggle_dog(df):
     df = df.drop(columns=['min_life_expectancy', 'max_life_expectancy', 'max_height_male', 'max_height_female', 'max_weight_male', 'max_weight_female', 'min_height_male', 'min_height_female', 'min_weight_male', 'min_weight_female'])
     return df
 
+def clean_kaggle_cat(df):
+    df = df.drop(columns=['length', 'origin', 'min_life_expectancy', 'max_life_expectancy', "min_weight", "max_weight"])
+    return df
+
 def fill_values_dog(df, df_kaggle):
     kaggle_feature_cols = [c for c in df_kaggle.columns if c != 'Name']
 
@@ -39,10 +43,16 @@ def fill_values_dog(df, df_kaggle):
 
     return pd.concat([df_pure, df_mixed]).sort_index().reset_index(drop=True)
 
+def fill_values_cat(df, df_kaggle):
+    return df.merge(
+        df_kaggle, how='left', left_on='breed', right_on='name'
+    ).drop(columns=['name'])
+
 cat_df, dog_df, dog_kaggle, cat_kaggle = read_file()
 dog_kaggle = clean_kaggle_dog(dog_kaggle)
 clean_dog = fill_values_dog(dog_df, dog_kaggle)
-
+cat_kaggle = clean_kaggle_cat(cat_kaggle)
+clean_cat = fill_values_cat(cat_df, cat_kaggle)
 
 print(clean_dog.head(15))
-#print(clean_cat.head(15))
+print(clean_cat.head(15))
