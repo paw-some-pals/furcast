@@ -40,16 +40,12 @@ def convert_time_in_shelter(df):
 def stay_category(days):
    if pd.isna(days):
        return pd.NA
-   if days <= 1:
-       return "1 day or less"
-   elif days <= 7:
-       return "2-7 days"
-   elif days <= 14:
-       return "8-14 days"
+   if days <= 7:
+       return "0-7 days"
    elif days <= 20:
-       return "15-20 days"
+       return "8-20 days"
    else:
-       return "21 or more days"
+       return "21+ days"
 
 def apply_stay_category(df):
    df["stay_category"] = df["time_in_shelter"].apply(stay_category)
