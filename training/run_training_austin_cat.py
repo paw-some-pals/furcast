@@ -63,8 +63,9 @@ FEATURE_COLS = [ # MI with time_in_shelter (from cat heatmap)
     "unemploy_rate",
 ]
 
-TARGET_CLF = "outcome_type"
-TARGET_REG = "time_in_shelter"
+TARGET_CLF  = "outcome_type"
+TARGET_REG  = "time_in_shelter"
+TARGET_CLF2 = "stay_category"
 
 
 def save_model(model, filename):
@@ -115,6 +116,18 @@ def main():
     print(f"MAE:  {mean_absolute_error(y_test_orig, y_pred):.2f}")
     print(f"RMSE: {root_mean_squared_error(y_test_orig, y_pred):.2f}")
     save_model(model_reg, "aac_time_in_shelter_cat.pkl")
+
+    # --- Model 3: stay_category (classification) ---
+    print("\n=== Training: stay_category (classification) cat ===")
+    y_clf2 = df[TARGET_CLF2]
+
+    cv_scores = cross_val_score(build_random_forest_pipeline(X, y_clf2), X, y_clf2, cv=skf, scoring="accuracy")
+    print(f"CV Accuracy: {cv_scores.mean():.4f} ± {cv_scores.std():.4f}")
+
+    X_train, X_test, y_train, y_test = train_test_split(X, y_clf2, test_size=0.2, random_state=42)
+    model_clf2 = train_random_forest(X_train, y_train)
+    evaluate(model_clf2, X_test, y_test)
+    save_model(model_clf2, "aac_stay_category_cat.pkl")
 
 
 if __name__ == "__main__":
