@@ -27,27 +27,49 @@ from random_forest_training import train_random_forest
 from evaluate import evaluate
 
 # Paths to the cleaned input data and the folder where trained models will be saved
-CLEANED_DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "datasets", "newcatshorttermABD.csv")
+CLEANED_DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "datasets", "ABDST_output_cat_pop.csv")
 MODELS_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "models")
 
 # The columns the model uses as inputs — these are facts known about an animal at intake
 FEATURE_COLS = [
-    "age_intake",       # Age of the animal when it arrived
-    "sex",              # Male or female
-    #"spay_neuter",      # Whether the animal is spayed/neutered
-    "intake_month",     # Month of arrival (1–12)
-    "intake_day",       # Day of arrival (1–31)
-    "intake_year",      # Year of arrival
-    "animal_species",   # dog or cat
-    "colour",           # colour
-    "breed",            # Breed of the animal
-    #intake_condition", # Health condition at arrival (e.g. Normal, Injured)
-    "intake_type",      # How the animal arrived (e.g. Stray, Owner Surrender)
+     "age_intake",
+    "sex",
+    #"spay_neuter",
+    "intake_month",
+    "intake_day",
+    "intake_year",
+    "animal_species",
+    #"animal_size",
+    "colour",               # 0.048
+    "breed",                # 0.042
+    #"intake_condition",     # 0.042
+    "intake_type",          # 0.103
+    #"is_mixed",             # 0.007
+    #'breed_1",
+    #"breed_2",
+    #"min_life_expectancy",  # 0.017
+    #"max_life_expectancy",  # 0.010
+    #"min_weight",           # 0.010
+    #"max_weight",           # 0.010
+    "family_friendly",      # 0.007
+    "shedding",             # 0.006
+    "general_health",       # 0.009
+    "playfulness",          # 0.005
+    "children_friendly",    # 0.006
+    "grooming",             # 0.007
+    "intelligence",         # 0.004
+    "other_pets_friendly",  # 0.008
+    "season",               # 0.139
+    #"black",
+    #"white",
+    "population",
+    "unemploy_rate",
 ]
 
 # targets
-TARGET_CLF = "outcome_type"     # Category: Adoption, Transfer, Euthanasia, etc.
-TARGET_REG = "time_in_shelter"  # Number of days the animal stayed in the shelter
+TARGET_CLF  = "outcome_type"
+TARGET_REG  = "time_in_shelter"
+TARGET_CLF2 = "stay_category"
 
 
 def save_model(model, filename):
@@ -98,7 +120,7 @@ def main():
     # MAE: average prediction error in days; RMSE: penalizes large errors more heavily
     print(f"MAE:  {mean_absolute_error(y_test_orig, y_pred):.2f}")
     print(f"RMSE: {root_mean_squared_error(y_test_orig, y_pred):.2f}")
-    save_model(model_reg, "catshorttermabdmodel.pkl")
+    save_model(model_reg, "ABDST_cat.pkl")
 
 
 if __name__ == "__main__":

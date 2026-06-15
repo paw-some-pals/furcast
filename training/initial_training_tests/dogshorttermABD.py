@@ -27,28 +27,46 @@ from random_forest_training import train_random_forest
 from evaluate import evaluate
 
 # Paths to the cleaned input data and the folder where trained models will be saved
-CLEANED_DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "datasets", "dogshorttermABD.csv")
+CLEANED_DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "datasets", "ABDST_output_dog_pop.csv")
 MODELS_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "models")
 
 # The columns the model uses as inputs — these are facts known about an animal at intake
-FEATURE_COLS = [
-    "age_intake",       # Age of the animal when it arrived
-    "sex",              # Male or female
-    #"spay_neuter",      # Whether the animal is spayed/neutered
-    "intake_month",     # Month of arrival (1–12)
-    "intake_day",       # Day of arrival (1–31)
-    "intake_year",      # Year of arrival
-    "animal_species",   # dog or cat
-    "colour",           # colour
-    "breed",            # Breed of the animal
-    #intake_condition", # Health condition at arrival (e.g. Normal, Injured)
-    "intake_type",      # How the animal arrived (e.g. Stray, Owner Surrender)
+FEATURE_COLS = [ # MI with time_in_shelter
+    "age_intake",           # 0.159
+    "sex",                  # 0.014
+    #"spay_neuter",          # 0.069
+    "intake_month",         # 0.079
+    "intake_day",
+    "intake_year",          # 0.049
+    "animal_species",
+    #"animal_size",          # 0.058
+    "colour",               # 0.016
+    "breed",                # 0.154
+    #"intake_condition",     # 0.022
+    "intake_type",          # 0.085
+    "is_mixed",             # 0.003
+    "breed_1",
+    "breed_2",
+    "good_with_children",   # 0.035
+    "good_with_other_dogs", # 0.048
+    "shedding",             # 0.044
+    "grooming",
+    "drooling",
+    "coat_length",          # 0.020
+    "good_with_strangers",  # 0.049
+    "playfulness",          # 0.031
+    "protectiveness",
+    "trainability",         # 0.029
+    "energy",               # 0.036
+    "barking",              # 0.045
+    "season",               # 0.040
+    "population",           # 0.048
+    "unemploy_rate",        # 0.085
 ]
 
-# targets
-TARGET_CLF = "outcome_type"     # Category: Adoption, Transfer, Euthanasia, etc.
-TARGET_REG = "time_in_shelter"  # Number of days the animal stayed in the shelter
-
+TARGET_CLF  = "outcome_type"
+TARGET_REG  = "time_in_shelter"
+TARGET_CLF2 = "stay_category"
 
 def save_model(model, filename):
     """Serialize the trained model to disk so it can be loaded and used later."""
