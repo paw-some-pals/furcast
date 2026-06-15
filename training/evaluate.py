@@ -2,9 +2,11 @@
 Model evaluation utilities works with any fitted sklearn pipeline.
 """
 import pandas as pd
+import matplotlib.pyplot as plt
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import (
     accuracy_score, classification_report,
+    confusion_matrix, ConfusionMatrixDisplay,
     mean_absolute_error, root_mean_squared_error,
 )
 
@@ -29,11 +31,17 @@ def evaluate(model: Pipeline, X_test: pd.DataFrame, y_test: pd.Series) -> dict:
         print(f"MAE:  {metrics['mae']:.2f}")
         print(f"RMSE: {metrics['rmse']:.2f}")
     else:
+        cm = confusion_matrix(y_test, y_pred)
         metrics = {
             "accuracy": accuracy_score(y_test, y_pred),
             "report": classification_report(y_test, y_pred),
+            "confusion_matrix": cm,
         }
         print(f"Accuracy: {metrics['accuracy']:.4f}")
         print(metrics["report"])
+        disp = ConfusionMatrixDisplay(cm, display_labels=sorted(y_test.unique()))
+        disp.plot(xticks_rotation="vertical")
+        plt.tight_layout()
+        plt.show()
 
     return metrics
