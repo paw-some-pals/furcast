@@ -189,15 +189,19 @@ print(bloompop)
 bloompop['year'] = bloompop['year'].astype(int)
 df_cat['intake_year'] = df_cat['intake_year'].astype(int)
 df_cat = df_cat.merge(bloompop[["year", "population"]], left_on="intake_year", right_on="year", how='left')
+df_dog['intake_year'] = df_dog['intake_year'].astype(int)
+df_dog=df_dog.merge(bloompop[['year', 'population']], left_on='intake_year', right_on='year', how='left')
 
 #year_map_m = bloompop.set_index("year")["pop"]
 #df_cat["population"] = df_cat["intake_year"].map(year_map_m).fillna(df_cat["population"])
 print(df_cat[['year','population']].head(15))
+print(df_dog[['year', 'population']].head(15))
 
-print(df_cat['intake_year'].unique())
+print(df_dog['intake_year'].unique())
 print(bloompop['year'].unique())
 
-df_cat.to_csv(r'datasets/newcatshorttermABD.csv', index=False)
+df_dog.to_csv(r'datasets/dogshorttermABD.csv', index=False)
+#df_cat.to_csv(r'datasets/newcatshorttermABD.csv', index=False)
 
 
 
