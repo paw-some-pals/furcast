@@ -61,11 +61,66 @@ def split_date(df, col_name):
    df.drop(columns= [col_name])
    return df
 
-def categorize_color(color):
+def categorize_color_dog(color):
     '''
-    Input: color - A string containing the original animal color value from the dataset
-    Output: A simplified color category as a string.
-    How to use it: df["color"] = df["color"].apply(categorize_color)
+    Input: color - A string containing the original dog color value from the dataset
+    Output: One of 7 color categories as a string.
+    Categories: Black, Brown/Chocolate, Tan/Yellow/Red, White/Cream, Brindle, Gray/Blue, Multi/Unknown
+    How to use it: df["colour"] = df["colour"].apply(categorize_color_dog)
+    '''
+    color = str(color).upper()
+
+    if "UNKNOWN" in color or "VARIOUS" in color:
+        return "Multi/Unknown"
+
+    if "BRINDLE" in color:
+        return "Brindle"
+
+    if "BLACK" in color or "BLK" in color:
+        return "Black"
+
+    if "BROWN" in color or "CHOCOLATE" in color:
+        return "Brown/Chocolate"
+
+    if (
+        "TAN" in color or
+        "FAWN" in color or
+        "SABLE" in color or
+        "YELLOW" in color or
+        "RED" in color or
+        "ORANGE" in color or
+        "FLAME" in color or
+        "RUDDY" in color
+    ):
+        return "Tan/Yellow/Red"
+
+    if (
+        "GRAY" in color or
+        "GREY" in color or
+        "BLUE" in color or
+        "SILVER" in color or
+        "SMOKE" in color
+    ):
+        return "Gray/Blue"
+
+    if (
+        "WHITE" in color or
+        "CREAM" in color or
+        "IVORY" in color or
+        "BUFF" in color or
+        "APRICOT" in color
+    ):
+        return "White/Cream"
+
+    return "Multi/Unknown"
+
+
+def categorize_color_cat(color):
+    '''
+    Input: color - A string containing the original cat color value from the dataset
+    Output: One of 7 color categories as a string.
+    Categories: Tabby/Tortie, Black, White, Gray/Blue, Point/Lynx, Orange/Red, Multi/Unknown
+    How to use it: df["colour"] = df["colour"].apply(categorize_color_cat)
     '''
     color = str(color).upper()
 
@@ -76,38 +131,36 @@ def categorize_color(color):
         return "Point/Lynx"
 
     if (
-        "TABBY" in color or 
-        "TORTIE" in color or 
-        "TORBIE" in color or 
-        "CALICO" in color or
-        "TRICOLOR" in color or
-        "TRICOLOUR" in color
+        "TABBY" in color or
+        "TORTIE" in color or
+        "TORBIE" in color or
+        "CALICO" in color
     ):
         return "Tabby/Tortie"
 
     if (
-        "GRAY" in color or 
-        "GREY" in color or 
-        "BLUE" in color or 
-        "SILVER" in color or 
-        "SMOKE" in color or 
+        "GRAY" in color or
+        "GREY" in color or
+        "BLUE" in color or
+        "SILVER" in color or
+        "SMOKE" in color or
         "LILAC" in color
     ):
         return "Gray/Blue"
 
     if (
-        "ORANGE" in color or 
-        "RED" in color or 
-        "FLAME" in color or 
+        "ORANGE" in color or
+        "RED" in color or
+        "FLAME" in color or
         "RUDDY" in color
     ):
-        return "Orange/Red/Flame"
+        return "Orange/Red"
 
     if (
-        "WHITE" in color or 
-        "CREAM" in color or 
-        "IVORY" in color or 
-        "BUFF" in color or 
+        "WHITE" in color or
+        "CREAM" in color or
+        "IVORY" in color or
+        "BUFF" in color or
         "APRICOT" in color
     ):
         return "White"
