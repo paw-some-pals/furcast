@@ -18,7 +18,7 @@ def clean_kaggle_dog(df):
     return df
 
 def clean_kaggle_cat(df):
-    df = df.drop(columns=['length', 'origin', 'min_life_expectancy', 'max_life_expectancy', "min_weight", "max_weight"])
+    df = df.drop(columns=['length', 'origin'])
     return df
 
 def fill_values_dog(df, df_kaggle):
@@ -91,6 +91,27 @@ def add_unemployment(df):
 
     return df.merge(unemp, how="left", on=["intake_year", "intake_month"])
 
+def add_is_mixed(df):
+    df['is_mixed'] = False
+    return df
+
+def rename_breed(df):
+    df['breed_2'] = None
+    df.rename(columns={"breed": "breed_1"}, inplace=True)
+    return df
+
+def check_colour(row):
+    '''
+    Usage df[['black', 'white']] = df.apply(check_colour, axis=1, result_type='expand')
+    '''
+    if row['colour'] == 'Black':
+        return 1, 0  
+    elif row['colour'] == 'White':
+        return 0, 1
+    else:
+        return 0, 0
+    
+
 cat_df, dog_df, dog_kaggle, cat_kaggle = read_file()
 
 #merge datasets: kaggle, unemployment, population and seasons to dog dataset 
@@ -103,6 +124,9 @@ merge_dog = apply_get_season(merge_dog)
 #merge datasets: kaggle, unemployment, population and seasons to cat dataset 
 cat_kaggle = clean_kaggle_cat(cat_kaggle)
 merge_cat = fill_values_cat(cat_df, cat_kaggle)
+merge_cat = add_is_mixed(merge_cat)
+merge_cat = rename_breed(merge_cat)
+merge_cat[['black', 'white']] = merge_cat.apply(check_colour, axis=1, result_type='expand')
 merge_cat = add_population(merge_cat)
 merge_cat = add_unemployment(merge_cat)
 merge_cat = apply_get_season(merge_cat)
@@ -110,7 +134,7 @@ merge_cat = apply_get_season(merge_cat)
 print(merge_dog.head(15))
 print(merge_cat.head(15))
 
-plotting.mutual_info_regression_matrix(merge_cat.dropna(),filename='figures/MI_heatmap_ABDLT_cat.png', figsize=(12,10))
+plotting.mutual_info_regression_matrix(merge_cat.drop(columns=['breed_2']).dropna(),filename='figures/MI_heatmap_ABDLT_cat.png', figsize=(12,10))
 plotting.mutual_info_regression_matrix(merge_dog.dropna(),filename='figures/MI_heatmap_ABDLT_dog.png', figsize=(14,12))
 
 #merge_cat.to_csv("datasets/ABDLT_output_cat_pop.csv", index=False)
