@@ -1,7 +1,7 @@
 import pandas as pd
 import re
 import numpy as np
-from data_utils import categorize_color, categorize_breed_by_species, categorize_size,get_seasons,check_colour
+from data_utils import categorize_color, categorize_breed_by_species, categorize_size,get_seasons,check_colour, categorize_color_cat
 from plotting import mutual_info_regression_matrix, plot_mutual_info_heatmap
 
 def reading_files():
@@ -133,6 +133,7 @@ def main():
     shelter_df, cat_traits = reading_files()
     shelter_df_split = breed_mapping(shelter_df, cat_traits)
     final_austin_cat_df = adding_fetaures(cat_traits,shelter_df_split)
+    final_df_aac_dogs = final_austin_cat_df["color"].apply(categorize_color_cat)
     final_austin_cat_df["season"] = final_austin_cat_df["intake_month"].apply(get_seasons)
     final_austin_cat_df[['black', 'white']] = final_austin_cat_df.apply(check_colour, axis=1, result_type='expand')
     create_heatmap(final_austin_cat_df)

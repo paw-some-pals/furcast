@@ -1,5 +1,5 @@
 import pandas as pd
-from data_utils import categorize_color, categorize_breed_by_species, categorize_size
+from data_utils import categorize_color_dog, categorize_color_cat, categorize_breed_by_species, categorize_size
 from plotting import mutual_info_regression_matrix, plot_mutual_info_heatmap
 import os
 
@@ -173,7 +173,7 @@ def categorize_color_and_breed(df):
     Apply shared color and breed categorization functions
     '''
     
-    df["color"] = df["color"].apply(categorize_color)
+    #df["color"] = df["color"].apply(categorize_color)
     #df["breed"] = df.apply(categorize_breed_by_species, axis=1)
 
     return df
@@ -348,7 +348,7 @@ def main():
         df = apply_clean_outcome_type(df)
         df = keep_dogs_and_cats(df)
         df = add_intake_day(df)
-        df = categorize_color_and_breed(df)
+        #df = categorize_color_and_breed(df)
         #df = apply_categorize_size(df)
         df = remove_columns(df)
         df = rename_columns(df)
@@ -363,6 +363,7 @@ def main():
     if os.path.exists(dog_breed_split):
         df_kaggle = clean_kaggle()
         final_df_aac_dogs = fill_values(df_kaggle)
+        final_df_aac_dogs = df["color"].apply(categorize_color_dog)
         final_df_aac_dogs = apply_stay_category(final_df_aac_dogs)
         final_df_aac_dogs = apply_get_season(final_df_aac_dogs)
         final_df_aac_dogs = add_population(final_df_aac_dogs)
@@ -376,6 +377,7 @@ def main():
     cat_final = "datasets/acc_cat_final.csv"
     if os.path.exists(cat_final):
         final_df_aac_cats = pd.read_csv(cat_final)
+        final_df_aac_dogs = df["color"].apply(categorize_color_cat)
         final_df_aac_cats = apply_stay_category(final_df_aac_cats)
         final_df_aac_cats = add_population(final_df_aac_cats)
         final_df_aac_cats = add_unemployment(final_df_aac_cats)
