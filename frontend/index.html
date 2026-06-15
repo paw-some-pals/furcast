@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>FurCast 🐾</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<!-- Step 1: Welcome -->
+<div class="page" id="page-welcome">
+    <div class="card">
+        <div class="paw-header">🐾</div>
+        <h1>Hello, welcome to <span class="brand">Furcast</span>!</h1>
+        <p class="subtitle">Your helper for predicting how long an animal will stay at your shelter.</p>
+        <p class="pick-prompt">Pick your animal to get started</p>
+        <div class="animal-buttons">
+            <button class="animal-btn" onclick="chooseAnimal('cat')">
+                <span class="animal-emoji">🐱</span>
+                <span>Cat</span>
+            </button>
+            <button class="animal-btn" onclick="chooseAnimal('dog')">
+                <span class="animal-emoji">🐶</span>
+                <span>Dog</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Step 2: Form -->
+<div class="page hidden" id="page-form">
+    <div class="card">
+        <button class="back-btn" onclick="goBack('page-welcome')">← Back</button>
+        <span id="form-emoji" class="form-emoji"></span>
+        <h2 class="form-title" id="form-title"></h2>
+
+        <form id="predict-form">
+            <input type="hidden" id="animal_species" name="animal_species">
+
+            <label>Age (years)</label>
+            <input type="number" step="0.1" min="0" name="age_intake" placeholder="e.g. 2.5">
+
+            <label>Sex</label>
+            <select name="sex">
+                <option value="">-- Select --</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Unknown">Unknown</option>
+            </select>
+
+            <label>Spayed / Neutered</label>
+            <select name="spay_neuter">
+                <option value="">-- Select --</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+                <option value="Unknown">Unknown</option>
+            </select>
+
+            <label>Intake Date</label>
+            <div class="date-row">
+                <div class="date-field">
+                    <label>Month</label>
+                    <input type="number" min="1" max="12" name="intake_month" placeholder="1–12">
+                </div>
+                <div class="date-field">
+                    <label>Day</label>
+                    <input type="number" min="1" max="31" name="intake_day" placeholder="1–31">
+                </div>
+                <div class="date-field">
+                    <label>Year</label>
+                    <input type="number" name="intake_year" placeholder="e.g. 2024">
+                </div>
+            </div>
+
+            <label>Intake Condition</label>
+            <select name="intake_condition">
+                <option value="">-- Select --</option>
+                <option value="Normal">Normal</option>
+                <option value="Injured">Injured</option>
+                <option value="Aged">Aged</option>
+                <option value="Sick">Sick</option>
+                <option value="Other">Other</option>
+                <option value="Feral">Feral</option>
+            </select>
+
+            <label>Intake Type</label>
+            <select name="intake_type">
+                <option value="">-- Select --</option>
+                <option value="Stray">Stray</option>
+                <option value="Owner Surrender">Owner Surrender</option>
+                <option value="Euthanasia Request">Euthanasia Request</option>
+                <option value="Other">Other</option>
+            </select>
+
+            <label>Breed</label>
+            <select name="breed" id="breed-select">
+                <option value="">-- Select --</option>
+                
+            </select>
+
+            <label>Colour</label>
+            <select name="colour" id="colour-select">
+                <option value="">-- Select --</option>
+            </select>
+
+            <p id="error-msg">Something went wrong — check your inputs and try again.</p>
+
+            <button type="submit" class="submit-btn">Predict 🔮</button>
+        </form>
+    </div>
+</div>
+
+<!-- Step 3: Result -->
+<div class="page hidden" id="page-result">
+    <div class="card result-card">
+        <button class="back-btn" onclick="goBack('page-form')">← Back</button>
+        <span id="result-emoji" class="result-emoji"></span>
+        <p class="result-label">Estimated length of stay</p>
+        <p class="result-days" id="result-days">—</p>
+        <p class="result-unit">days in shelter</p>
+        <button class="try-again-btn" onclick="goBack('page-welcome')">Try another animal</button>
+    </div>
+</div>
+
+<script>
+    let currentAnimal = null;
+
+    // breed/colour options — fill these in!
+    const options = {
+        dog: {
+            breed: [],
+            colour: []
+        },
+        cat: {
+            breed: [],
+            colour: []
+        }
+    };
+
+    function chooseAnimal(species) {
+        currentAnimal = species;
+
+        document.getElementById('animal_species').value = species;
+        document.getElementById('form-emoji').textContent = species === 'cat' ? '🐱' : '🐶';
+        document.getElementById('form-title').textContent = species === 'cat' ? 'Cat Details' : 'Dog Details';
+
+        // populate breed + colour dropdowns
+        populateSelect('breed-select', options[species].breed);
+        populateSelect('colour-select', options[species].colour);
+
+        showPage('page-form');
+    }
+
+    function populateSelect(id, items) {
+        const sel = document.getElementById(id);
+        sel.innerHTML = '<option value="">-- Select --</option>';
+        items.forEach(function (val) {
+            const opt = document.createElement('option');
+            opt.value = val;
+            opt.textContent = val;
+            sel.appendChild(opt);
+        });
+    }
+
+    function showPage(id) {
+        document.querySelectorAll('.page').forEach(function (p) {
+            p.classList.add('hidden');
+        });
+        document.getElementById(id).classList.remove('hidden');
+    }
+
+    function goBack(pageId) {
+        showPage(pageId);
+    }
+
+    document.getElementById('predict-form').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        document.getElementById('error-msg').style.display = 'none';
+
+        const form = e.target;
+        const data = {
+            animal_species:   form.animal_species.value,
+            age_intake:       parseFloat(form.age_intake.value),
+            sex:              form.sex.value,
+            spay_neuter:      form.spay_neuter.value,
+            intake_month:     parseInt(form.intake_month.value),
+            intake_day:       parseInt(form.intake_day.value),
+            intake_year:      parseInt(form.intake_year.value),
+            intake_condition: form.intake_condition.value,
+            intake_type:      form.intake_type.value,
+            breed:            form.breed.value || null,
+            colour:           form.colour.value || null,
+        };
+
+        try {
+            const response = await fetch('/predict', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            if (!response.ok) throw new Error();
+            const result = await response.json();
+
+            document.getElementById('result-days').textContent = result.estimated_days_in_shelter;
+            document.getElementById('result-emoji').textContent = currentAnimal === 'cat' ? '🐱' : '🐶';
+            showPage('page-result');
+        } catch (err) {
+            document.getElementById('error-msg').style.display = 'block';
+        }
+    });
+</script>
+
+</body>
+</html>

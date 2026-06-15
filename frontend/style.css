@@ -1,0 +1,253 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #fce4ec, #ede7f6);
+    font-family: 'Segoe UI', Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.page {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 20px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.card {
+    background: white;
+    border-radius: 30px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, .10);
+    padding: 40px;
+    width: 100%;
+    max-width: 540px;
+    position: relative;
+}
+
+/* ── Welcome ── */
+.paw-header {
+    font-size: 3rem;
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+h1 {
+    text-align: center;
+    font-size: 1.75rem;
+    color: #333;
+    font-weight: 700;
+}
+
+.brand {
+    color: #ff7eb6;
+}
+
+.subtitle {
+    text-align: center;
+    color: #999;
+    margin: 10px 0 28px;
+    font-size: .95rem;
+    line-height: 1.5;
+}
+
+.pick-prompt {
+    text-align: center;
+    color: #666;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 18px;
+}
+
+.animal-buttons {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+}
+
+.animal-btn {
+    background: white;
+    border: 2px solid #f0d0e8;
+    border-radius: 22px;
+    padding: 22px 28px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #555;
+    transition: transform .2s, box-shadow .2s, border-color .2s;
+    min-width: 130px;
+}
+
+.animal-btn:hover {
+    transform: scale(1.06);
+    box-shadow: 0 8px 24px rgba(255, 126, 182, .25);
+    border-color: #ff7eb6;
+}
+
+.animal-emoji {
+    font-size: 2.8rem;
+}
+
+/* ── Form ── */
+.back-btn {
+    background: none;
+    border: none;
+    color: #bbb;
+    cursor: pointer;
+    font-size: .875rem;
+    padding: 0;
+    margin-bottom: 16px;
+    display: block;
+}
+
+.back-btn:hover {
+    color: #ff7eb6;
+}
+
+.form-emoji {
+    font-size: 2.2rem;
+    display: block;
+    text-align: center;
+    margin-bottom: 4px;
+}
+
+.form-title {
+    text-align: center;
+    font-size: 1.4rem;
+    color: #333;
+    margin-bottom: 18px;
+    font-weight: 700;
+}
+
+label {
+    display: block;
+    margin-top: 14px;
+    font-size: .825rem;
+    color: #777;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1.5px solid #e8e8e8;
+    font-size: .95rem;
+    margin-top: 5px;
+    outline: none;
+    background: white;
+    color: #333;
+    transition: border-color .2s;
+    appearance: none;
+    -webkit-appearance: none;
+}
+
+input:focus,
+select:focus {
+    border-color: #ff7eb6;
+}
+
+.date-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.date-field label {
+    margin-top: 0;
+}
+
+#error-msg {
+    color: #e57373;
+    font-size: .85rem;
+    margin-top: 12px;
+    text-align: center;
+    display: none;
+}
+
+.submit-btn {
+    margin-top: 24px;
+    width: 100%;
+    background: linear-gradient(135deg, #ff7eb6, #cdb4db);
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 16px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity .2s, transform .15s;
+    letter-spacing: .3px;
+}
+
+.submit-btn:hover {
+    opacity: .92;
+    transform: translateY(-1px);
+}
+
+/* ── Result ── */
+.result-card {
+    text-align: center;
+}
+
+.result-emoji {
+    font-size: 3.5rem;
+    display: block;
+    margin-bottom: 16px;
+}
+
+.result-label {
+    color: #aaa;
+    font-size: .95rem;
+    margin-bottom: 6px;
+}
+
+.result-days {
+    font-size: 5rem;
+    font-weight: 800;
+    color: #ff7eb6;
+    line-height: 1;
+}
+
+.result-unit {
+    color: #bbb;
+    font-size: .95rem;
+    margin-top: 6px;
+    margin-bottom: 28px;
+}
+
+.try-again-btn {
+    width: 100%;
+    background: #f7f0fc;
+    color: #9b72cf;
+    border: none;
+    padding: 13px;
+    border-radius: 16px;
+    font-size: .95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s;
+}
+
+.try-again-btn:hover {
+    background: #ede7f6;
+}
