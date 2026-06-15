@@ -18,8 +18,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error, root_mean_squared_error
 
 sys.path.insert(0, os.path.dirname(__file__))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))  # training/ for evaluate.py
 
-from training.HyperParamSweeps.hyperparam_sweeps import train_random_forest_tuned
+from hyperparam_sweeps import train_random_forest_tuned
 from evaluate import evaluate
 
 CLEANED_DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "datasets", "final_df_aac_cats.csv")

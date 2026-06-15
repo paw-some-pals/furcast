@@ -21,6 +21,7 @@ from sklearn.model_selection import cross_val_score, cross_val_predict, train_te
 
 # Allow importing from this same folder (training/)
 sys.path.insert(0, os.path.dirname(__file__))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))  # training/ for shared modules
 
 from random_forest_training import build_random_forest_pipeline, train_random_forest
 from evaluate import evaluate

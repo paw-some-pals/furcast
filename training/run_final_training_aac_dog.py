@@ -15,7 +15,7 @@ import pandas as pd
 
 sys.path.insert(0, os.path.dirname(__file__))
 
-from training.HyperParamSweeps.hyperparam_sweeps import train_final_model
+from hyper_param_sweeps.hyperparam_sweeps import train_final_model
 
 CLEANED_DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "datasets", "final_df_aac_dogs.csv")
 MODELS_DIR = os.path.join(os.path.dirname(__file__), "..", "models")
