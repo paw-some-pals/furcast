@@ -351,6 +351,7 @@ def fill_values_cat(df, df_kaggle):
         df_kaggle, how='left', left_on='breed', right_on='name'
     ).drop(columns=['name'])
 
+
 #merge unemployment, population, season
 def add_population(df):
     populations = pd.read_csv("datasets/blooming_population.csv")
@@ -426,10 +427,29 @@ merge_cat = fill_values_cat(cat_df, cat_kaggle)
 merge_cat= apply_stay_category(merge_cat)
 merge_dog= apply_stay_category(merge_dog)
 
+merge_cat['is_mixed']= False
+merge_cat=merge_cat.rename(columns={'breed': 'breed_1'})
+merge_cat['breed_2']= 'None'
 
+def check_colour(row):
+    '''
+    Usage df[['black', 'white']] = df.apply(check_colour, axis=1, result_type='expand')
+    '''
+    if row['colour'] == 'Black':
+        return 1, 0  
+    elif row['colour'] == 'White':
+        return 0, 1
+    else:
+        return 0, 0
 
+merge_cat[['black', 'white']]= merge_cat.apply(check_colour, axis=1, result_type='expand')
 
-print(merge_dog.head(15))
+from data_utils import categorize_dog_breed_by_size
+
+merge_dog["animal_size"] = merge_dog.apply(categorize_dog_breed_by_size, axis=1)
+
+    
+#print(merge_dog.head(15))
 print(merge_cat.head(15))
 
 merge_cat.to_csv("datasets/ABDST_output_cat_pop.csv", index=False)
