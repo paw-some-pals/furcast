@@ -44,13 +44,13 @@ FEATURE_COLS = [
     "breed",                # 0.042
     #"intake_condition",     # 0.042
     "intake_type",          # 0.103
-    #"is_mixed",             # 0.007
-    #'breed_1",
-    #"breed_2",
-    #"min_life_expectancy",  # 0.017
-    #"max_life_expectancy",  # 0.010
-    #"min_weight",           # 0.010
-    #"max_weight",           # 0.010
+    "is_mixed",             # 0.007
+    "breed_1",
+    "breed_2",
+    "min_life_expectancy",  # 0.017
+    "max_life_expectancy",  # 0.010
+    "min_weight",           # 0.010
+    "max_weight",           # 0.010
     "family_friendly",      # 0.007
     "shedding",             # 0.006
     "general_health",       # 0.009
@@ -60,8 +60,8 @@ FEATURE_COLS = [
     "intelligence",         # 0.004
     "other_pets_friendly",  # 0.008
     "season",               # 0.139
-    #"black",
-    #"white",
+    "black",
+    "white",
     "population",
     "unemploy_rate",
 ]
