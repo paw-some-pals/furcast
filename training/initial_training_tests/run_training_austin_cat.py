@@ -26,8 +26,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))  # training/ f
 from random_forest_training import build_random_forest_pipeline, train_random_forest
 from evaluate import evaluate
 
-CLEANED_DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "datasets", "final_df_aac_cats.csv")
-MODELS_DIR = os.path.join(os.path.dirname(__file__), "..", "models")
+CLEANED_DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "datasets", "final_df_aac_cats.csv")
+MODELS_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "models")
 
 FEATURE_COLS = [ # MI with time_in_shelter (from cat heatmap)
     "age_intake",

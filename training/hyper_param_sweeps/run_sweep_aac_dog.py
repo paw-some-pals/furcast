@@ -23,8 +23,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))  # training/ f
 from hyperparam_sweeps import train_random_forest_tuned
 from evaluate import evaluate
 
-CLEANED_DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "datasets", "final_df_aac_dogs.csv")
-MODELS_DIR = os.path.join(os.path.dirname(__file__), "..", "models")
+CLEANED_DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "datasets", "final_df_aac_dogs.csv")
+MODELS_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "models")
 PARAMS_PATH = os.path.join(MODELS_DIR, "aac_best_params_dog.json")
 
 FEATURE_COLS = [

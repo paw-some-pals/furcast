@@ -28,8 +28,8 @@ from random_forest_training import build_random_forest_pipeline, train_random_fo
 from evaluate import evaluate
 
 # Paths to the cleaned input data and the folder where trained models will be saved
-CLEANED_DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "datasets", "final_df_aac_dogs.csv")
-MODELS_DIR = os.path.join(os.path.dirname(__file__), "..", "models")
+CLEANED_DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "datasets", "final_df_aac_dogs.csv")
+MODELS_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "models")
 
 FEATURE_COLS = [ # MI with time_in_shelter
     "age_intake",           # 0.159

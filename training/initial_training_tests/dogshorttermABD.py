@@ -27,8 +27,8 @@ from random_forest_training import train_random_forest
 from evaluate import evaluate
 
 # Paths to the cleaned input data and the folder where trained models will be saved
-CLEANED_DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "datasets", "dogshorttermABD.csv")
-MODELS_DIR = os.path.join(os.path.dirname(__file__), "..", "models")
+CLEANED_DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "datasets", "dogshorttermABD.csv")
+MODELS_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "models")
 
 # The columns the model uses as inputs — these are facts known about an animal at intake
 FEATURE_COLS = [
