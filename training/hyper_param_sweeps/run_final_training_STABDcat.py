@@ -13,13 +13,13 @@ import pickle
 import numpy as np
 import pandas as pd
 
-sys.path.insert(0, os.path.dirname(__file__))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from hyper_param_sweeps.hyperparam_sweeps import train_final_model
 
-CLEANED_DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "datasets", "ABDLT_output_cat_pop.csv")
-MODELS_DIR = os.path.join(os.path.dirname(__file__), "..", "models")
-PARAMS_PATH = os.path.join(MODELS_DIR, "abdlt_best_params_cat.json")
+CLEANED_DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "datasets", "ABDST_output_cat_pop.csv")
+MODELS_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "models")
+PARAMS_PATH = os.path.join(MODELS_DIR, "STABD_best_params_cat.json")
 
 FEATURE_COLS = [
     "age_intake",
@@ -31,16 +31,16 @@ FEATURE_COLS = [
     "animal_species",
     #"animal_size",
     "colour",
-    "breed",
+    #"breed",
     #"intake_condition",
     "intake_type",
-    #"is_mixed",
-    #"breed_1",
-    #"breed_2",
-    #"min_life_expectancy",
-    #"max_life_expectancy",
-    #"min_weight",
-    #"max_weight",
+    "is_mixed",
+    "breed_1",
+    "breed_2",
+    "min_life_expectancy",
+    "max_life_expectancy",
+    "min_weight",
+    "max_weight",
     "family_friendly",
     "shedding",
     "general_health",
@@ -50,15 +50,15 @@ FEATURE_COLS = [
     "intelligence",
     "other_pets_friendly",
     "season",
-    #"black",
-    #"white",
+    "black",
+    "white",
     "population",
     "unemploy_rate",
 ]
 
 TARGET_CLF  = "outcome_type"
 TARGET_REG  = "time_in_shelter"
-#TARGET_CLF2 = "stay_category"
+TARGET_CLF2 = "stay_category"
 
 
 def save_model(model, filename):
@@ -72,7 +72,7 @@ def save_model(model, filename):
 def main():
     if not os.path.exists(PARAMS_PATH):
         raise FileNotFoundError(
-            f"Best params not found at {PARAMS_PATH}. Run run_sweep_abdlt_cat.py first."
+            f"Best params not found at {PARAMS_PATH}. Run run_sweep_STABDcat.py first."
         )
 
     print("=== Loading AAC cleaned cat data ===")
@@ -87,13 +87,13 @@ def main():
     # --- outcome_type (classification) ---
     print("=== Final training: outcome_type (classification) ===")
     model = train_final_model(X, df[TARGET_CLF], best_params[TARGET_CLF])
-    save_model(model, "abdlt_outcome_type_cat_tuned.pkl")
+    save_model(model, "abdst_outcome_type_cat_tuned.pkl")
 
     # --- time_in_shelter (regression, trained on log scale) ---
     print("\n=== Final training: time_in_shelter (regression) ===")
     y_reg = np.log1p(df[TARGET_REG])
     model = train_final_model(X, y_reg, best_params[TARGET_REG])
-    save_model(model, "abdlt_time_in_shelter_cat_tuned.pkl")
+    save_model(model, "abdst_time_in_shelter_cat_tuned.pkl")
 
     # --- stay_category (classification) ---
     # print("\n=== Final training: stay_category (classification) ===")
