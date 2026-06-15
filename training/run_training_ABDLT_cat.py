@@ -26,7 +26,7 @@ from random_forest_training import train_random_forest
 from evaluate import evaluate
 
 # Paths to the cleaned input data and the folder where trained models will be saved
-CLEANED_DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "datasets", "ABDLT_output_cat.csv")
+CLEANED_DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "datasets", "ABDLT_output_cat_pop.csv")
 MODELS_DIR = os.path.join(os.path.dirname(__file__), "..", "models")
 
 # The columns the model uses as inputs — these are facts known about an animal at intake
@@ -76,7 +76,7 @@ def main():
 
     # Print accuracy metrics on the held-out test set
     evaluate(model_clf, X_test, y_test)
-    save_model(model_clf, "ABDLT_outcome_type_cat.pkl")
+    save_model(model_clf, "ABDLT_outcome_type_cat_pop.pkl")
 
     # --- Model 2: Predict how many days an animal will stay (regression) ---
 
@@ -97,7 +97,7 @@ def main():
     # MAE: average prediction error in days; RMSE: penalizes large errors more heavily
     print(f"MAE:  {mean_absolute_error(y_test_orig, y_pred):.2f}")
     print(f"RMSE: {root_mean_squared_error(y_test_orig, y_pred):.2f}")
-    save_model(model_reg, "ABDLT_time_in_shelter_cat.pkl")
+    save_model(model_reg, "ABDLT_time_in_shelter_cat_pop.pkl")
 
 
 if __name__ == "__main__":
