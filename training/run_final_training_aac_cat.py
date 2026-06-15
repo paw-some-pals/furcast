@@ -17,29 +17,29 @@ sys.path.insert(0, os.path.dirname(__file__))
 
 from hyper_param_sweeps.hyperparam_sweeps import train_final_model
 
-CLEANED_DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "datasets", "final_df_aac_cats.csv")
+CLEANED_DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "datasets", "ABDST_output_cat_pop.csv")
 MODELS_DIR = os.path.join(os.path.dirname(__file__), "..", "models")
-PARAMS_PATH = os.path.join(MODELS_DIR, "aac_best_params_cat.json")
+PARAMS_PATH = os.path.join(MODELS_DIR, "STABD_best_params_cat.json")
 
 FEATURE_COLS = [
     "age_intake",
     "sex",
-    "spay_neuter",
+    #"spay_neuter",
     "intake_month",
     "intake_day",
     "intake_year",
     "animal_species",
-    "animal_size",
+    #"animal_size",
     "colour",
-    "intake_condition",
+    #"intake_condition",
     "intake_type",
-    "is_mixed",
-    "breed_1",
-    "breed_2",
-    "min_life_expectancy",
-    "max_life_expectancy",
-    "min_weight",
-    "max_weight",
+    #"is_mixed",
+    #"breed_1",
+    #"breed_2",
+    #"min_life_expectancy",
+    #"max_life_expectancy",
+    #"min_weight",
+    #"max_weight",
     "family_friendly",
     "shedding",
     "general_health",
@@ -49,8 +49,8 @@ FEATURE_COLS = [
     "intelligence",
     "other_pets_friendly",
     "season",
-    "black",
-    "white",
+    #"black",
+    #"white",
     "population",
     "unemploy_rate",
 ]
@@ -86,18 +86,18 @@ def main():
     # --- outcome_type (classification) ---
     print("=== Final training: outcome_type (classification) ===")
     model = train_final_model(X, df[TARGET_CLF], best_params[TARGET_CLF])
-    save_model(model, "aac_outcome_type_cat_tuned.pkl")
+    save_model(model, "STABDcat_outcome_type_cat_tuned.pkl")
 
     # --- time_in_shelter (regression, trained on log scale) ---
     print("\n=== Final training: time_in_shelter (regression) ===")
     y_reg = np.log1p(df[TARGET_REG])
     model = train_final_model(X, y_reg, best_params[TARGET_REG])
-    save_model(model, "aac_time_in_shelter_cat_tuned.pkl")
+    save_model(model, "STABDcat_time_in_shelter_cat_tuned.pkl")
 
     # --- stay_category (classification) ---
     print("\n=== Final training: stay_category (classification) ===")
     model = train_final_model(X, df[TARGET_CLF2], best_params[TARGET_CLF2])
-    save_model(model, "aac_stay_category_cat_tuned.pkl")
+    save_model(model, "STABDcat_stay_category_cat_tuned.pkl")
 
     print("\nDone. All tuned cat models saved.")
 
