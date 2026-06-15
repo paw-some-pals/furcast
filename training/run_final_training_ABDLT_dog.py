@@ -29,7 +29,7 @@ FEATURE_COLS = [
     "intake_day",
     "intake_year",
     "animal_species",
-    #"animal_size",
+    "animal_size",
     "colour",
     #"intake_condition",
     "intake_type",

@@ -4,6 +4,8 @@
 import pandas as pd
 import plotting
 import seaborn as sns
+import data_utils
+from data_utils import categorize_dog_breed_by_size
 
 def read_file():
     cat_df = pd.read_csv("datasets/ABDLT_output_cat.csv")
@@ -117,6 +119,7 @@ cat_df, dog_df, dog_kaggle, cat_kaggle = read_file()
 #merge datasets: kaggle, unemployment, population and seasons to dog dataset 
 dog_kaggle = clean_kaggle_dog(dog_kaggle)
 merge_dog = fill_values_dog(dog_df, dog_kaggle)
+merge_dog['animal_size'] = categorize_dog_breed_by_size(merge_dog['breed_1'])
 merge_dog = add_population(merge_dog)
 merge_dog = add_unemployment(merge_dog)
 merge_dog = apply_get_season(merge_dog)
@@ -134,8 +137,8 @@ merge_cat = apply_get_season(merge_cat)
 print(merge_dog.head(15))
 print(merge_cat.head(15))
 
-plotting.mutual_info_regression_matrix(merge_cat.drop(columns=['breed_2']).dropna(),filename='figures/MI_heatmap_ABDLT_cat.png', figsize=(12,10))
-plotting.mutual_info_regression_matrix(merge_dog.dropna(),filename='figures/MI_heatmap_ABDLT_dog.png', figsize=(14,12))
+#plotting.mutual_info_regression_matrix(merge_cat.drop(columns=['breed_2']).dropna(),filename='figures/MI_heatmap_ABDLT_cat.png', figsize=(12,10))
+#plotting.mutual_info_regression_matrix(merge_dog.dropna(),filename='figures/MI_heatmap_ABDLT_dog.png', figsize=(14,12))
 
-#merge_cat.to_csv("datasets/ABDLT_output_cat_pop.csv", index=False)
-#merge_dog.to_csv("datasets/ABDLT_output_dog_pop.csv", index=False)
+merge_cat.to_csv("datasets/ABDLT_output_cat_pop.csv", index=False)
+merge_dog.to_csv("datasets/ABDLT_output_dog_pop.csv", index=False)
