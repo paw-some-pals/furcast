@@ -333,53 +333,59 @@ def heatmap(df):
     return mi_df
 
 def main():
-    df = load_data()
+    # ── STEP 1: initial cleaning ───────────────────────────────────────────────
+    cat_cleaned  = "datasets/aac_cat_cleaned.csv"
+    dog_cleaned  = "datasets/aac_dog_cleaned.csv"
 
-    df = remove_duplicates(df)
-    df = change_foster_adoptions(df)
-    df = convert_time_in_shelter(df)
-    df = convert_age_to_float(df)
-    df = add_neuter_status(df)
-    df = add_sex(df)
-    df = filter_intake_condition(df)
-    df = apply_clean_intake_type(df)
-    df = apply_clean_outcome_type(df)
-    df = keep_dogs_and_cats(df)
-    df = add_intake_day(df)
-    df = categorize_color_and_breed(df)
-    #df = apply_categorize_size(df)
-    df = remove_columns(df)
-    df = rename_columns(df)
-    df = reorder_columns(df)
+    if os.path.exists(cat_cleaned) and os.path.exists(dog_cleaned):
+        print("[SKIP] Cleaned CSVs already exist — skipping initial cleaning.")
+    else:
+        df = load_data()
+        df = remove_duplicates(df)
+        df = change_foster_adoptions(df)
+        df = convert_time_in_shelter(df)
+        df = convert_age_to_float(df)
+        df = add_neuter_status(df)
+        df = add_sex(df)
+        df = filter_intake_condition(df)
+        df = apply_clean_intake_type(df)
+        df = apply_clean_outcome_type(df)
+        df = keep_dogs_and_cats(df)
+        df = add_intake_day(df)
+        df = categorize_color_and_breed(df)
+        #df = apply_categorize_size(df)
+        df = remove_columns(df)
+        df = rename_columns(df)
+        df = reorder_columns(df)
+        df = apply_get_season(df)
+        df_cat, df_dog, df = split_cat_and_dog(df)
+        save_data(df_cat, df_dog, df)
+        print("[DONE] Initial cleaning complete. Next: run breed matching scripts.")
 
-    df = apply_get_season(df)
-    df_cat, df_dog, df = split_cat_and_dog(df)
-    #df_cat = apply_stay_category(df_cat)
-    #df_dog = apply_stay_category(df_dog)
-    save_data(df_cat, df_dog, df)
+    # ── STEP 2: dog breed features ────────────────────────────────────────────
+    dog_breed_split = "datasets/acc_dog_breed_split.csv"
+    if os.path.exists(dog_breed_split):
+        df_kaggle = clean_kaggle()
+        final_df_aac_dogs = fill_values(df_kaggle)
+        final_df_aac_dogs = apply_stay_category(final_df_aac_dogs)
+        final_df_aac_dogs = apply_get_season(final_df_aac_dogs)
+        final_df_aac_dogs = add_population(final_df_aac_dogs)
+        final_df_aac_dogs = add_unemployment(final_df_aac_dogs)
+        final_df_aac_dogs.to_csv("datasets/final_df_aac_dogs.csv", index=False)
+        heatmap(final_df_aac_dogs)
+    else:
+        print(f"[SKIP] {dog_breed_split} not found — run dog breed matching script first, then re-run this file.")
 
-    # run breed matching prior to filling in kaggle features
-    df_kaggle = clean_kaggle()
-    final_df_aac_dogs = fill_values(df_kaggle)
-    final_df_aac_dogs = apply_stay_category(final_df_aac_dogs)
-    final_df_aac_dogs = apply_get_season(final_df_aac_dogs)
-    final_df_aac_dogs = add_population(final_df_aac_dogs)
-    final_df_aac_dogs = add_unemployment(final_df_aac_dogs)
-    final_df_aac_dogs.to_csv("datasets/final_df_aac_dogs.csv", index = False)
-    #print(final_df_aac_dogs.head(10))
-    heatmap(final_df_aac_dogs)
-
-    final_df_aac_cats = pd.read_csv("datasets/acc_cat_final.csv")
-    final_df_aac_cats = apply_stay_category(final_df_aac_cats)
-    final_df_aac_cats = add_population(final_df_aac_cats)
-    final_df_aac_cats = add_unemployment(final_df_aac_cats)
-    final_df_aac_cats.to_csv("datasets/final_df_aac_cats.csv", index=False)
-    print(final_df_aac_dogs.columns.tolist())
-    #print(df['breed'].unique())
-    #print(df["animal_size"].value_counts())
-    #print(df[["animal_species", "breed"]].head(20))
-
-    #print(final_df_aac_dogs.head(5))
+    # ── STEP 3: cat breed features ────────────────────────────────────────────
+    cat_final = "datasets/acc_cat_final.csv"
+    if os.path.exists(cat_final):
+        final_df_aac_cats = pd.read_csv(cat_final)
+        final_df_aac_cats = apply_stay_category(final_df_aac_cats)
+        final_df_aac_cats = add_population(final_df_aac_cats)
+        final_df_aac_cats = add_unemployment(final_df_aac_cats)
+        final_df_aac_cats.to_csv("datasets/final_df_aac_cats.csv", index=False)
+    else:
+        print(f"[SKIP] {cat_final} not found — run source/acc_cleaning_breedmatch_cat.py first, then re-run this file.")
     
 if __name__ == "__main__":
     main()
