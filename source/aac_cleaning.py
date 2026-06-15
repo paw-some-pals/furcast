@@ -293,6 +293,15 @@ def add_population(df):
 
     return df.merge(populations, how="left", on="intake_year")
 
+def add_unemployment(df):
+    unemp = pd.read_csv("datasets/aac_unemploy.csv")
+    unemp["date"] = pd.to_datetime(unemp["date"])
+    unemp["intake_year"] = unemp["date"].dt.year
+    unemp["intake_month"] = unemp["date"].dt.month
+    unemp["unemploy_rate"] = unemp["unemploy_rate"].str.replace("%", "", regex=False).astype(float)
+    unemp = unemp[["intake_year", "intake_month", "unemploy_rate"]]
+
+    return df.merge(unemp, how="left", on=["intake_year", "intake_month"])
 
 def heatmap(df):
 
@@ -349,15 +358,22 @@ def main():
     #df_dog = apply_stay_category(df_dog)
     save_data(df_cat, df_dog, df)
 
-
+    # run breed matching prior to filling in kaggle features
     df_kaggle = clean_kaggle()
     final_df_aac_dogs = fill_values(df_kaggle)
     final_df_aac_dogs = apply_stay_category(final_df_aac_dogs)
     final_df_aac_dogs = apply_get_season(final_df_aac_dogs)
     final_df_aac_dogs = add_population(final_df_aac_dogs)
+    final_df_aac_dogs = add_unemployment(final_df_aac_dogs)
     final_df_aac_dogs.to_csv("datasets/final_df_aac_dogs.csv", index = False)
     #print(final_df_aac_dogs.head(10))
     heatmap(final_df_aac_dogs)
+
+    final_df_aac_cats = pd.read_csv("datasets/acc_cat_final.csv")
+    final_df_aac_cats = apply_stay_category(final_df_aac_cats)
+    final_df_aac_cats = add_population(final_df_aac_cats)
+    final_df_aac_cats = add_unemployment(final_df_aac_cats)
+    final_df_aac_cats.to_csv("datasets/final_df_aac_cats.csv", index=False)
     print(final_df_aac_dogs.columns.tolist())
     #print(df['breed'].unique())
     #print(df["animal_size"].value_counts())
