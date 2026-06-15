@@ -1,5 +1,5 @@
 import pandas as pd
-from data_utils import categorize_color_dog, categorize_color_cat, categorize_breed_by_species, categorize_size
+from data_utils import categorize_color_dog, categorize_color_cat, categorize_size
 from plotting import mutual_info_regression_matrix, plot_mutual_info_heatmap
 import os
 
@@ -360,30 +360,38 @@ def main():
 
     # ── STEP 2: dog breed features ────────────────────────────────────────────
     dog_breed_split = "datasets/acc_dog_breed_split.csv"
-    if os.path.exists(dog_breed_split):
+    final_dogs = "datasets/final_df_aac_dogs.csv"
+    if os.path.exists(final_dogs):
+        print("[SKIP] final_df_aac_dogs.csv already exists — skipping dog cleaning.")
+    elif os.path.exists(dog_breed_split):
         df_kaggle = clean_kaggle()
         final_df_aac_dogs = fill_values(df_kaggle)
-        final_df_aac_dogs = df["color"].apply(categorize_color_dog)
+        final_df_aac_dogs["colour"] = final_df_aac_dogs["colour"].apply(categorize_color_dog)
         final_df_aac_dogs = apply_stay_category(final_df_aac_dogs)
         final_df_aac_dogs = apply_get_season(final_df_aac_dogs)
         final_df_aac_dogs = add_population(final_df_aac_dogs)
         final_df_aac_dogs = add_unemployment(final_df_aac_dogs)
-        final_df_aac_dogs.to_csv("datasets/final_df_aac_dogs.csv", index=False)
+        final_df_aac_dogs = final_df_aac_dogs.drop(columns='breed')
+        final_df_aac_dogs.to_csv(final_dogs, index=False)
         heatmap(final_df_aac_dogs)
     else:
         print(f"[SKIP] {dog_breed_split} not found — run dog breed matching script first, then re-run this file.")
 
     # ── STEP 3: cat breed features ────────────────────────────────────────────
-    cat_final = "datasets/acc_cat_final.csv"
-    if os.path.exists(cat_final):
-        final_df_aac_cats = pd.read_csv(cat_final)
-        final_df_aac_dogs = df["color"].apply(categorize_color_cat)
+    cat_final_input = "datasets/acc_cat_final.csv"
+    final_cats = "datasets/final_df_aac_cats.csv"
+    if os.path.exists(final_cats):
+        print("[SKIP] final_df_aac_cats.csv already exists — skipping cat cleaning.")
+    elif os.path.exists(cat_final_input):
+        final_df_aac_cats = pd.read_csv(cat_final_input)
+        final_df_aac_cats["colour"] = final_df_aac_cats["colour"].apply(categorize_color_cat)
         final_df_aac_cats = apply_stay_category(final_df_aac_cats)
         final_df_aac_cats = add_population(final_df_aac_cats)
         final_df_aac_cats = add_unemployment(final_df_aac_cats)
-        final_df_aac_cats.to_csv("datasets/final_df_aac_cats.csv", index=False)
+        final_df_aac_cats = final_df_aac_cats.drop(columns='breed')
+        final_df_aac_cats.to_csv(final_cats, index=False)
     else:
-        print(f"[SKIP] {cat_final} not found — run source/acc_cleaning_breedmatch_cat.py first, then re-run this file.")
+        print(f"[SKIP] {cat_final_input} not found — run source/acc_cleaning_breedmatch_cat.py first, then re-run this file.")
     
 if __name__ == "__main__":
     main()
