@@ -1,0 +1,2 @@
+animal_type,city,age_intake,sex,spay_neuter,intake_month,intake_day,intake_year,animal_species,colour,intake_condition,intake_type,season,is_mixed,breed_1,breed_2,min_life_expectancy,max_life_expectancy,min_weight,max_weight,family_friendly,shedding,general_health,playfulness,children_friendly,grooming,intelligence,other_pets_friendly,population,unemploy_rate
+cat,Austin,3,Female,Yes,4,4,2019,cat,Point/Lynx,Injured,Owner Surrender,Spring,False,American Bobtail,,13.0,15.0,7.0,16.0,5.0,3.0,4.0,5.0,5.0,2.0,4.0,5.0,974447.0,3.4
