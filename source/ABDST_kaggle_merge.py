@@ -318,7 +318,7 @@ def clean_kaggle_dog(df):
     return df
 
 def clean_kaggle_cat(df):
-    df = df.drop(columns=['length', 'origin', 'min_life_expectancy', 'max_life_expectancy', "min_weight", "max_weight"])
+    df = df.drop(columns=['length', 'origin'])
     return df
 
 def fill_values_dog(df, df_kaggle):
