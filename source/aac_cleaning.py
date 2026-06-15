@@ -368,6 +368,7 @@ def main():
         final_df_aac_dogs = apply_get_season(final_df_aac_dogs)
         final_df_aac_dogs = add_population(final_df_aac_dogs)
         final_df_aac_dogs = add_unemployment(final_df_aac_dogs)
+        final_df_aac_dogs = final_df_aac_dogs.drop(columns='breed')
         final_df_aac_dogs.to_csv("datasets/final_df_aac_dogs.csv", index=False)
         heatmap(final_df_aac_dogs)
     else:
@@ -381,6 +382,7 @@ def main():
         final_df_aac_cats = apply_stay_category(final_df_aac_cats)
         final_df_aac_cats = add_population(final_df_aac_cats)
         final_df_aac_cats = add_unemployment(final_df_aac_cats)
+        final_df_aac_dogs = final_df_aac_dogs.drop(columns='breed')
         final_df_aac_cats.to_csv("datasets/final_df_aac_cats.csv", index=False)
     else:
         print(f"[SKIP] {cat_final} not found — run source/acc_cleaning_breedmatch_cat.py first, then re-run this file.")
