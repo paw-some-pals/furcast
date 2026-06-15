@@ -391,6 +391,22 @@ def add_unemployment(df):
 
     return df.merge(unemp, how="left", on=["intake_year", "intake_month"])
 
+
+def stay_category(days):
+   if pd.isna(days):
+       return pd.NA
+   if days <= 7:
+       return "0-7 days"
+   elif days <= 20:
+       return "8-20 days"
+   else:
+       return "21+ days"
+
+def apply_stay_category(df):
+   df["stay_category"] = df["time_in_shelter"].apply(stay_category)
+   return df
+
+
 cat_df, dog_df, dog_kaggle, cat_kaggle = read_file()
 
 #merge datasets: kaggle, unemployment, population and seasons to dog dataset 
@@ -406,6 +422,12 @@ merge_cat = fill_values_cat(cat_df, cat_kaggle)
 # merge_cat = add_population(merge_cat)
 # merge_cat = add_unemployment(merge_cat)
 # merge_cat = apply_get_season(merge_cat)
+
+merge_cat= apply_stay_category(merge_cat)
+merge_dog= apply_stay_category(merge_dog)
+
+
+
 
 print(merge_dog.head(15))
 print(merge_cat.head(15))
