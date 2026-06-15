@@ -85,3 +85,14 @@ def train_random_forest_tuned(X: pd.DataFrame, y: pd.Series) -> Pipeline:
 
     return grid_search.best_estimator_
 
+
+def train_final_model(X: pd.DataFrame, y: pd.Series, best_params: dict) -> Pipeline:
+    """
+    Train a pipeline on ALL data using hyperparameters found by a prior sweep.
+    best_params should be the dict saved by run_sweep_*.py (keys like 'model__n_estimators').
+    """
+    pipeline = build_tuned_pipeline(X, y)
+    pipeline.set_params(**best_params)
+    pipeline.fit(X, y)
+    return pipeline
+
