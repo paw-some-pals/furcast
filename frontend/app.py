@@ -13,10 +13,10 @@ app = Flask(__name__)
 MODELS_DIR = os.path.join(os.path.dirname(__file__), "..", "models")
 
 # Load models
-with open(os.path.join(MODELS_DIR, "aac_time_in_shelter_dog.pkl"), "rb") as f:
+with open(os.path.join(MODELS_DIR, "aac_time_in_shelter_dog_tuned.pkl"), "rb") as f:
     dog_time_model = pickle.load(f)
 
-with open(os.path.join(MODELS_DIR, "cat_stay_category_cat_tuned.pkl"), "rb") as f:
+with open(os.path.join(MODELS_DIR, "abdst_time_in_shelter_cat_tuned.pkl"), "rb") as f:
     cat_time_model = pickle.load(f)
 
 
