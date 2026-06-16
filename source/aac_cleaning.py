@@ -252,10 +252,11 @@ def clean_kaggle():
 
 def fill_values(df_kaggle):
     df = pd.read_csv("datasets/acc_dog_breed_split.csv")
-    
+    df['breed_2'] = df['breed_2'].fillna("None")
+
     kaggle_feature_cols = [c for c in df_kaggle.columns if c != 'Name']
 
-    pure_mask = df['breed_2'].isna() | (df['breed_2'] == 'None')
+    pure_mask = df['breed_2'] == 'None'
 
     # Pure breeds: merge directly on breed_1
     df_pure = df[pure_mask].merge(
@@ -373,7 +374,8 @@ def main():
         final_df_aac_dogs = add_unemployment(final_df_aac_dogs)
         final_df_aac_dogs = final_df_aac_dogs.drop(columns='breed')
         final_df_aac_dogs.to_csv(final_dogs, index=False)
-        heatmap(final_df_aac_dogs)
+        print("[DONE] Dog breed features added and cleaned. Next: run cat breed matching script.")
+        #heatmap(final_df_aac_dogs)
     else:
         print(f"[SKIP] {dog_breed_split} not found — run dog breed matching script first, then re-run this file.")
 
