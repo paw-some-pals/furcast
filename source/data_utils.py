@@ -460,10 +460,11 @@ def check_colour(row):
 
 def fill_values(df_kaggle):
     df = pd.read_csv("datasets/acc_dog_breed_split.csv")
-    
+    df['breed_2'] = df['breed_2'].fillna("None")
+
     kaggle_feature_cols = [c for c in df_kaggle.columns if c != 'Name']
 
-    pure_mask = df['breed_2'].isna() | (df['breed_2'] == 'None')
+    pure_mask = df['breed_2'] == 'None'
 
     # Pure breeds: merge directly on breed_1
     df_pure = df[pure_mask].merge(

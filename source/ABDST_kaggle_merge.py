@@ -324,7 +324,7 @@ def clean_kaggle_cat(df):
 def fill_values_dog(df, df_kaggle):
     kaggle_feature_cols = [c for c in df_kaggle.columns if c != 'Name']
 
-    pure_mask = df['breed_2'].isna() | (df['breed_2'] == 'None')
+    pure_mask = df['breed_2'] == 'None'
 
     # Pure breeds: merge directly on breed_1
     df_pure = df[pure_mask].merge(
