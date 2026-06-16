@@ -5,13 +5,13 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 cat_test = pd.read_csv("datasets/final_ensemble/combined_cat_test.csv")
 dog_test = pd.read_csv("datasets/final_ensemble/combined_dog_test.csv")
 
-with open("models/aac_stay_category_cat_tuned.pkl", "rb") as f:
+with open("models/ensemble_part2/models/model_cat_aac.pkl", "rb") as f:
     aac_cat_model = pickle.load(f)
-with open("models/abdst_stay_category_cat_tuned.pkl", "rb") as f:
+with open("models/ensemble_part2/models/model_cat_adb.pkl", "rb") as f:
     adb_cat_model = pickle.load(f)
-with open("models/aac_stay_category_dog_tuned.pkl", "rb") as f:
+with open("models/ensemble_part2/models/model_dog_aac.pkl", "rb") as f:
     aac_dog_model = pickle.load(f)
-with open("models/abdst_stay_category_dog_tuned.pkl", "rb") as f:
+with open("models/ensemble_part2/models/model_dog_adb.pkl", "rb") as f:
     adb_dog_model = pickle.load(f)
 
 FEATURE_COLS_CATS_FULL = [
@@ -35,8 +35,8 @@ FEATURE_COLS_DOGS_FULL = [
 TARGET_CLF = "stay_category"
 
 # Weights from ensemble_train.py — update these after running weight optimization
-W_AAC_CAT = 0.59
-W_AAC_DOG = 0.52
+W_AAC_CAT = 0.61
+W_AAC_DOG = 0.57
 
 
 def ensemble_predict(p_aac, p_adb, w_aac, classes):
@@ -58,9 +58,7 @@ cat_test_X = cat_test[FEATURE_COLS_CATS_FULL]
 cat_test_y = cat_test[TARGET_CLF]
 
 p_aac_cat = aac_cat_model.predict_proba(cat_test_X)
-adb_cat_X = cat_test_X.drop(columns=["spay_neuter", "intake_condition"]).copy()
-adb_cat_X["breed_2"] = float("nan")
-p_adb_cat = adb_cat_model.predict_proba(adb_cat_X)
+p_adb_cat = adb_cat_model.predict_proba(cat_test_X)
 
 classes_cat = aac_cat_model.classes_
 cat_preds = ensemble_predict(p_aac_cat, p_adb_cat, W_AAC_CAT, classes_cat)
@@ -71,8 +69,8 @@ dog_test_X = dog_test[FEATURE_COLS_DOGS_FULL]
 dog_test_y = dog_test[TARGET_CLF]
 
 p_aac_dog = aac_dog_model.predict_proba(dog_test_X)
-adb_dog_X = dog_test_X.drop(columns=["spay_neuter", "intake_condition"]).copy()
-p_adb_dog = adb_dog_model.predict_proba(adb_dog_X)
+
+p_adb_dog = adb_dog_model.predict_proba(dog_test_X)
 
 classes_dog = aac_dog_model.classes_
 dog_preds = ensemble_predict(p_aac_dog, p_adb_dog, W_AAC_DOG, classes_dog)
