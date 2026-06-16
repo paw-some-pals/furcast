@@ -13,13 +13,14 @@ import pickle
 import numpy as np
 import pandas as pd
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, os.path.dirname(__file__))
 
 from hyper_param_sweeps.hyperparam_sweeps import train_final_model
 
-CLEANED_DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "datasets", "ABDST_output_cat_pop.csv")
-MODELS_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "models")
-PARAMS_PATH = os.path.join(MODELS_DIR, "STABD_best_params_cat.json")
+CLEANED_DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "datasets", "final/ABDST_output_cat_pop.csv")
+MODELS_DIR = os.path.join(os.path.dirname(__file__), "..", "models")
+PARAMS_PATH = os.path.join(MODELS_DIR, "final/STABD_best_params_cat.json")
+
 
 FEATURE_COLS = [
     "age_intake",
@@ -84,21 +85,21 @@ def main():
     with open(PARAMS_PATH) as f:
         best_params = json.load(f)
 
-    # --- outcome_type (classification) ---
-    print("=== Final training: outcome_type (classification) ===")
-    model = train_final_model(X, df[TARGET_CLF], best_params[TARGET_CLF])
-    save_model(model, "abdst_outcome_type_cat_tuned.pkl")
+    # # --- outcome_type (classification) ---
+    # print("=== Final training: outcome_type (classification) ===")
+    # model = train_final_model(X, df[TARGET_CLF], best_params[TARGET_CLF])
+    # save_model(model, "abdst_outcome_type_cat_tuned.pkl")
 
-    # --- time_in_shelter (regression, trained on log scale) ---
-    print("\n=== Final training: time_in_shelter (regression) ===")
-    y_reg = np.log1p(df[TARGET_REG])
-    model = train_final_model(X, y_reg, best_params[TARGET_REG])
-    save_model(model, "abdst_time_in_shelter_cat_tuned.pkl")
+    # # --- time_in_shelter (regression, trained on log scale) ---
+    # print("\n=== Final training: time_in_shelter (regression) ===")
+    # y_reg = np.log1p(df[TARGET_REG])
+    # model = train_final_model(X, y_reg, best_params[TARGET_REG])
+    # save_model(model, "abdst_time_in_shelter_cat_tuned.pkl")
 
     # --- stay_category (classification) ---
-    # print("\n=== Final training: stay_category (classification) ===")
-    # model = train_final_model(X, df[TARGET_CLF2], best_params[TARGET_CLF2])
-    # save_model(model, "abdlt_stay_category_cat_tuned.pkl")
+    print("\n=== Final training: stay_category (classification) ===")
+    model = train_final_model(X, df[TARGET_CLF2], best_params[TARGET_CLF2])
+    save_model(model, "abdst_stay_category_cat_tuned.pkl")
 
     print("\nDone. All tuned cat models saved.")
 
