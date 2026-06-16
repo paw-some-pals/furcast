@@ -486,5 +486,7 @@ cols_to_drop = ['id', 'puttosleep', 'movement_year', 'movement_month', 'movement
 merge_cat = merge_cat.drop(columns=cols_to_drop, errors='ignore')
 merge_dog = merge_dog.drop(columns=cols_to_drop, errors='ignore')
 
+merge_dog=merge_dog.drop(columns='breed')
+
 merge_cat.to_csv("datasets/ABDST_output_cat_pop.csv", index=False)
 merge_dog.to_csv(r"datasets/ABDST_output_dog_pop.csv", index=False)
