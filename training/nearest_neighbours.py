@@ -1,4 +1,3 @@
-import argparse
 import os
 
 import pandas as pd
@@ -85,38 +84,23 @@ def compute_nn(
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Run nearest-neighbour label transfer from AAC to ADB datasets."
-    )
-    parser.add_argument("aac_cat_csv", help="Path to the AAC cat CSV (neighbours)")
-    parser.add_argument("aac_dog_csv", help="Path to the AAC dog CSV (neighbours)")
-    parser.add_argument("adb_cat_csv", help="Path to the ADB cat CSV (samples)")
-    parser.add_argument("adb_dog_csv", help="Path to the ADB dog CSV (samples)")
-    parser.add_argument(
-        "--out-dir",
-        default="datasets/nn_output",
-        help="Directory to write output CSVs (default: datasets/nn_output)",
-    )
-    args = parser.parse_args()
+    out_dir = "datasets/final"
+    os.makedirs(out_dir, exist_ok=True)
 
-    os.makedirs(args.out_dir, exist_ok=True)
+    aac_cat = pd.read_csv("datasets/final/final_df_aac_cats.csv")
+    aac_dog = pd.read_csv("datasets/final/final_df_aac_dogs.csv")
+    adb_cat = pd.read_csv("datasets/final/ABDST_output_cat_pop.csv")
+    adb_dog = pd.read_csv("datasets/final/ABDST_output_dog_pop.csv")
 
-    aac_cat = pd.read_csv(args.aac_cat_csv)
-    aac_dog = pd.read_csv(args.aac_dog_csv)
-    adb_cat = pd.read_csv(args.adb_cat_csv)
-    adb_dog = pd.read_csv(args.adb_dog_csv)
+    adb_dog["intake_condition"] = ""
+    adb_cat["intake_condition"] = ""
+    adb_dog["spay_neuter"] = ""
+    adb_cat["spay_neuter"] = ""
 
-    runs = [
-        ("cat", "intake_condition", aac_cat, adb_cat),
-        ("cat", "spay_neuter",      aac_cat, adb_cat),
-        ("dog", "intake_condition", aac_dog, adb_dog),
-        ("dog", "spay_neuter",      aac_dog, adb_dog),
-    ]
-
-    for species, target, neighbours, samples in runs:
-        print(f"Running NN: {species} | target={target} ...")
-        result = compute_nn(neighbours, samples, target_column=target)
-        out_path = os.path.join(args.out_dir, f"adb_{species}_{target}_nn.csv")
-        result.to_csv(out_path, index=False)
-        print(f"  Saved → {out_path}")
+    for species, neighbours, samples in [("cat", aac_cat, adb_cat), ("dog", aac_dog, adb_dog)]:
+        for target in ["intake_condition", "spay_neuter"]:
+            samples[target] = compute_nn(neighbours, samples, target_column=target)[target]
+        out_path = os.path.join(out_dir, f"adb_{species}_nn.csv")
+        samples.to_csv(out_path, index=False)
+        print(f"Saved → {out_path}")
 

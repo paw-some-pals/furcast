@@ -1,32 +1,27 @@
-import sys
 import os
-import pickle
-
-
 import numpy as np
 import pandas as pd
-from sklearn.metrics import mean_absolute_error, root_mean_squared_error
-from sklearn.model_selection import cross_val_score, train_test_split
+from sklearn.model_selection import train_test_split
 
-AAC_cat = pd.read_csv("")
-ADB_cat = pd.read_csv("") 
+AAC_cat = pd.read_csv("datasets/final/final_df_aac_cats.csv")
+ADB_cat = pd.read_csv("datasets/final/adb_cat_nn.csv")
 
-AAC_dog = pd.read_csv("")
-ADB_dog = pd.read_csv("")
+AAC_dog = pd.read_csv("datasets/final/final_df_aac_dogs.csv")
+ADB_dog = pd.read_csv("datasets/final/adb_dog_nn.csv")
+
 
 FEATURE_COLS_DOGS = [
-    "age_intake",       # Age of the animal when it arrived
-    "sex",              # Male or female
-    "spay_neuter",      # Whether the animal is spayed/neutered
-    "intake_month",     # Month of arrival (1–12)
-    "intake_day",       # Day of arrival (1–31)
-    "intake_year",      # Year of arrival
-    "animal_species",   # dog or cat
-    "animal_size",      
-    "colour",           # colour
-    "breed",            # Breed of the animal
-    "intake_condition", # Health condition at arrival (e.g. Normal, Injured)
-    "intake_type",      # How the animal arrived (e.g. Stray, Owner Surrender)
+    "age_intake",
+    "sex",
+    "spay_neuter",
+    "intake_month",
+    "intake_day",
+    "intake_year",
+    "animal_species",
+    "animal_size",
+    "colour",
+    "intake_condition",
+    "intake_type",
     "is_mixed",
     "breed_1",
     "breed_2",
@@ -42,22 +37,22 @@ FEATURE_COLS_DOGS = [
     "trainability",
     "energy",
     "barking",
-    "season"
+    "season",
+    "population",
+    "unemploy_rate"
 ]
 
 FEATURE_COLS_CATS = [
-    "age_intake",       # Age of the animal when it arrived
-    "sex",              # Male or female
-    "spay_neuter",      # Whether the animal is spayed/neutered
-    "intake_month",     # Month of arrival (1–12)
-    "intake_day",       # Day of arrival (1–31)
-    "intake_year",      # Year of arrival
-    "animal_species",   # dog or cat
-    "animal_size",      
-    "colour",           # colour
-    "breed",            # Breed of the animal
-    "intake_condition", # Health condition at arrival (e.g. Normal, Injured)
-    "intake_type",      # How the animal arrived (e.g. Stray, Owner Surrender)
+    "age_intake",
+    "sex",
+    "spay_neuter",
+    "intake_month",
+    "intake_day",
+    "intake_year",
+    "animal_species",
+    "colour",
+    "intake_condition",
+    "intake_type",
     "is_mixed",
     "breed_1",
     "breed_2",
@@ -73,64 +68,98 @@ FEATURE_COLS_CATS = [
     "grooming",
     "intelligence",
     "other_pets_friendly",
-    "season"
+    "black",
+    "white",
+    "season",
+    "population",
+    "unemploy_rate"
 ]
 
-TARGET_CLF = "outcome_type"     # Category: Adoption, Transfer, Euthanasia, etc.
-TARGET_REG = "time_in_shelter"
+TARGET_CLF = "stay_category"
 
 
-def make_split_sets(feature_cols, label_col, df1,df2,testsize = 0.15, randomstate=42,cat):
-    
+def split_three_way_n(df, feature_cols, n_val, n_test, random_state=34):
+    """Split df into train/val/test using absolute row counts for val and test."""
+    X = df[feature_cols]
+    y = df[TARGET_CLF]
 
-    df1_X = df1[feature_cols] #pass the austin one
-    df2_X = df2[feature_cols] #pass the ADB one
+    test_frac = n_test / len(df)
+    X_trainval, X_test, y_trainval, y_test = train_test_split(
+        X, y, test_size=test_frac, random_state=random_state
+    )
 
-    df1_y = df1[label_col]
-    df2_y = df2[label_col]
-    
-    X_train_1, X_test_1, y_train_1, y_test_1 = train_test_split(df1_X, df1_y, test_size=testsize, random_state=randomstate)
-    X_train_2, X_test_2, y_train_2, y_test_2 = train_test_split(df2_X, df2_y, test_size=testsize, random_state=randomstate)
+    val_frac = n_val / len(X_trainval)
+    X_train, X_val, y_train, y_val = train_test_split(
+        X_trainval, y_trainval, test_size=val_frac, random_state=random_state
+    )
 
-
-    #make a copy of X_test_1, y_test_1 and delete spay and neuter 
-    #make a copy of X_test_2, y_test_2 and add a col called spay neuter with Unknown and intake conditon with Other
-
-    copy_X_test_1 = X_test_1.copy()
-    copy_y_test_1 = y_test_1.copy()
-
-    copy_X_test_1.remove(columns=["spay_neuter","intake_condition"])
+    return X_train, X_val, X_test, y_train, y_val, y_test
 
 
-
-    copy_X_test_2 = X_test_2.copy()
-    copy_y_test_2 = y_test_2.copy()
-
-    copy_X_test_2["spay_neuter"] = "Unknown"
-    copy_X_test_2["intake_condition"] = "Other"
-
-
-    #mix x1 copy with x2 and mix x2 copy with x1
-    #mix y1 copy with y2 and mix y2 copy with y1 
-    
-    if cat ==1:
-        ABD_cat_test_X = pd.concat([copy_X_test_1, X_test_2], ignore_index=True)  #this is the one without spay neuter for ABD
-        AAC_cat_test_X = pd.concat([X_test_1, copy_X_test_2], ignore_index=True)  #this is the one with spay neuter for ACC 
-        ABD_cat_test_y = pd.concat([copy_y_test_1, y_test_2], ignore_index=True)  #this is the one without spay neuter for ABD
-        AAC_cat_test_y = pd.concat([y_test_1, copy_y_test_2], ignore_index=True)  #this is the one with spay neuter for ACC 
-        
-
-    else:
-        ABD_dog_test_X = pd.concat([copy_X_test_1, X_test_2], ignore_index=True)  #this is the one without spay neuter for ABD
-        AAC_dog_test_X = pd.concat([X_test_1, copy_X_test_2], ignore_index=True)  #this is the one with spay neuter for ACC
+# ADB datasets don't have spay_neuter or intake_condition — fill with placeholders
+ADB_cat["spay_neuter"] = "Unknown"
+ADB_cat["intake_condition"] = "Other"
+ADB_dog["spay_neuter"] = "Unknown"
+ADB_dog["intake_condition"] = "Other"
 
 
-    #SAVING FINAL DATA SETS 
-    ABD_cat_test_X.to_csv("datasets/FINAL/ABD_MODEL_CAT_TEST.csv", index=False)
-    ABD_dog_test_X.to_csv("datasets/FINAL/ABD_MODEL_DOG_TEST.csv", index=False)
-    AAC_cat_test_X.to_csv("datasets/FINAL/AAC_MODEL_CAT_TEST.csv", index=False)
-    AAC_dog_test_X.to_csv("datasets/FINAL/AAC_MODEL_DOG_TEST.csv", index=False)
+AAC_cat_X_train, AAC_cat_X_val, AAC_cat_X_test, AAC_cat_y_train, AAC_cat_y_val, AAC_cat_y_test = split_three_way_n(AAC_cat, FEATURE_COLS_CATS, n_val=400, n_test=400)
+ADB_cat_X_train, ADB_cat_X_val, ADB_cat_X_test, ADB_cat_y_train, ADB_cat_y_val, ADB_cat_y_test = split_three_way_n(ADB_cat, FEATURE_COLS_CATS, n_val=400, n_test=400)
+
+AAC_dog_X_train, AAC_dog_X_val, AAC_dog_X_test, AAC_dog_y_train, AAC_dog_y_val, AAC_dog_y_test = split_three_way_n(AAC_dog, FEATURE_COLS_DOGS, n_val=450, n_test=450)
+ADB_dog_X_train, ADB_dog_X_val, ADB_dog_X_test, ADB_dog_y_train, ADB_dog_y_val, ADB_dog_y_test = split_three_way_n(ADB_dog, FEATURE_COLS_DOGS, n_val=450, n_test=450)
+
+print(f"Cat val  — AAC: {len(AAC_cat_X_val)}, ADB: {len(ADB_cat_X_val)}")
+print(f"Cat test — AAC: {len(AAC_cat_X_test)}, ADB: {len(ADB_cat_X_test)}")
+print(f"Cat train— AAC: {len(AAC_cat_X_train)}, ADB: {len(ADB_cat_X_train)}")
+print(f"Dog val  — AAC: {len(AAC_dog_X_val)}, ADB: {len(ADB_dog_X_val)}")
+print(f"Dog test — AAC: {len(AAC_dog_X_test)}, ADB: {len(ADB_dog_X_test)}")
+print(f"Dog train— AAC: {len(AAC_dog_X_train)}, ADB: {len(ADB_dog_X_train)}")
 
 
+def make_full_df(X, y):
+    df = X.copy()
+    df[TARGET_CLF] = y.values
+    return df
 
 
+# Per-source train sets
+cat_train_aac = make_full_df(AAC_cat_X_train, AAC_cat_y_train)
+cat_train_adb = make_full_df(ADB_cat_X_train, ADB_cat_y_train)
+dog_train_aac = make_full_df(AAC_dog_X_train, AAC_dog_y_train)
+dog_train_adb = make_full_df(ADB_dog_X_train, ADB_dog_y_train)
+
+# Combined val and test sets (shuffled)
+combined_cat_val = make_full_df(
+    pd.concat([AAC_cat_X_val, ADB_cat_X_val], ignore_index=True),
+    pd.concat([AAC_cat_y_val, ADB_cat_y_val], ignore_index=True)
+).sample(frac=1, random_state=34).reset_index(drop=True)
+
+combined_cat_test = make_full_df(
+    pd.concat([AAC_cat_X_test, ADB_cat_X_test], ignore_index=True),
+    pd.concat([AAC_cat_y_test, ADB_cat_y_test], ignore_index=True)
+).sample(frac=1, random_state=34).reset_index(drop=True)
+
+combined_dog_val = make_full_df(
+    pd.concat([AAC_dog_X_val, ADB_dog_X_val], ignore_index=True),
+    pd.concat([AAC_dog_y_val, ADB_dog_y_val], ignore_index=True)
+).sample(frac=1, random_state=34).reset_index(drop=True)
+
+combined_dog_test = make_full_df(
+    pd.concat([AAC_dog_X_test, ADB_dog_X_test], ignore_index=True),
+    pd.concat([AAC_dog_y_test, ADB_dog_y_test], ignore_index=True)
+).sample(frac=1, random_state=34).reset_index(drop=True)
+
+
+OUT = "datasets/ensemble_part2"
+
+# cat_train_aac.to_csv(f"{OUT}/cat_train_aac.csv", index=False)
+# cat_train_adb.to_csv(f"{OUT}/cat_train_adb.csv", index=False)
+# dog_train_aac.to_csv(f"{OUT}/dog_train_aac.csv", index=False)
+# dog_train_adb.to_csv(f"{OUT}/dog_train_adb.csv", index=False)
+combined_cat_val.to_csv(f"{OUT}/combined_cat_val.csv", index=False)
+combined_cat_test.to_csv(f"{OUT}/combined_cat_test.csv", index=False)
+combined_dog_val.to_csv(f"{OUT}/combined_dog_val.csv", index=False)
+combined_dog_test.to_csv(f"{OUT}/combined_dog_test.csv", index=False)
+
+print("done — saved to", OUT)
