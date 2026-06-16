@@ -6,6 +6,8 @@ concatenates them, then trains with 5-fold CV + one held-out run.
 
 Cat: drops spay_neuter, intake_condition, animal_size before training.
 Dog: drops spay_neuter, intake_condition before training.
+-----------------
+Update: missingness indicators added for spay_neuter and intake_condition, and missing values filled with "Unknown"/"Other" to allow model to learn from missingness patterns.
 
 Feature columns are filtered to those present in the merged dataframe
 so the file still runs with different feature sets in the dfs
@@ -42,7 +44,8 @@ TARGET_CLF2 = "stay_category"
 FEATURE_COLS_CAT = [
     "age_intake",
     "sex",
-    # spay_neuter dropped
+    "spay_neuter",
+    "spay_neuter_missing",
     "intake_month",
     "intake_day",
     "intake_year",
@@ -50,7 +53,8 @@ FEATURE_COLS_CAT = [
     # animal_size dropped
     "colour",
     "breed",
-    # intake_condition dropped
+    "intake_condition",
+    "intake_condition_missing",
     "intake_type",
     "is_mixed",
     "breed_1",
@@ -77,7 +81,8 @@ FEATURE_COLS_CAT = [
 FEATURE_COLS_DOG = [
     "age_intake",
     "sex",
-    # spay_neuter dropped
+    "spay_neuter",
+    "spay_neuter_missing",
     "intake_month",
     "intake_day",
     "intake_year",
@@ -85,7 +90,8 @@ FEATURE_COLS_DOG = [
     "animal_size",
     "colour",
     "breed",
-    # intake_condition dropped
+    "intake_condition",
+    "intake_condition_missing",
     "intake_type",
     "is_mixed",
     "breed_1",
@@ -122,6 +128,12 @@ def run_cat():
     abst = pd.read_csv(os.path.join(DATASETS_DIR, "ABDST_output_cat_pop.csv"))
     df   = pd.concat([aac, abst], ignore_index=True)
     print(f"{len(df)} rows after merge ({len(aac)} AAC + {len(abst)} ABST)\n")
+
+    # missingness indication 
+    df["spay_neuter_missing"]      = df["spay_neuter"].isna().astype(int)
+    df["intake_condition_missing"] = df["intake_condition"].isna().astype(int)
+    df["spay_neuter"]              = df["spay_neuter"].fillna("Unknown")
+    df["intake_condition"]         = df["intake_condition"].fillna("Other")
 
     available = [c for c in FEATURE_COLS_CAT if c in df.columns]
     X = df[available]
@@ -167,6 +179,12 @@ def run_dog():
     abst = pd.read_csv(os.path.join(DATASETS_DIR, "ABDST_output_dog_pop.csv"))
     df   = pd.concat([aac, abst], ignore_index=True)
     print(f"{len(df)} rows after merge ({len(aac)} AAC + {len(abst)} ABST)\n")
+
+    # missingness indication
+    df["spay_neuter_missing"]      = df["spay_neuter"].isna().astype(int)
+    df["intake_condition_missing"] = df["intake_condition"].isna().astype(int)
+    df["spay_neuter"]              = df["spay_neuter"].fillna("Unknown")
+    df["intake_condition"]         = df["intake_condition"].fillna("Other")
 
     available = [c for c in FEATURE_COLS_DOG if c in df.columns]
     X = df[available]
