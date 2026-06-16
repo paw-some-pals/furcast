@@ -152,10 +152,10 @@ print(df_cat['breed'].unique().sum)
 
 df_cat['breed']= df_cat['breed'].replace(['Domestic Short Hair','Munchkin','British Shorthair/Domestic Short Hair','Egyptian Mau/Domestic Short Hair','DMH/DSH', 'DSH/Unknown', 'Calico', 'DSH', 'Exotic Shorthair/Extra-Toes Cat (Hemingway Polydactyl)', ],'American Shorthair')
 df_cat['breed']=df_cat['breed'].replace(['Domestic Long Hair','Norwegian Forest Cat', 'Himalayan','DLH/Unknown','DMH/DLH', 'DLH'],'American Longhair')
-df_cat['breed']=df_cat['breed'].replace(['Russian Blue'],'Domestic Short Hair/Russian Blue')
+df_cat['breed']=df_cat['breed'].replace(['Domestic Short Hair/Russian Blue'],'Russian Blue')
 df_cat['breed']=df_cat['breed'].replace(['Domestic Medium Hair','Domestic Long Hair/Domestic Short Hair',  'Domestic Short Hair/DLH','DMH'], 'American Longhair')
 df_cat['breed']=df_cat['breed'].replace(['British Shorthair/Unknown', 'British Shorthair/Mix', ],'British Shorthair')
-df_cat['breed']=df_cat['breed'].replace(['Siamese/Mix', 'Siamese/Egyptian Mau', 'Siamese/Balinese','Domestic Medium Hair/Siamese','Siamese/DSH','Domestic Short Hair/Siamese', 'Balinese/Domestic Medium Hair', 'Domestic Long Hair/Siamese', 'Siamese/Domestic Short Hair'], 'Siamese Cat')
+df_cat['breed']=df_cat['breed'].replace(['Siamese', 'Siamese/Mix', 'Siamese/Egyptian Mau', 'Siamese/Balinese','Domestic Medium Hair/Siamese','Siamese/DSH','Domestic Short Hair/Siamese', 'Balinese/Domestic Medium Hair', 'Domestic Long Hair/Siamese', 'Siamese/Domestic Short Hair'], 'Siamese Cat')
 df_cat['breed']=df_cat['breed'].replace(['Siamese/Snowshoe', 'Domestic Short Hair/Snowshoe', 'Snowshoe/Domestic Short Hair', ], 'Snowshoe')
 df_cat['breed']=df_cat['breed'].replace(['Manx/DSH','Manx/Domestic Short Hair', 'Domestic Short Hair/Manx','Domestic Long Hair/Manx', 'Domestic Medium Hair/Manx', 'Snowshoe/Mix','Siamese/Domestic Long Hair', 'Siamese/Manx', 'Balinese/Manx','Manx/Mix','Manx/Domestic Long Hair',], 'Manx')
 df_cat['breed']=df_cat['breed'].replace(['Persian/DMH', 'Domestic Long Hair/Persian', 'Turkish Angora/Persian'], 'Persian')
@@ -163,7 +163,7 @@ df_cat['breed']=df_cat['breed'].replace(['American Curl/DSH', 'American Curl'], 
 df_cat['breed']=df_cat['breed'].replace(['Domestic Long Hair/Maine Coon', 'Maine Coon/Domestic Long Hair','Maine Coon/Mix',], 'Maine Coon')
 df_cat['breed']=df_cat['breed'].replace(['Oriental Shorthair/Domestic Short Hair', 'Oriental Shorthair', 'Oriental'], 'Oriental Bicolor')
 df_cat['breed']=df_cat['breed'].replace(['Domestic Short Hair/Bengal', 'Bengal'], 'Bengal Cats')
-df_cat['breed']=df_cat['breed'].replace(['Siamese/Ragdoll','Ragamuffin/Domestic Long Hair',], 'Ragdoll Cats')
+df_cat['breed']=df_cat['breed'].replace(['Ragdoll','Siamese/Ragdoll','Ragamuffin/Domestic Long Hair',], 'Ragdoll Cats')
 
 
 
@@ -201,7 +201,7 @@ print(df_dog['intake_year'].unique())
 print(bloompop['year'].unique())
 
 df_dog.to_csv(r'datasets/dogshorttermABD.csv', index=False)
-#df_cat.to_csv(r'datasets/newcatshorttermABD.csv', index=False)
+df_cat.to_csv(r'datasets/newcatshorttermABD.csv', index=False)
 
 
 

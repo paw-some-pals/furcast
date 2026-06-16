@@ -482,11 +482,27 @@ INTAKE_TYPE_MAP = {
 merge_cat['intake_type'] = merge_cat['intake_type'].map(INTAKE_TYPE_MAP).fillna('Other')
 merge_dog['intake_type'] = merge_dog['intake_type'].map(INTAKE_TYPE_MAP).fillna('Other')
 
+# drop missing breed rows for cats
+print(merge_cat.shape[0])
+
+merge_cat = merge_cat.dropna(subset=['breed_1'])
+print(merge_cat.shape[0])
+print(merge_cat.isna().sum())
+
 cols_to_drop = ['id', 'puttosleep', 'movement_year', 'movement_month', 'movement_day', 'Unnamed: 0', 'breed' 'year']
 merge_cat = merge_cat.drop(columns=cols_to_drop, errors='ignore')
 merge_dog = merge_dog.drop(columns=cols_to_drop, errors='ignore')
 
+# length compare
+print(merge_dog.shape[0])
+merge_dog = merge_dog.dropna(subset=['breed'])
+merge_dog = merge_dog.dropna(subset=['year'])
+# drop where breed is "Mix" or nan
+merge_dog = merge_dog[(merge_dog['breed'] != "Mix") & merge_dog['breed'].notnull()]
+print(merge_dog.isna().sum())
 merge_dog=merge_dog.drop(columns='breed')
+print(merge_dog.shape[0])
+
 
 merge_cat.to_csv("datasets/ABDST_output_cat_pop.csv", index=False)
 merge_dog.to_csv(r"datasets/ABDST_output_dog_pop.csv", index=False)
