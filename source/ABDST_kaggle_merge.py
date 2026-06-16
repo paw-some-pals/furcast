@@ -1,6 +1,6 @@
 #add season
 
-from data_utils import get_seasons
+from data_utils import get_seasons, categorize_color_cat, categorize_color_dog
 import pandas as pd
 import numpy as np
 
@@ -32,8 +32,8 @@ def add_unemployment(df):
 
 df_STcat_final= add_unemployment(df_STcat_final)
 df_STdog_final= add_unemployment(df_STdog_final)
-df_STdog_final.to_csv(r'datasets/STdogADB.csv')
-df_STcat_final.to_csv(r'datasets/STcatADB.csv')
+df_STdog_final.to_csv(r'datasets/STdogADB.csv', index=False)
+df_STcat_final.to_csv(r'datasets/STcatADB.csv', index=False)
 
 print(df_STdog_final[['unemploy_rate', 'season']])
 
@@ -307,7 +307,7 @@ import pandas as pd
 
 def read_file():
     cat_df = pd.read_csv("datasets/STcatADB.csv")
-    dog_df = pd.read_csv("datasets/ABDSTdog_output_dog_matched.csv")
+    dog_df = pd.read_csv("datasets/ABDSTdog_output_dog_matched.csv", keep_default_na=False, na_values=[''])
     dog_kaggle = pd.read_csv("datasets/dog_breeds.csv")
     cat_kaggle = pd.read_csv("datasets/cat_breeds.csv")
 
@@ -443,6 +443,8 @@ def check_colour(row):
         return 0, 0
 
 merge_cat[['black', 'white']]= merge_cat.apply(check_colour, axis=1, result_type='expand')
+merge_cat['colour'] = merge_cat['colour'].apply(categorize_color_cat)
+merge_dog['colour'] = merge_dog['colour'].apply(categorize_color_dog)
 
 from data_utils import categorize_dog_breed_by_size
 
@@ -452,5 +454,37 @@ merge_dog["animal_size"] = merge_dog.apply(categorize_dog_breed_by_size, axis=1)
 #print(merge_dog.head(15))
 print(merge_cat.head(15))
 
+INTAKE_TYPE_MAP = {
+    'Stray':                            'Stray',
+    'Police Assist':                    'Stray',
+    'Abandoned':                        'Stray',
+    'TNR - Trap/Neuter/Release':        'Stray',
+    'Rabies Monitoring':                'Stray',
+    'Moving':                           'Owner Surrender',
+    'Incompatible with owner lifestyle':'Owner Surrender',
+    'Marriage/Relationship split':      'Owner Surrender',
+    'Biting':                           'Owner Surrender',
+    'Unsuitable Accommodation':         'Owner Surrender',
+    'Unable to Afford':                 'Owner Surrender',
+    'Owner Deceased':                   'Owner Surrender',
+    'Sick/Injured':                     'Owner Surrender',
+    'Allergies':                        'Owner Surrender',
+    'Landlord issues':                  'Owner Surrender',
+    'Litter relinquishment':            'Owner Surrender',
+    'Incompatible with other pets':     'Owner Surrender',
+    'Behavioral Issues':                'Owner Surrender',
+    'Abuse/ neglect':                   'Owner Surrender',
+    'Owner requested Euthanasia':       'Euthanasia Request',
+    'Transfer from Other Shelter':      'Other',
+    'Born in Shelter':                  'Other',
+}
+
+merge_cat['intake_type'] = merge_cat['intake_type'].map(INTAKE_TYPE_MAP).fillna('Other')
+merge_dog['intake_type'] = merge_dog['intake_type'].map(INTAKE_TYPE_MAP).fillna('Other')
+
+cols_to_drop = ['id', 'puttosleep', 'movement_year', 'movement_month', 'movement_day', 'Unnamed: 0', 'breed' 'year']
+merge_cat = merge_cat.drop(columns=cols_to_drop, errors='ignore')
+merge_dog = merge_dog.drop(columns=cols_to_drop, errors='ignore')
+
 merge_cat.to_csv("datasets/ABDST_output_cat_pop.csv", index=False)
-merge_dog.to_csv("datasets/ABDST_output_dog_pop.csv", index=False)
+merge_dog.to_csv(r"datasets/ABDST_output_dog_pop.csv", index=False)
