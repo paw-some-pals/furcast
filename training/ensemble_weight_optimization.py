@@ -8,17 +8,30 @@ dog_val = pd.read_csv("datasets/ensemble_part2/combined_dog_val.csv")
 cat_test = pd.read_csv("datasets/ensemble_part2/combined_cat_test.csv")
 dog_test = pd.read_csv("datasets/ensemble_part2/combined_dog_test.csv")
 
+def fix_encoder_nan(model):
+    """Replace NaN values in OrdinalEncoder categories with 'None' string.
+    Needed because sklearn calls np.isnan() on categories, which fails for object arrays containing NaN.
+    """
+    encoder = model.named_steps["preprocessor"].named_transformers_["cat"]
+    for i, cats in enumerate(encoder.categories_):
+        if cats.dtype == object:
+            encoder.categories_[i] = np.array(
+                ["None" if isinstance(c, float) and np.isnan(c) else c for c in cats],
+                dtype=object,
+            )
+    return model
+
 with open("models/ensemble_part2/models/model_cat_aac.pkl", "rb") as f:
-    aac_cat_model = pickle.load(f)
+    aac_cat_model = fix_encoder_nan(pickle.load(f))
 
 with open("models/ensemble_part2/models/model_cat_adb.pkl", "rb") as f:
-    adb_cat_model = pickle.load(f)
+    adb_cat_model = fix_encoder_nan(pickle.load(f))
 
 with open("models/ensemble_part2/models/model_dog_aac.pkl", "rb") as f:
-    aac_dog_model = pickle.load(f)
+    aac_dog_model = fix_encoder_nan(pickle.load(f))
 
 with open("models/ensemble_part2/models/model_dog_adb.pkl", "rb") as f:
-    adb_dog_model = pickle.load(f)
+    adb_dog_model = fix_encoder_nan(pickle.load(f))
 
 FEATURE_COLS_DOGS_FULL = [
     "age_intake",       # Age of the animal when it arrived
@@ -113,23 +126,28 @@ def find_best_weight(y_true, p_aac, p_adb):
 
 
 # --- Cat Full ---
-cat_val_X_full = cat_val[FEATURE_COLS_CATS_FULL]
+cat_val_X_full = cat_val[FEATURE_COLS_CATS_FULL].copy()
+for col in cat_val_X_full.select_dtypes(include='object').columns:
+    cat_val_X_full[col] = cat_val_X_full[col].fillna("None")
 cat_val_y = cat_val[TARGET_CLF]
 
 p_aac_cat_full = aac_cat_model.predict_proba(cat_val_X_full)
 restricted_cat_val_X_full = cat_val_X_full.drop(columns=["spay_neuter", "intake_condition"]).copy()
-# restricted_cat_val_X_full["breed_2"] = float("nan") #the adb dataset has no values in breed 2 
+restricted_cat_val_X_full["breed_2"] = 0.0  # adb trained with breed_2 as all-NaN float, treat as numeric
 p_adb_cat_full = adb_cat_model.predict_proba(restricted_cat_val_X_full)
 
 best_w_cat_full, best_loss_cat_full = find_best_weight(cat_val_y, p_aac_cat_full, p_adb_cat_full)
 print(f"Cat Full  — AAC weight: {best_w_cat_full:.2f}, ADB weight: {1 - best_w_cat_full:.2f}, val log-loss: {best_loss_cat_full:.4f}")
 
 # --- Dog Full ---
-dog_val_X_full = dog_val[FEATURE_COLS_DOGS_FULL]
+dog_val_X_full = dog_val[FEATURE_COLS_DOGS_FULL].copy()
+for col in dog_val_X_full.select_dtypes(include='object').columns:
+    dog_val_X_full[col] = dog_val_X_full[col].fillna("None")
 dog_val_y = dog_val[TARGET_CLF]
 
 p_aac_dog_full = aac_dog_model.predict_proba(dog_val_X_full)
 restricted_dog_val_X_full = dog_val_X_full.drop(columns=["spay_neuter", "intake_condition"]).copy()
+restricted_dog_val_X_full["breed_2"] = 0.0  # adb trained with breed_2 as all-NaN float, treat as numeric
 p_adb_dog_full = adb_dog_model.predict_proba(restricted_dog_val_X_full)
 
 best_w_dog_full, best_loss_dog_full = find_best_weight(dog_val_y, p_aac_dog_full, p_adb_dog_full)

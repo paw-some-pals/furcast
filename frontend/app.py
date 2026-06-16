@@ -16,7 +16,7 @@ MODELS_DIR = os.path.join(os.path.dirname(__file__), "..", "models")
 with open(os.path.join(MODELS_DIR, "aac_time_in_shelter_dog.pkl"), "rb") as f:
     dog_time_model = pickle.load(f)
 
-with open(os.path.join(MODELS_DIR, "aac_time_in_shelter_cat.pkl"), "rb") as f:
+with open(os.path.join(MODELS_DIR, "cat_stay_category_cat_tuned.pkl"), "rb") as f:
     cat_time_model = pickle.load(f)
 
 
@@ -126,10 +126,10 @@ def predict():
     completed["breed"] = completed["breed_1"]
     completed["animal_size"] = "Unknown"
     input_df = completed
-    days_raw = time_model.predict_proba(input_df)[0]
-    days = round(float(np.expm1(days_raw)))
+    category = time_model.predict_proba(input_df)[0].tolist()
+    print(category)
 
-    return jsonify({"estimated_days_in_shelter": days})
+    return jsonify({"estimated_time_in_shelter": category})
 
 
 if __name__ == "__main__":
