@@ -24,15 +24,6 @@ def rename_columns(df):
     df = df.rename(columns={ "SPECIESNAME": "animal_species", "BREEDNAME": "breed", "REASONNAME": "intake_type", "OUTCOMENAME": "outcome_type"})
     return df
 # -------- early filtering, eda --------
-def keep_dogs_and_cats(df):
-    '''
-    Input: df - dataframe containing animal_species
-    Output: df - dataframe containing only dogs and cats
-    Keep only dog and cat rows and lowercase animal_species
-    '''
-    df = df[df["animal_species"].isin(["Dog", "Cat"])]
-    df["animal_species"] = df["animal_species"].str.lower()
-    return df
 
 def check_duplicates_and_nans(df):
     '''
@@ -49,11 +40,31 @@ def check_duplicates_and_nans(df):
     print('Number of NaN values in each column:')
     print(num_nans)
 
-    #  check only dog and cats unique in animal species, count of cat, dog or others
-    print('Unique values in animal_species column:')
-    print(df['animal_species'].unique())
-    print('Count of each animal species:')
-    print(df['animal_species'].value_counts())
+def get_unique_values(df):
+    '''
+    Input: df - dataframe to check for unique values
+    Output: prints unique values in each column
+    Check for unique values in each column to identify any inconsistencies or unexpected values that may need to be addressed during cleaning
+    use original df names
+    '''
+    for column in df.columns:
+        unique_values = df[column].unique()
+        print(f'Unique values in column {column}: {unique_values}')
+
+# ------- Remap and clean shared columns --------
+# TODO: add filter_intake_condition - map INTAKECONDITION to Normal / Injured / Aged / Sick / Other / Feral
+# TODO: add apply_clean_intake_type - map INTAKEREASONID to Stray / Owner Surrender / Euthanasia Request / Other
+# TODO: add apply_clean_outcome_type - map OUTCOMEID to Adoption / Transfer / Foster / Return to Owner / Euthanasia / Other
+
+def keep_dogs_and_cats(df):
+    '''
+    Input: df - dataframe containing animal_species
+    Output: df - dataframe containing only dogs and cats
+    Keep only dog and cat rows and lowercase animal_species
+    '''
+    df = df[df["animal_species"].isin(["Dog", "Cat"])]
+    df["animal_species"] = df["animal_species"].str.lower()
+    return df
 
 # -------- Add new features (cat and dog) --------
 def add_age_intake(df):
@@ -100,14 +111,8 @@ def add_intake_date_columns(df):
 # TODO: add add_sex ???
 # TODO: add add_neuter_status???
 
-
 # TODO: find edmonton data add add_population 
 # TODO: add add_unemployment - merge Edmonton unemployment CSV on intake_year + intake_month
-
-# ------- REmap and clean shared columns --------
-# TODO: add filter_intake_condition - map INTAKECONDITION to Normal / Injured / Aged / Sick / Other / Feral
-# TODO: add apply_clean_intake_type - map INTAKEREASONID to Stray / Owner Surrender / Euthanasia Request / Other
-# TODO: add apply_clean_outcome_type - map OUTCOMEID to Adoption / Transfer / Foster / Return to Owner / Euthanasia / Other
 
 # ------- split and species specific changes --------
 
