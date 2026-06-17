@@ -10,14 +10,44 @@ from source.data_utils import categorize_dog_breed_by_size
 
 app = Flask(__name__)
 
-MODELS_DIR = os.path.join(os.path.dirname(__file__), "..", "models")
+MODELS_DIR = os.path.join(os.path.dirname(__file__), "..", "models", "ensemble_part2", "models")
+
+# Ensemble weights (optimized)
+W_AAC_CAT = 0.61
+W_AAC_DOG = 0.57
 
 # Load models
-with open(os.path.join(MODELS_DIR, "aac_time_in_shelter_dog_tuned.pkl"), "rb") as f:
-    dog_time_model = pickle.load(f)
+with open(os.path.join(MODELS_DIR, "model_cat_aac.pkl"), "rb") as f:
+    cat_aac_model = pickle.load(f)
+with open(os.path.join(MODELS_DIR, "model_cat_adb.pkl"), "rb") as f:
+    cat_adb_model = pickle.load(f)
+with open(os.path.join(MODELS_DIR, "model_dog_aac.pkl"), "rb") as f:
+    dog_aac_model = pickle.load(f)
+with open(os.path.join(MODELS_DIR, "model_dog_adb.pkl"), "rb") as f:
+    dog_adb_model = pickle.load(f)
 
-with open(os.path.join(MODELS_DIR, "abdst_time_in_shelter_cat_tuned.pkl"), "rb") as f:
-    cat_time_model = pickle.load(f)
+
+FEATURE_COLS_CATS = [
+    "age_intake", "sex", "spay_neuter", "intake_month", "intake_day", "intake_year",
+    "animal_species", "colour", "intake_condition", "intake_type", "is_mixed",
+    "breed_1", "breed_2", "min_life_expectancy", "max_life_expectancy",
+    "min_weight", "max_weight", "family_friendly", "shedding", "general_health",
+    "playfulness", "children_friendly", "grooming", "intelligence",
+    "other_pets_friendly", "black", "white", "season", "population", "unemploy_rate",
+]
+
+FEATURE_COLS_DOGS = [
+    "age_intake", "sex", "spay_neuter", "intake_month", "intake_day", "intake_year",
+    "animal_species", "animal_size", "colour", "intake_condition", "intake_type",
+    "is_mixed", "breed_1", "breed_2", "good_with_children", "good_with_other_dogs",
+    "shedding", "grooming", "drooling", "coat_length", "good_with_strangers",
+    "playfulness", "protectiveness", "trainability", "energy", "barking",
+    "season", "population", "unemploy_rate",
+]
+
+
+def ensemble_predict_proba(p_aac, p_adb, w_aac):
+    return w_aac * p_aac + (1 - w_aac) * p_adb
 
 
 def get_season(month):
@@ -29,6 +59,17 @@ def get_season(month):
     elif month in [9, 10, 11]:
         return "Fall"
     return "Winter"
+
+def check_colour(row):
+    '''
+    Usage df[['black', 'white']] = df.apply(check_colour, axis=1, result_type='expand')
+    '''
+    if row['colour'] == 'Black':
+        return 1, 0  
+    elif row['colour'] == 'White':
+        return 0, 1
+    else:
+        return 0, 0
 
 
 FRONTEND_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -75,7 +116,7 @@ def predict():
         "season":           get_season(data.get("intake_month", 1)),
         "is_mixed":         data.get("is_mixed"),
         "breed_1":          data.get("breed_1"),
-        "breed_2":          data.get("breed_2"),
+        "breed_2":          data.get("breed_2") or "not given",
     }
 
     if animal_type == "dog":
@@ -89,8 +130,8 @@ def predict():
             "energy":               None, "barking":              None,
             "population":           None, "unemploy_rate":        None,
         })
-        time_model = dog_time_model
     else:
+        black, white = check_colour(row)
         row.update({
             "min_life_expectancy":  None, "max_life_expectancy":  None,
             "min_weight":           None, "max_weight":           None,
@@ -98,9 +139,15 @@ def predict():
             "general_health":       None, "playfulness":          None,
             "children_friendly":    None, "grooming":             None,
             "intelligence":         None, "other_pets_friendly":  None,
+            "black":                black, "white":               white,
             "population":           None, "unemploy_rate":        None,
         })
-        time_model = cat_time_model
+
+    if row["breed_2"]in ["None", None, "N/A","N"]:
+        row["breed_2"] = "not given"
+
+    print(row["breed_2"])
+
 
     # --- 2. Save to CSV so the prompting script can read it ---
     pd.DataFrame([row]).to_csv(CSV_PATH, index=False)
@@ -118,18 +165,25 @@ def predict():
     # --- 4. Read the completed CSV back ---
     completed = pd.read_csv(CSV_PATH)
 
-    # --- 5. Drop metadata columns the model doesn't use ---
-    # drop_cols = ["animal_type", "city"]
-    # input_df = completed.drop(columns=[c for c in drop_cols if c in completed.columns])
+    # --- 5. Ensemble predict ---
+    if animal_type == "dog":
+        input_df = completed[FEATURE_COLS_DOGS]
+        p_aac = dog_aac_model.predict_proba(input_df)
+        p_adb = dog_adb_model.predict_proba(input_df)
+        blended = ensemble_predict_proba(p_aac, p_adb, W_AAC_DOG)
+        classes = dog_aac_model.classes_
+    else:
+        input_df = completed[FEATURE_COLS_CATS]
+        p_aac = cat_aac_model.predict_proba(input_df)
+        p_adb = cat_adb_model.predict_proba(input_df)
+        blended = ensemble_predict_proba(p_aac, p_adb, W_AAC_CAT)
+        classes = cat_aac_model.classes_
 
-    # --- 6. Predict and return ---
-    completed["breed"] = completed["breed_1"]
-    completed["animal_size"] = "Unknown"
-    input_df = completed
-    category = time_model.predict_proba(input_df)[0].tolist()
-    print(category)
+    proba_list = blended[0].tolist()
+    predicted_class = classes[int(np.argmax(blended[0]))]
+    print(dict(zip(classes.tolist(), proba_list)), "->", predicted_class)
 
-    return jsonify({"estimated_time_in_shelter": category})
+    return jsonify({"predicted_bin": predicted_class, "probabilities": dict(zip(classes.tolist(), proba_list))})
 
 
 if __name__ == "__main__":

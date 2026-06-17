@@ -95,8 +95,6 @@ class CatTraitsContainer(BaseModel):
     grooming: int = Field(ge=1, le=5)
     intelligence: int = Field(ge=3, le=5)
     other_pets_friendly: int = Field(ge=2, le=5)
-    black: bool
-    white: bool
     population: int
     unemploy_rate: float
      # Safe structure (no hidden additionalProperties)
@@ -106,7 +104,7 @@ class CatTraitsContainer(BaseModel):
 if animal_type == "cat":
     #CAT
     # create the prompt for cat
-    base_string = f"Given the cat breed {current_prompt["breed_1"][0]}, fill out values for min_life_expectancy,max_life_expectancy,min_weight,max_weight,family_friendly,shedding,general_health,playfulness,children_friendly,grooming,intelligence,other_pets_friendly,black,white. Given the city {city} fill out population,unemploy_rate."
+    base_string = f"Given the cat breed {current_prompt["breed_1"][0]}, fill out values for min_life_expectancy,max_life_expectancy,min_weight,max_weight,family_friendly,shedding,general_health,playfulness,children_friendly,grooming,intelligence,other_pets_friendly. Given the city {city} fill out population,unemploy_rate."
     prompt_string = base_string
     print(prompt_string)
 
