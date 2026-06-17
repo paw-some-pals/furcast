@@ -375,7 +375,6 @@ def map_cat_breeds(df):
     df = df[df['breed_1'] != 'not given']
     return df
 
-# TODO: kaggle map 
 
 def apply_categorize_size(df_dog):
     '''
@@ -462,8 +461,6 @@ def main():
     df_cat = merge_kaggle_cat(df_cat, df_kag_cat)
     # TODO: black/white indicator (NEED TO ADD COLOUR FIRST)
 
-
-    # TODO: save_data - write final_df_gears_dogs.csv and final_df_gears_cats.csv
     df.to_csv(output_path_full, index=False)
     df_dog.to_csv(output_dog, index=False)
     df_cat.to_csv(output_cat, index=False)
