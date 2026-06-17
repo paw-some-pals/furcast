@@ -52,9 +52,63 @@ def get_unique_values(df):
         print(f'Unique values in column {column}: {unique_values}')
 
 # ------- Remap and clean shared columns --------
-# TODO: add filter_intake_condition - map INTAKECONDITION to Normal / Injured / Aged / Sick / Other / Feral
-# TODO: add apply_clean_intake_type - map INTAKEREASONID to Stray / Owner Surrender / Euthanasia Request / Other
-# TODO: add apply_clean_outcome_type - map OUTCOMEID to Adoption / Transfer / Foster / Return to Owner / Euthanasia / Other
+
+def filter_intake_type(df):
+    '''
+    Input: df - dataframe containing intake_type
+    Output: df - dataframe with only relevant intake types
+    Keep only relevant intake types and map to ['Stray', 'Owner Surrender', 'Euthanasia Request', 'Other']
+    Unique values in column intake_type: <StringArray>
+    [  'Stray', 'Transfer from Other Organization',
+      'Owner Surrender', 'Temp Care',
+       'Born in Care', 'TNR - Trap/Neuter/Release',
+        'SNR - Spay/Neuter/Return', 'Abuse']
+    '''
+
+    intake_type_mapping = {
+        'Stray': 'Stray',
+        'Transfer from Other Organization': 'Other',
+        'Owner Surrender': 'Owner Surrender',
+        'Temp Care': 'Other',
+        'Born in Care': 'Other',
+        'TNR - Trap/Neuter/Release': 'Other',
+        'SNR - Spay/Neuter/Return': 'Other',
+        'Abuse': 'Other'
+    }
+
+    df['intake_type'] = df['intake_type'].map(intake_type_mapping)
+    df = df[df['intake_type'].isin(['Stray', 'Owner Surrender', 'Euthanasia Request', 'Other'])]
+    return df
+
+
+def filter_outcome_type(df):
+    '''
+    Input: df - dataframe containing outcome_type
+    Output: df - dataframe with only relevant outcome types
+    Keep only relevant outcome types and map to ['Return to Owner', 'Transfer', 'Foster','Euthanasia', 'Adoption', 'Other']
+    Unique values in column outcome_type: <StringArray>
+    [ 'Adoption','Transfer', 'Reclaimed',
+        'Euthanasia', 'Foster', 'Released To Wild',
+        'Died', 'On Shelter']
+    '''
+
+    outcome_type_mapping = {
+        'Adoption': 'Adoption',
+        'Transfer': 'Transfer',
+        'Reclaimed': 'Return to Owner',
+        'Euthanasia': 'Euthanasia',
+        'Foster': 'Foster',
+        'Released To Wild': 'Other',
+        'Died': 'Other',
+        'On Shelter': 'Other'
+    }
+
+    df['outcome_type'] = df['outcome_type'].map(outcome_type_mapping)
+    
+    # Keep only rows with relevant outcome types
+    df = df[df['outcome_type'].isin(['Adoption', 'Transfer', 'Foster', 'Return to Owner', 'Euthanasia', 'Other'])]
+    
+    return df
 
 def keep_dogs_and_cats(df):
     '''
@@ -110,6 +164,7 @@ def add_intake_date_columns(df):
 
 # TODO: add add_sex ???
 # TODO: add add_neuter_status???
+# TODO: intake condition???
 
 # TODO: find edmonton data add add_population 
 # TODO: add add_unemployment - merge Edmonton unemployment CSV on intake_year + intake_month
@@ -160,6 +215,7 @@ def main():
     df = rename_columns(df)
     df = keep_dogs_and_cats(df)
     #check_duplicates_and_nans(df)
+    #get_unique_values(df)
 
     df = add_age_intake(df)
     df = add_time_in_shelter(df)
