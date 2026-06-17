@@ -353,15 +353,15 @@ def remove_columns(df):
 def reorder_columns(df):
     df = df[[
         "age_intake",
-        "sex",
-        "spay_neuter",
+        #"sex",
+        #"spay_neuter",
         "intake_month",
         "intake_day",
         "intake_year",
         "animal_species",
-        "colour",
+        #"colour",
         "breed",
-        "intake_condition",
+        #"intake_condition",
         "intake_type",
         "season",
         "outcome_type", 
@@ -372,9 +372,9 @@ def reorder_columns(df):
 
 
 def main():
-    output_path_full = 'datasets/temp.csv'
-    output_dog= ''
-    output_cat =''
+    output_path_full = 'datasets/final_df_gears.csv'
+    output_dog= 'final_df_gears_dogs.csv'
+    output_cat ='final_df_gears_cats.csv'
 
     df, df_pop, df_unemp, df_kag_dog, df_kag_cat = load_data()
     df = rename_columns(df)
@@ -391,30 +391,27 @@ def main():
     df = apply_stay_category(df)
     df = add_population(df, df_pop)
     df = add_unemployment(df, df_unemp)
-    
-    # TODO: add_population - find Edmonton population data
-    # TODO: add_unemployment - merge Edmonton unemployment CSV on intake_year + intake_month
-
     # TODO: add_sex and add_neuter_status, intake_condition?? knearest?
 
+    df = remove_columns(df)
+    df = reorder_columns(df)
+
     df_cat, df_dog, df = split_cat_and_dog(df)
-    # TODO: apply_categorize_size - dogs only
-    # TODO: categorize_color_and_breed - check GEARS email re: affenpinscher before breed map
-    
+    # add colour??? knearest?
+
     df_dog = map_dog_breeds(df_dog)
     df_cat = map_cat_breeds(df_cat)
-    print(df_dog["breed"].unique())
-    print("\n\n")
-    print(df_cat["breed"].unique())
+    #print(df_dog["breed"].unique())
+    #print(df_cat["breed"].unique())
+    # TODO: apply_categorize_size - dogs only
+    # TODO: black/white indicator
 
-    df = remove_columns(df)
-    # TODO: reorder_columns(df)
 
     # TODO: save_data - write final_df_gears_dogs.csv and final_df_gears_cats.csv
     df.to_csv(output_path_full, index=False)
-    #df.to_csv()
-    #df.to_csv
-    print('[DONE] Edmonton GEARS cleaning complete.')
+    df_dog.to_csv(output_dog, index=False)
+    df_cat.to_csv(output_cat, index=False)
+    print('[DONE] Edmonton GEARS cleaning complete. See: final_df_gears.csv, final_df_gears_dogs.csv, final_df_gears_cats.csv')
 
 
 if __name__ == '__main__':
