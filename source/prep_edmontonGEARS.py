@@ -37,14 +37,8 @@ def clean_kaggle(df_kag_dog, df_kag_cat):
     Drop physical measurement columns not used as model features.
     Dog key column: 'Name'. Cat key column: 'name' (renamed to 'Name' for consistency).
     """
-    df_kag_dog = df_kag_dog.drop(columns=[
-        'min_life_expectancy', 'max_life_expectancy',
-        'max_height_male', 'max_height_female',
-        'max_weight_male', 'max_weight_female',
-        'min_height_male', 'min_height_female',
-        'min_weight_male', 'min_weight_female',
-    ])
-    df_kag_cat = df_kag_cat.drop(columns=["length", "origin"])
+    df_kag_dog = df_kag_dog.drop(columns=['min_life_expectancy', 'max_life_expectancy', 'max_height_male', 'max_height_female', 'max_weight_male', 'max_weight_female', 'min_height_male', 'min_height_female', 'min_weight_male', 'min_weight_female'])
+    df_kag_cat = df_kag_cat.drop(columns=["length","origin"])
     df_kag_cat = df_kag_cat.rename(columns={"name": "Name"})
     return df_kag_dog, df_kag_cat
 
