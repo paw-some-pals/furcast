@@ -1,6 +1,6 @@
 import sys
 import os
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'training'))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'training')))
 from nearest_neighbours import compute_nn
 
 import pandas as pd
@@ -298,7 +298,8 @@ def knn_impute_from_aac(df_dog, df_cat,
         df_cat[target] = ''
 
     for neighbours, samples in [(aac_dog, df_dog), (aac_cat, df_cat)]:
-        samples['age_intake'] = samples['age_intake'].fillna(samples['age_intake'].median())
+        num_cols = samples.select_dtypes(include='number').columns
+        samples[num_cols] = samples[num_cols].fillna(samples[num_cols].median())
         for target in targets:
             samples[target] = compute_nn(neighbours, samples, target_column=target)[target]
 
@@ -450,6 +451,8 @@ def reorder_columns(df):
         "outcome_type", 
         "time_in_shelter",
         "stay_category",
+        "population",
+        "unemploy_rate"
     ]]
     return df
 
@@ -476,7 +479,7 @@ def main():
     df = apply_stay_category(df)
     df = add_population(df, df_pop)
     df = add_unemployment(df, df_unemp)
-
+    #print(df.head())
     df = remove_columns(df)
     df = reorder_columns(df)
 
