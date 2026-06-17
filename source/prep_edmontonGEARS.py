@@ -397,14 +397,14 @@ def main():
 
     # TODO: add_sex and add_neuter_status, intake_condition?? knearest?
 
-    df_dog, df_cat, df = split_cat_and_dog(df)
+    df_cat, df_dog, df = split_cat_and_dog(df)
     # TODO: apply_categorize_size - dogs only
     # TODO: categorize_color_and_breed - check GEARS email re: affenpinscher before breed map
     
     df_dog = map_dog_breeds(df_dog)
     df_cat = map_cat_breeds(df_cat)
     print(df_dog["breed"].unique())
-    print("/n/n")
+    print("\n\n")
     print(df_cat["breed"].unique())
 
     df = remove_columns(df)
