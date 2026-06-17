@@ -5,6 +5,7 @@ import matplotlib as plt
 from  data_utils import categorize_color_dog, categorize_color_cat, categorize_size
 import re
 
+# -------- Load and initial renames --------
 def load_data():
     '''
     Input: none
@@ -21,7 +22,17 @@ def rename_columns(df):
     Rename columns to match the final dataset specifications
     '''
     df = df.rename(columns={ "SPECIESNAME": "animal_species", "BREEDNAME": "breed", "REASONNAME": "intake_type", "OUTCOMENAME": "outcome_type"})
-    return df 
+    return df
+# -------- early filtering, eda --------
+def keep_dogs_and_cats(df):
+    '''
+    Input: df - dataframe containing animal_species
+    Output: df - dataframe containing only dogs and cats
+    Keep only dog and cat rows and lowercase animal_species
+    '''
+    df = df[df["animal_species"].isin(["Dog", "Cat"])]
+    df["animal_species"] = df["animal_species"].str.lower()
+    return df
 
 def check_duplicates_and_nans(df):
     '''
@@ -40,11 +51,11 @@ def check_duplicates_and_nans(df):
 
     #  check only dog and cats unique in animal species, count of cat, dog or others
     print('Unique values in animal_species column:')
-    print(df['SPECIESNAME'].unique())
+    print(df['animal_species'].unique())
     print('Count of each animal species:')
-    print(df['SPECIESNAME'].value_counts())
+    print(df['animal_species'].value_counts())
 
-# -------- Add new features --------
+# -------- Add new features (cat and dog) --------
 def add_age_intake(df):
     '''
     Input: df - dataframe containing DATEOFBIRTH and DATEBROUGHTIN
@@ -93,27 +104,21 @@ def add_intake_date_columns(df):
 # TODO: find edmonton data add add_population 
 # TODO: add add_unemployment - merge Edmonton unemployment CSV on intake_year + intake_month
 
-# ------- Keep what is needed, remap as needed  --------
-def keep_dogs_and_cats(df):
-    '''
-    Input: df - dataframe containing animal_type
-    Output: df - dataframe containing only dogs and cats
-    Keep only dog and cat rows and lowercase animal_type
-    '''
-    df = df[df["animal_type"].isin(["Dog", "Cat"])]
-    df["animal_type"] = df["animal_type"].str.lower()
-    return df
-
+# ------- REmap and clean shared columns --------
 # TODO: add filter_intake_condition - map INTAKECONDITION to Normal / Injured / Aged / Sick / Other / Feral
 # TODO: add apply_clean_intake_type - map INTAKEREASONID to Stray / Owner Surrender / Euthanasia Request / Other
 # TODO: add apply_clean_outcome_type - map OUTCOMEID to Adoption / Transfer / Foster / Return to Owner / Euthanasia / Other
+
+# ------- split and species specific changes --------
+
+# TODO: add split_cat_and_dog - split into df_cat and df_dog 
 
 # TODO: add apply_categorize_size - map breed/weight to size category using data_utils.categorize_size (dogs)
 # TODO: breed map - before breed mapping, check the email from GEARS regarding affenpinscher breed comment
 # TODO: add categorize_color_and_breed - map PRIMARYCOLOUR / PRIMARYBREED using data_utils helpers
 
 
-
+# -------- Final cleanup --------
 def remove_columns(df):
     '''
     Input: df - dataframe containing original and created columns
@@ -142,26 +147,37 @@ def reorder_columns(df):
     ]]
     return df
 
-# TODO: add split_cat_and_dog - split into df_cat and df_dog 
-
 
 def main():
     output_path = 'datasets/temp.csv'
 
     df = load_data()
     df = rename_columns(df)
+    df = keep_dogs_and_cats(df)
     #check_duplicates_and_nans(df)
 
     df = add_age_intake(df)
     df = add_time_in_shelter(df)
     df = add_intake_date_columns(df)
+    # TODO: add_get_season - derive season from intake_month
+    # TODO: add_stay_category - bin time_in_shelter into 0-7 / 8-20 / 21+ days
+    # TODO: add_sex and add_neuter_status
+    # TODO: add_population - find Edmonton population data
+    # TODO: add_unemployment - merge Edmonton unemployment CSV on intake_year + intake_month
+
+    # TODO: filter_intake_condition - map INTAKECONDITION to Normal / Injured / Aged / Sick / Other / Feral
+    # TODO: apply_clean_intake_type - map to Stray / Owner Surrender / Euthanasia Request / Other
+    # TODO: apply_clean_outcome_type - map to Adoption / Transfer / Foster / Return to Owner / Euthanasia / Other
+
+    # TODO: split_cat_and_dog - everything below runs per species
+    # TODO: apply_categorize_size - dogs only
+    # TODO: categorize_color_and_breed - check GEARS email re: affenpinscher before breed map
 
     df = remove_columns(df)
-    #df = reorder_columns(df)
+    # TODO: reorder_columns(df)
+
+    # TODO: save_data - write final_df_gears_dogs.csv and final_df_gears_cats.csv
     df.to_csv(output_path, index=False)
-
-
-    # TODO: add save_data - write final_df_gears_dogs.csv and final_df_gears_cats.csv
     print('[DONE] Edmonton GEARS cleaning complete.')
 
 
