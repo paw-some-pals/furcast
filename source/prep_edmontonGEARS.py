@@ -6,7 +6,7 @@ from nearest_neighbours import compute_nn
 import pandas as pd
 import numpy as np
 import matplotlib as plt
-from  data_utils import categorize_color_dog, categorize_color_cat, categorize_size, categorize_dog_breed_by_size
+from  data_utils import categorize_color_dog, categorize_color_cat, categorize_size, categorize_dog_breed_by_size, check_colour
 import re
 
 # -------- Load and initial renames --------
@@ -417,7 +417,9 @@ def apply_categorize_size(df_dog):
     return df_dog
 
 
-# TODO: cat: black/white indicator
+def apply_black_white_cat(df_cat):
+    df_cat[['black', 'white']] = df_cat.apply(check_colour, axis=1, result_type='expand')
+    return df_cat
 
 
 # -------- Final cleanup --------
@@ -490,6 +492,7 @@ def main():
     df_cat = merge_kaggle_cat(df_cat, df_kag_cat)
 
     df_dog, df_cat = knn_impute_from_aac(df_dog, df_cat)
+    df_cat = apply_black_white_cat(df_cat)
 
     df.to_csv(output_path_full, index=False)
     df_dog.to_csv(output_dog, index=False)
