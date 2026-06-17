@@ -84,13 +84,13 @@ def main():
     # --- outcome_type (classification) ---
     print("=== Final training: outcome_type (classification) ===")
     model = train_final_model(X, df[TARGET_CLF], best_params[TARGET_CLF])
-    save_model(model, "aac_outcome_type_dog_tuned.pkl")
+    save_model(model, "ABDLT_outcome_type_dog_tuned.pkl")
 
     # --- time_in_shelter (regression, trained on log scale) ---
     print("\n=== Final training: time_in_shelter (regression) ===")
     y_reg = np.log1p(df[TARGET_REG])
     model = train_final_model(X, y_reg, best_params[TARGET_REG])
-    save_model(model, "aac_time_in_shelter_dog_tuned.pkl")
+    save_model(model, "ABDLT_time_in_shelter_dog_tuned.pkl")
 
     # # --- stay_category (classification) ---
     # print("\n=== Final training: stay_category (classification) ===")
