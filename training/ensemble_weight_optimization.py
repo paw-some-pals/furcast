@@ -121,8 +121,15 @@ cat_val_y = cat_val[TARGET_CLF]
 p_aac_cat_full = aac_cat_model.predict_proba(cat_val_X_full)
 p_adb_cat_full = adb_cat_model.predict_proba(cat_val_X_full)
 
+def avg_confidence(probs):
+    return probs.max(axis=1).mean()
+
 best_w_cat_full, best_loss_cat_full = find_best_weight(cat_val_y, p_aac_cat_full, p_adb_cat_full)
 print(f"Cat Full  — AAC weight: {best_w_cat_full:.2f}, ADB weight: {1 - best_w_cat_full:.2f}, val log-loss: {best_loss_cat_full:.4f}")
+# print("Cat AAC probs (first 5):", p_aac_cat_full[:5].tolist())
+print(f"Cat AAC avg confidence: {avg_confidence(p_aac_cat_full):.4f}")
+# print("Cat ADB probs (first 5):", p_adb_cat_full[:5].tolist())
+print(f"Cat ADB avg confidence: {avg_confidence(p_adb_cat_full):.4f}")
 
 # --- Dog Full ---
 dog_val_X_full = dog_val[FEATURE_COLS_DOGS_FULL].copy()
@@ -134,6 +141,8 @@ p_adb_dog_full = adb_dog_model.predict_proba(dog_val_X_full)
 
 best_w_dog_full, best_loss_dog_full = find_best_weight(dog_val_y, p_aac_dog_full, p_adb_dog_full)
 print(f"Dog Full  — AAC weight: {best_w_dog_full:.2f}, ADB weight: {1 - best_w_dog_full:.2f}, val log-loss: {best_loss_dog_full:.4f}")
-
-
+# print("Dog AAC probs (first 5):", p_aac_dog_full[:5].tolist())
+print(f"Dog AAC avg confidence: {avg_confidence(p_aac_dog_full):.4f}")
+# print("Dog ADB probs (first 5):", p_adb_dog_full[:5].tolist())
+print(f"Dog ADB avg confidence: {avg_confidence(p_adb_dog_full):.4f}")
 
