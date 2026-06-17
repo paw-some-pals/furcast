@@ -1,4 +1,3 @@
-#intakes with outcome it has date of birth
 import pandas as pd
 import numpy as np
 import matplotlib as plt
@@ -9,11 +8,20 @@ import re
 def load_data():
     '''
     Input: none
-    Output: df - the raw Edmonton GEARS dataframe
+    Output: 
+    df - the raw Edmonton GEARS dataframe
+    df_pop - edmonton population data
+    df_unemp - edmonton unemployment rate 
+    df_kag_dog - kaggle breed dataset to merge with
+    df_kag_cat - kaggle breed df to merge
     Load the Edmonton GEARS intakes with outcomes CSV
     '''
     df = pd.read_csv('datasets/intakes_by_date_with_outcomes2.csv')
-    return df
+    df_pop = pd.read_csv('datasets/edmonton_population.csv')
+    df_unemp = pd.read_csv('datasets/edmonton_unemploy.csv')
+    df_kag_dog = pd.read_csv('datasets/dog_breeds.csv')
+    df_kag_cat = pd.read_csv('datasets/cat_breeds.csv')
+    return df, df_pop, df_unemp, df_kag_dog, df_kag_cat
 
 def rename_columns(df):
     '''
@@ -185,20 +193,45 @@ def apply_stay_category(df):
    df["stay_category"] = df["time_in_shelter"].apply(stay_category)
    return df
 
+# ------- Add new features (external data) --------
+
+def add_population(df, populations):
+    '''
+    Input: df - dataframe containing intake_year
+    Output: df - dataframe with population column added
+    Add population data for Edmonton by year
+    '''
+    populations = populations[["year", "population"]].rename(
+        columns={"year": "intake_year"}
+    )
+    populations["population"] = (
+        populations["population"].astype(str).str.replace(",", "", regex=False).astype(int)
+    )
+    return df.merge(populations, how="left", on="intake_year")
+
+def add_unemployment(df, unemp):
+    unemp["date"] = pd.to_datetime(unemp["date"])
+    unemp["intake_year"] = unemp["date"].dt.year
+    unemp["intake_month"] = unemp["date"].dt.month
+    unemp["unemploy_rate"] = unemp["unemploy_rate"].str.replace("%", "", regex=False).astype(float)
+    unemp = unemp[["intake_year", "intake_month", "unemploy_rate"]]
+    return df.merge(unemp, how="left", on=["intake_year", "intake_month"])
+
+
+# ------- Add new features knearest? --------
 # TODO: add add_sex ???
 # TODO: add add_neuter_status???
 # TODO: intake condition???
-
-# TODO: find edmonton data add add_population 
-# TODO: add add_unemployment - merge Edmonton unemployment CSV on intake_year + intake_month
+# TODO: colour
 
 # ------- split and species specific changes --------
 
 # TODO: add split_cat_and_dog - split into df_cat and df_dog 
 
-# TODO: add apply_categorize_size - map breed/weight to size category using data_utils.categorize_size (dogs)
+# TODO: dog: add apply_categorize_size - map breed/weight to size category using data_utils.categorize_size 
 # TODO: breed map - before breed mapping, check the email from GEARS regarding affenpinscher breed comment
-# TODO: add categorize_color_and_breed - map PRIMARYCOLOUR / PRIMARYBREED using data_utils helpers
+    # TODO: kaggle map 
+# TODO: cat: black/white indicator
 
 
 # -------- Final cleanup --------
@@ -225,8 +258,10 @@ def reorder_columns(df):
         "breed",
         "intake_condition",
         "intake_type",
+        "season",
         "outcome_type", 
         "time_in_shelter",
+        "stay_category",
     ]]
     return df
 
@@ -234,7 +269,7 @@ def reorder_columns(df):
 def main():
     output_path = 'datasets/temp.csv'
 
-    df = load_data()
+    df, df_pop, df_unemp, df_kag_dog, df_kag_cat = load_data()
     df = rename_columns(df)
     df = keep_dogs_and_cats(df)
     #check_duplicates_and_nans(df)
@@ -247,6 +282,8 @@ def main():
     df = add_intake_date_columns(df)
     df = apply_get_season(df)
     df = apply_stay_category(df)
+    df = add_population(df, df_pop)
+    df = add_unemployment(df, df_unemp)
     
     # TODO: add_population - find Edmonton population data
     # TODO: add_unemployment - merge Edmonton unemployment CSV on intake_year + intake_month
