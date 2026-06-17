@@ -14,7 +14,37 @@ def load_data():
     df = pd.read_csv('datasets/intakes_by_date_with_outcomes2.csv')
     return df
 
+def rename_columns(df):
+    '''
+    Input: df - dataframe with original column names
+    Output: df - dataframe with renamed columns
+    Rename columns to match the final dataset specifications
+    '''
+    df = df.rename(columns={ "SPECIESNAME": "animal_species", "BREEDNAME": "breed", "REASONNAME": "intake_type", "OUTCOMENAME": "outcome_type"})
+    return df 
 
+def check_duplicates_and_nans(df):
+    '''
+    Input: df - dataframe to check for duplicates and NaN values
+    Output: prints number of duplicates and NaN values in each column
+    Check for duplicates and NaN values in the dataframe
+    used prior to cleaning to identify any issues in the raw data that need to be addressed during cleaning
+    use original df names
+    '''
+    num_duplicates = df.duplicated().sum()
+    print(f'Number of duplicate rows: {num_duplicates}')
+    
+    num_nans = df.isna().sum()
+    print('Number of NaN values in each column:')
+    print(num_nans)
+
+    #  check only dog and cats unique in animal species, count of cat, dog or others
+    print('Unique values in animal_species column:')
+    print(df['SPECIESNAME'].unique())
+    print('Count of each animal species:')
+    print(df['SPECIESNAME'].value_counts())
+
+# -------- Add new features --------
 def add_age_intake(df):
     '''
     Input: df - dataframe containing DATEOFBIRTH and DATEBROUGHTIN
@@ -53,44 +83,35 @@ def add_intake_date_columns(df):
     df['intake_month'] = df['intake_date'].dt.month
     df['intake_day'] = df['intake_date'].dt.day
     return df
- 
-def check_duplicates_and_nans(df):
-    '''
-    Input: df - dataframe to check for duplicates and NaN values
-    Output: prints number of duplicates and NaN values in each column
-    Check for duplicates and NaN values in the dataframe
-    used prior to cleaning to identify any issues in the raw data that need to be addressed during cleaning
-    use original df names
-    '''
-    num_duplicates = df.duplicated().sum()
-    print(f'Number of duplicate rows: {num_duplicates}')
-    
-    num_nans = df.isna().sum()
-    print('Number of NaN values in each column:')
-    print(num_nans)
-
-    #  check only dog and cats unique in animal species
-    print('Unique values in animal_species column:')
-    print(df['SPECIESNAME'].nunique())
-
-
-
-# TODO: add filter_intake_condition - map INTAKECONDITION to Normal / Injured / Aged / Sick / Other / Feral
-# TODO: add apply_clean_intake_type - map INTAKEREASONID to Stray / Owner Surrender / Euthanasia Request / Other
-# TODO: add apply_clean_outcome_type - map OUTCOMEID to Adoption / Transfer / Foster / Return to Owner / Euthanasia / Other
-# TODO: add apply_get_season - derive season from intake_month 
+ # TODO: add apply_get_season - derive season from intake_month 
 # TODO: add apply_stay_category - bin time_in_shelter into 0-7 / 8-20 / 21+ days
 
 # TODO: add add_sex ???
 # TODO: add add_neuter_status???
 
+
+# TODO: find edmonton data add add_population 
+# TODO: add add_unemployment - merge Edmonton unemployment CSV on intake_year + intake_month
+
+# ------- Keep what is needed, remap as needed  --------
+def keep_dogs_and_cats(df):
+    '''
+    Input: df - dataframe containing animal_type
+    Output: df - dataframe containing only dogs and cats
+    Keep only dog and cat rows and lowercase animal_type
+    '''
+    df = df[df["animal_type"].isin(["Dog", "Cat"])]
+    df["animal_type"] = df["animal_type"].str.lower()
+    return df
+
+# TODO: add filter_intake_condition - map INTAKECONDITION to Normal / Injured / Aged / Sick / Other / Feral
+# TODO: add apply_clean_intake_type - map INTAKEREASONID to Stray / Owner Surrender / Euthanasia Request / Other
+# TODO: add apply_clean_outcome_type - map OUTCOMEID to Adoption / Transfer / Foster / Return to Owner / Euthanasia / Other
+
 # TODO: add apply_categorize_size - map breed/weight to size category using data_utils.categorize_size (dogs)
 # TODO: breed map - before breed mapping, check the email from GEARS regarding affenpinscher breed comment
 # TODO: add categorize_color_and_breed - map PRIMARYCOLOUR / PRIMARYBREED using data_utils helpers
 
-
-# TODO: find edmonton data add add_population 
-# TODO: add add_unemployment - merge Edmonton unemployment CSV on intake_year + intake_month
 
 
 def remove_columns(df):
@@ -102,14 +123,6 @@ def remove_columns(df):
     df = df.drop(columns=[ "SHELTERCODE", "DATEOFBIRTH", "DATEBROUGHTIN", "OUTCOMEDATE"])
     return df
 
-def rename_columns(df):
-    '''
-    Input: df - dataframe with original column names
-    Output: df - dataframe with renamed columns
-    Rename columns to match the final dataset specifications
-    '''
-    df = df.rename(columns={ "SPECIESNAME": "animal_species", "BREEDNAME": "breed", "REASONNAME": "intake_type", "OUTCOMENAME": "outcome_type"})
-    return df 
 
 def reorder_columns(df):
     df = df[[
@@ -136,16 +149,15 @@ def main():
     output_path = 'datasets/temp.csv'
 
     df = load_data()
+    df = rename_columns(df)
+    #check_duplicates_and_nans(df)
+
     df = add_age_intake(df)
     df = add_time_in_shelter(df)
     df = add_intake_date_columns(df)
-    print('Initial cleaning complete. Checking for duplicates and NaN values...')
-    check_duplicates_and_nans(df)
 
     df = remove_columns(df)
-    df = rename_columns(df)
-    df = reorder_columns(df)
-
+    #df = reorder_columns(df)
     df.to_csv(output_path, index=False)
 
 
