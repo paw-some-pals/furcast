@@ -299,7 +299,7 @@ document.getElementById('predict-form').addEventListener('submit', async functio
         const result = await response.json();
         console.log('Prediction result:', result);
 
-        document.getElementById('result-days').textContent = result.estimated_days_in_shelter;
+        document.getElementById('result-days').textContent = result.predicted_bin;
         document.getElementById('result-emoji').textContent = currentAnimal === 'cat' ? '🐱' : '🐶';
         showPage('page-result');
     } catch (err) {
