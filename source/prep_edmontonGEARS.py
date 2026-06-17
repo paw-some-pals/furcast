@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib as plt
-from  data_utils import categorize_color_dog, categorize_color_cat, categorize_size
+from  data_utils import categorize_color_dog, categorize_color_cat, categorize_size, categorize_dog_breed_by_size
 import re
 
 # -------- Load and initial renames --------
@@ -34,11 +34,58 @@ def rename_columns(df):
 
 def clean_kaggle(df_kag_dog, df_kag_cat):
     """
-    drop unneeded cols from 
+    Drop physical measurement columns not used as model features.
+    Dog key column: 'Name'. Cat key column: 'name' (renamed to 'Name' for consistency).
     """
-    df_kag_dog = df_kag_dog.drop(columns=['min_life_expectancy', 'max_life_expectancy', 'max_height_male', 'max_height_female', 'max_weight_male', 'max_weight_female', 'min_height_male', 'min_height_female', 'min_weight_male', 'min_weight_female'])
-    df_kag_cat = df_kag_cat.drop(columns=["length","origin"])
-    return df
+    df_kag_dog = df_kag_dog.drop(columns=[
+        'min_life_expectancy', 'max_life_expectancy',
+        'max_height_male', 'max_height_female',
+        'max_weight_male', 'max_weight_female',
+        'min_height_male', 'min_height_female',
+        'min_weight_male', 'min_weight_female',
+    ])
+    df_kag_cat = df_kag_cat.drop(columns=["length", "origin"])
+    df_kag_cat = df_kag_cat.rename(columns={"name": "Name"})
+    return df_kag_dog, df_kag_cat
+
+
+def _merge_kaggle(df, df_kag, breed_2_sentinel='not given'):
+    """
+    Merge df with a Kaggle breed table on breed_1 / breed_2.
+    Pure breeds (breed_2 == sentinel): direct left-join on breed_1.
+    Mixed breeds: average numeric Kaggle features from breed_1 and breed_2.
+    """
+    kaggle_feature_cols = [c for c in df_kag.columns if c != 'Name']
+
+    pure_mask = df['breed_2'] == breed_2_sentinel
+
+    df_pure = df[pure_mask].merge(
+        df_kag, how='left', left_on='breed_1', right_on='Name'
+    ).drop(columns=['Name'])
+
+    df_mixed = df[~pure_mask].copy()
+
+    b1_vals = df_mixed[['breed_1']].merge(
+        df_kag, how='left', left_on='breed_1', right_on='Name'
+    )[kaggle_feature_cols].to_numpy()
+
+    b2_vals = df_mixed[['breed_2']].merge(
+        df_kag, how='left', left_on='breed_2', right_on='Name'
+    )[kaggle_feature_cols].to_numpy()
+
+    df_mixed[kaggle_feature_cols] = (b1_vals + b2_vals) / 2
+
+    return pd.concat([df_pure, df_mixed]).sort_index().reset_index(drop=True)
+
+
+def merge_kaggle_dog(df_dog, df_kag_dog):
+    return _merge_kaggle(df_dog, df_kag_dog)
+
+
+def merge_kaggle_cat(df_cat, df_kag_cat):
+    return _merge_kaggle(df_cat, df_kag_cat)
+
+
 # -------- early filtering, eda --------
 
 def check_duplicates_and_nans(df):
@@ -241,7 +288,6 @@ def split_cat_and_dog(df):
 
 
 
-# TODO: dog: add apply_categorize_size - map breed/weight to size category using data_utils.categorize_size 
 def map_dog_breeds(df):
     '''
     Input: df - dog dataframe with a 'breed' column from Edmonton GEARS
@@ -336,6 +382,17 @@ def map_cat_breeds(df):
     return df
 
 # TODO: kaggle map 
+
+def apply_categorize_size(df_dog):
+    '''
+    Input: df_dog - dog-only dataframe with breed_1 column (mapped Kaggle breed name)
+    Output: df_dog - dataframe with animal_size column added
+    Apply size categorization using breed_1 after map_dog_breeds has run.
+    '''
+    df_dog['animal_size'] = df_dog['breed_1'].apply(categorize_dog_breed_by_size)
+    return df_dog
+
+
 # TODO: cat: black/white indicator
 
 
@@ -377,6 +434,8 @@ def main():
     output_cat ='final_df_gears_cats.csv'
 
     df, df_pop, df_unemp, df_kag_dog, df_kag_cat = load_data()
+    df_kag_dog, df_kag_cat = clean_kaggle(df_kag_dog, df_kag_cat)
+
     df = rename_columns(df)
     df = keep_dogs_and_cats(df)
     #check_duplicates_and_nans(df)
@@ -403,8 +462,11 @@ def main():
     df_cat = map_cat_breeds(df_cat)
     #print(df_dog["breed"].unique())
     #print(df_cat["breed"].unique())
-    # TODO: apply_categorize_size - dogs only
-    # TODO: black/white indicator
+
+    df_dog = apply_categorize_size(df_dog)
+    df_dog = merge_kaggle_dog(df_dog, df_kag_dog)
+    df_cat = merge_kaggle_cat(df_cat, df_kag_cat)
+    # TODO: black/white indicator (NEED TO ADD COLOUR FIRST)
 
 
     # TODO: save_data - write final_df_gears_dogs.csv and final_df_gears_cats.csv
