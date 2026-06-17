@@ -104,10 +104,7 @@ def filter_outcome_type(df):
     }
 
     df['outcome_type'] = df['outcome_type'].map(outcome_type_mapping)
-    
-    # Keep only rows with relevant outcome types
     df = df[df['outcome_type'].isin(['Adoption', 'Transfer', 'Foster', 'Return to Owner', 'Euthanasia', 'Other'])]
-    
     return df
 
 def keep_dogs_and_cats(df):
@@ -159,8 +156,34 @@ def add_intake_date_columns(df):
     df['intake_month'] = df['intake_date'].dt.month
     df['intake_day'] = df['intake_date'].dt.day
     return df
- # TODO: add apply_get_season - derive season from intake_month 
-# TODO: add apply_stay_category - bin time_in_shelter into 0-7 / 8-20 / 21+ days
+
+def get_seasons(month):
+    if month in [3,4,5]:
+        return "Spring"
+    elif month in [6,7,8]:
+        return "Summer"
+    elif month in [9,10,11]:
+        return "Fall"
+    elif month in [1,2,12]:
+        return "Winter"
+    
+def apply_get_season(df):
+    df["season"] = df["intake_month"].apply(get_seasons)
+    return df
+
+def stay_category(days):
+   if pd.isna(days):
+       return pd.NA
+   if days <= 7:
+       return "0-7 days"
+   elif days <= 20:
+       return "8-20 days"
+   else:
+       return "21+ days"
+
+def apply_stay_category(df):
+   df["stay_category"] = df["time_in_shelter"].apply(stay_category)
+   return df
 
 # TODO: add add_sex ???
 # TODO: add add_neuter_status???
@@ -216,19 +239,19 @@ def main():
     df = keep_dogs_and_cats(df)
     #check_duplicates_and_nans(df)
     #get_unique_values(df)
+    df = filter_intake_type(df)
+    df = filter_outcome_type(df)
 
     df = add_age_intake(df)
     df = add_time_in_shelter(df)
     df = add_intake_date_columns(df)
-    # TODO: add_get_season - derive season from intake_month
-    # TODO: add_stay_category - bin time_in_shelter into 0-7 / 8-20 / 21+ days
-    # TODO: add_sex and add_neuter_status
+    df = apply_get_season(df)
+    df = apply_stay_category(df)
+    
     # TODO: add_population - find Edmonton population data
     # TODO: add_unemployment - merge Edmonton unemployment CSV on intake_year + intake_month
 
-    # TODO: filter_intake_condition - map INTAKECONDITION to Normal / Injured / Aged / Sick / Other / Feral
-    # TODO: apply_clean_intake_type - map to Stray / Owner Surrender / Euthanasia Request / Other
-    # TODO: apply_clean_outcome_type - map to Adoption / Transfer / Foster / Return to Owner / Euthanasia / Other
+    # TODO: add_sex and add_neuter_status, intake_condition?? knearest?
 
     # TODO: split_cat_and_dog - everything below runs per species
     # TODO: apply_categorize_size - dogs only
