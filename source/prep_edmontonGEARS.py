@@ -2,7 +2,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib as plt
-import data_utils
+from  data_utils import categorize_color_dog, categorize_color_cat, categorize_size
 import re
 
 def load_data():
@@ -54,9 +54,27 @@ def add_intake_date_columns(df):
     df['intake_day'] = df['intake_date'].dt.day
     return df
  
+def check_duplicates_and_nans(df):
+    '''
+    Input: df - dataframe to check for duplicates and NaN values
+    Output: prints number of duplicates and NaN values in each column
+    Check for duplicates and NaN values in the dataframe
+    used prior to cleaning to identify any issues in the raw data that need to be addressed during cleaning
+    use original df names
+    '''
+    num_duplicates = df.duplicated().sum()
+    print(f'Number of duplicate rows: {num_duplicates}')
+    
+    num_nans = df.isna().sum()
+    print('Number of NaN values in each column:')
+    print(num_nans)
 
-# TODO: check duplicates?
-# TODO: check only dog and cats
+    #  check only dog and cats unique in animal species
+    print('Unique values in animal_species column:')
+    print(df['SPECIESNAME'].nunique())
+
+
+
 # TODO: add filter_intake_condition - map INTAKECONDITION to Normal / Injured / Aged / Sick / Other / Feral
 # TODO: add apply_clean_intake_type - map INTAKEREASONID to Stray / Owner Surrender / Euthanasia Request / Other
 # TODO: add apply_clean_outcome_type - map OUTCOMEID to Adoption / Transfer / Foster / Return to Owner / Euthanasia / Other
@@ -112,20 +130,27 @@ def reorder_columns(df):
     return df
 
 # TODO: add split_cat_and_dog - split into df_cat and df_dog 
-# TODO: add save_data - write final_df_gears_dogs.csv and final_df_gears_cats.csv
 
 
 def main():
-    output_path = 'datasets/edmonton_gears_cleaned.csv'
+    output_path = 'datasets/temp.csv'
 
     df = load_data()
     df = add_age_intake(df)
     df = add_time_in_shelter(df)
     df = add_intake_date_columns(df)
+    print('Initial cleaning complete. Checking for duplicates and NaN values...')
+    check_duplicates_and_nans(df)
 
+    df = remove_columns(df)
+    df = rename_columns(df)
+    df = reorder_columns(df)
 
     df.to_csv(output_path, index=False)
-    print('[DONE] Initial Edmonton GEARS cleaning complete.')
+
+
+    # TODO: add save_data - write final_df_gears_dogs.csv and final_df_gears_cats.csv
+    print('[DONE] Edmonton GEARS cleaning complete.')
 
 
 if __name__ == '__main__':
