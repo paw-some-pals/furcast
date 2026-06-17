@@ -1,3 +1,8 @@
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'training'))
+from nearest_neighbours import compute_nn
+
 import pandas as pd
 import numpy as np
 import matplotlib as plt
@@ -267,11 +272,37 @@ def add_unemployment(df, unemp):
     return df.merge(unemp, how="left", on=["intake_year", "intake_month"])
 
 
-# ------- Add new features knearest? --------
-# TODO: add add_sex ???
-# TODO: add add_neuter_status???
-# TODO: intake condition???
-# TODO: colour
+# ------- KNN imputation from AAC --------
+
+def knn_impute_from_aac(df_dog, df_cat,
+                         aac_dog_path='datasets/final_df_aac_dogs.csv',
+                         aac_cat_path='datasets/final_df_aac_cats.csv'):
+    '''
+    Input: df_dog - GEARS dog dataframe (post-kaggle merge)
+           df_cat - GEARS cat dataframe (post-kaggle merge)
+           aac_dog_path - path to final AAC dog CSV to use as neighbour database
+           aac_cat_path - path to final AAC cat CSV to use as neighbour database
+    Output: df_dog, df_cat with sex, spay_neuter, intake_condition, colour filled in
+    Use nearest neighbours on final AAC datasets to impute columns missing from GEARS.
+    Shared numeric features are detected automatically (age_intake, intake_month,
+    intake_year, etc.). age_intake NaNs are filled with column median before matching.
+    Colour is species-appropriate since dog and cat AAC files use their respective
+    colour categories.
+    '''
+    aac_dog = pd.read_csv(aac_dog_path)
+    aac_cat = pd.read_csv(aac_cat_path)
+
+    targets = ['sex', 'spay_neuter', 'intake_condition', 'colour']
+    for target in targets:
+        df_dog[target] = ''
+        df_cat[target] = ''
+
+    for neighbours, samples in [(aac_dog, df_dog), (aac_cat, df_cat)]:
+        samples['age_intake'] = samples['age_intake'].fillna(samples['age_intake'].median())
+        for target in targets:
+            samples[target] = compute_nn(neighbours, samples, target_column=target)[target]
+
+    return df_dog, df_cat
 
 # ------- split and species specific changes --------
 
@@ -423,8 +454,8 @@ def reorder_columns(df):
 
 def main():
     output_path_full = 'datasets/final_df_gears.csv'
-    output_dog= 'final_df_gears_dogs.csv'
-    output_cat ='final_df_gears_cats.csv'
+    output_dog= 'datasets/final_df_gears_dogs.csv'
+    output_cat ='datasets/final_df_gears_cats.csv'
 
     df, df_pop, df_unemp, df_kag_dog, df_kag_cat = load_data()
     df_kag_dog, df_kag_cat = clean_kaggle(df_kag_dog, df_kag_cat)
@@ -443,13 +474,11 @@ def main():
     df = apply_stay_category(df)
     df = add_population(df, df_pop)
     df = add_unemployment(df, df_unemp)
-    # TODO: add_sex and add_neuter_status, intake_condition?? knearest?
 
     df = remove_columns(df)
     df = reorder_columns(df)
 
     df_cat, df_dog, df = split_cat_and_dog(df)
-    # add colour??? knearest?
 
     df_dog = map_dog_breeds(df_dog)
     df_cat = map_cat_breeds(df_cat)
@@ -459,7 +488,8 @@ def main():
     df_dog = apply_categorize_size(df_dog)
     df_dog = merge_kaggle_dog(df_dog, df_kag_dog)
     df_cat = merge_kaggle_cat(df_cat, df_kag_cat)
-    # TODO: black/white indicator (NEED TO ADD COLOUR FIRST)
+
+    df_dog, df_cat = knn_impute_from_aac(df_dog, df_cat)
 
     df.to_csv(output_path_full, index=False)
     df_dog.to_csv(output_dog, index=False)
