@@ -31,6 +31,14 @@ def rename_columns(df):
     '''
     df = df.rename(columns={ "SPECIESNAME": "animal_species", "BREEDNAME": "breed", "REASONNAME": "intake_type", "OUTCOMENAME": "outcome_type"})
     return df
+
+def clean_kaggle(df_kag_dog, df_kag_cat):
+    """
+    drop unneeded cols from 
+    """
+    df_kag_dog = df_kag_dog.drop(columns=['min_life_expectancy', 'max_life_expectancy', 'max_height_male', 'max_height_female', 'max_weight_male', 'max_weight_female', 'min_height_male', 'min_height_female', 'min_weight_male', 'min_weight_female'])
+    df_kag_cat = df_kag_cat.drop(columns=["length","origin"])
+    return df
 # -------- early filtering, eda --------
 
 def check_duplicates_and_nans(df):
@@ -226,11 +234,108 @@ def add_unemployment(df, unemp):
 
 # ------- split and species specific changes --------
 
-# TODO: add split_cat_and_dog - split into df_cat and df_dog 
+def split_cat_and_dog(df):
+    df_cat = df[df["animal_species"] == "cat"].copy()
+    df_dog = df[df["animal_species"] == "dog"].copy()
+    return df_cat, df_dog, df
+
+
 
 # TODO: dog: add apply_categorize_size - map breed/weight to size category using data_utils.categorize_size 
-# TODO: breed map - before breed mapping, check the email from GEARS regarding affenpinscher breed comment
-    # TODO: kaggle map 
+def map_dog_breeds(df):
+    '''
+    Input: df - dog dataframe with a 'breed' column from Edmonton GEARS
+    Output: df - dataframe with breed_1, breed_2, is_mixed columns added
+    Manual mapping of GEARS breed strings to Kaggle dog_breeds.csv names.
+    breed_1/breed_2 are "not given" only for truly unknown breeds (Mixed Breed, Affenpinscher artifact).
+    '''
+    DOG_BREED_MAP = { #LLM filled in manual map, less breeds so did not use fuzzy str match. reviewd and seems okay
+        'Affenpinscher':                           ('not given','not given',1), # will need to drop
+        'American Bulldog':                        ('American Bulldog',       'not given',                     0),
+        'American Bulldog/Boxer':                  ('American Bulldog',       'Boxer',                         1),
+        'American Staffordshire Terrier':          ('American Staffordshire Terrier', 'not given',             0),
+        'Australian Cattle Dog/Blue Heeler':       ('Australian Cattle Dog',  'not given',                     0), #these are the same breed
+        'Basset Hound':                            ('Basset Hound',           'not given',                     0),
+        'Beagle':                                  ('Beagle',                 'not given',                     0),
+        'Bernese Mountain Dog/Affenpinscher':      ('Bernese Mountain Dog',   'not given',                     1),
+        'Bernese Mountain Dog/Labrador Retriever': ('Bernese Mountain Dog',   'Labrador Retriever',            1),
+        'Border Collie':                           ('Border Collie',          'not given',                     0),
+        'Border Collie/Beagle':                    ('Border Collie',          'Beagle',                        1),
+        'Border Collie/Mixed Breed':               ('Border Collie',          'not given',                     1),
+        'Boston Terrier':                          ('Boston Terrier',         'not given',                     0),
+        'Boxer/Cane Corso Mastiff':                ('Boxer',                  'Cane Corso',                    1),
+        'Cane Corso Mastiff':                      ('Cane Corso',             'not given',                     0),
+        'Cane Corso Mastiff/Boxer':                ('Cane Corso',             'Boxer',                         1),
+        'Chihuahua':                               ('Chihuahua',              'not given',                     0),
+        'Cockapoo':                                ('Cocker Spaniel',         'Poodle (Miniature)',             1),
+        'Dachshund':                               ('Dachshund',              'not given',                     0),
+        'English Springer Spaniel/Border Collie':  ('Cocker Spaniel',         'Border Collie',                 1),
+        'French Bulldog':                          ('French Bulldog',         'not given',                     0),
+        'German Shepherd Dog':                     ('Anatolian Shepherd Dog', 'not given',                     0),
+        'German Shepherd Dog/Mixed Breed':         ('Anatolian Shepherd Dog', 'not given',                     1),
+        'Great Pyrenees':                          ('Great Pyrenees',         'not given',                     0),
+        'Great Pyrenees/Mountain Dog':             ('Great Pyrenees',         'not given',                     1),
+        'Havanese':                                ('Havanese',               'not given',                     0),
+        'Husky':                                   ('Siberian Husky',         'not given',                     0),
+        'Husky/Mixed Breed':                       ('Siberian Husky',         'not given',                     1),
+        'Irish Wolfhound/Mixed Breed':             ('Greyhound',              'not given',                     1),
+        'Japanese Chin':                           ('Japanese Chin',          'not given',                     0),
+        'Labrador Retriever':                      ('Labrador Retriever',     'not given',                     0),
+        'Labrador Retriever/Mixed Breed':          ('Labrador Retriever',     'not given',                     1),
+        'Maltese':                                 ('Maltese',                'not given',                     0),
+        'Mastiff':                                 ('Bullmastiff',            'not given',                     0),
+        'Mastiff/Mixed Breed':                     ('Bullmastiff',            'not given',                     1),
+        'Mixed Breed':                             ('not given',              'not given',                     1), #need to drop
+        'Mixed Breed/Pit Bull Terrier':            ('not given',              'American Staffordshire Terrier', 1),
+        'Pit Bull Terrier':                        ('American Staffordshire Terrier', 'not given',             0),
+        'Poodle':                                  ('Poodle (Miniature)',     'not given',                     0),
+        'Poodle/Pomeranian':                       ('Poodle (Miniature)',     'Pomeranian',                    1),
+        'Rottweiler':                              ('Rottweiler',             'not given',                     0),
+        'Shepherd':                                ('Anatolian Shepherd Dog', 'not given',                     0),
+        'Shepherd/Mixed Breed':                    ('Anatolian Shepherd Dog', 'not given',                     1),
+        'Shih Tzu':                                ('Shih Tzu',               'not given',                     0),
+        'Spaniel':                                 ('Cocker Spaniel',         'not given',                     0),
+        'Xoloitzcuintle/Mexican Hairless':         ('Xoloitzcuintli',        'not given',                     0),
+        'Yorkshire Terrier Yorkie':                ('Yorkshire Terrier',      'not given',                     0),
+    }
+    df['breed'] = df['breed'].str.strip()
+    mapped = df['breed'].map(DOG_BREED_MAP)
+    df['breed_1'] = mapped.apply(lambda x: x[0] if isinstance(x, tuple) else 'not given')
+    df['breed_2'] = mapped.apply(lambda x: x[1] if isinstance(x, tuple) else 'not given')
+    df['is_mixed'] = mapped.apply(lambda x: x[2] if isinstance(x, tuple) else 0)
+    df = df[df['breed_1'] != 'not given']
+    return df
+
+
+def map_cat_breeds(df):
+    '''
+    Input: df - cat dataframe with a 'breed' column from Edmonton GEARS
+    Output: df - dataframe with breed_1, breed_2, is_mixed columns added
+    Manual mapping of GEARS breed strings to Kaggle cat_breeds.csv names.
+    Notes:
+      - "Domestic Long/Medium/Short Hair" are coat descriptors, not breeds -> not given.
+      - Kaggle uses "Bengal Cats", "Ragdoll Cats", "Siamese Cat" (with suffix).
+    '''
+    CAT_BREED_MAP = {
+        'Bengal':               ('Bengal Cats',   'not given', 0),
+        'Domestic Long Hair':   ('American Longhair',     'not given', 0),
+        'Domestic Medium Hair': ('American Longhair',     'not given', 0),
+        'Domestic Short Hair':  ('American Shorthair',     'not given', 0),
+        'Maine Coon':           ('Maine Coon',    'not given', 0),
+        'Manx':                 ('Manx',          'not given', 0),
+        'Ragdoll':              ('Ragdoll Cats',  'not given', 0),
+        'Scottish Fold':        ('Scottish Fold', 'not given', 0),
+        'Siamese':              ('Siamese Cat',   'not given', 0),
+    }
+    df['breed'] = df['breed'].str.strip()
+    mapped = df['breed'].map(CAT_BREED_MAP)
+    df['breed_1'] = mapped.apply(lambda x: x[0] if isinstance(x, tuple) else 'not given')
+    df['breed_2'] = mapped.apply(lambda x: x[1] if isinstance(x, tuple) else 'not given')
+    df['is_mixed'] = mapped.apply(lambda x: x[2] if isinstance(x, tuple) else 0)
+    df = df[df['breed_1'] != 'not given']
+    return df
+
+# TODO: kaggle map 
 # TODO: cat: black/white indicator
 
 
@@ -267,7 +372,9 @@ def reorder_columns(df):
 
 
 def main():
-    output_path = 'datasets/temp.csv'
+    output_path_full = 'datasets/temp.csv'
+    output_dog= ''
+    output_cat =''
 
     df, df_pop, df_unemp, df_kag_dog, df_kag_cat = load_data()
     df = rename_columns(df)
@@ -290,15 +397,23 @@ def main():
 
     # TODO: add_sex and add_neuter_status, intake_condition?? knearest?
 
-    # TODO: split_cat_and_dog - everything below runs per species
+    df_dog, df_cat, df = split_cat_and_dog(df)
     # TODO: apply_categorize_size - dogs only
     # TODO: categorize_color_and_breed - check GEARS email re: affenpinscher before breed map
+    
+    df_dog = map_dog_breeds(df_dog)
+    df_cat = map_cat_breeds(df_cat)
+    print(df_dog["breed"].unique())
+    print("/n/n")
+    print(df_cat["breed"].unique())
 
     df = remove_columns(df)
     # TODO: reorder_columns(df)
 
     # TODO: save_data - write final_df_gears_dogs.csv and final_df_gears_cats.csv
-    df.to_csv(output_path, index=False)
+    df.to_csv(output_path_full, index=False)
+    #df.to_csv()
+    #df.to_csv
     print('[DONE] Edmonton GEARS cleaning complete.')
 
 
