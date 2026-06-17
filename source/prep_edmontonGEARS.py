@@ -53,7 +53,7 @@ def add_intake_date_columns(df):
     df['intake_month'] = df['intake_date'].dt.month
     df['intake_day'] = df['intake_date'].dt.day
     return df
-
+ 
 
 # TODO: check duplicates?
 # TODO: check only dog and cats
@@ -62,10 +62,11 @@ def add_intake_date_columns(df):
 # TODO: add apply_clean_outcome_type - map OUTCOMEID to Adoption / Transfer / Foster / Return to Owner / Euthanasia / Other
 # TODO: add apply_get_season - derive season from intake_month 
 # TODO: add apply_stay_category - bin time_in_shelter into 0-7 / 8-20 / 21+ days
-# TODO: add add_sex - parse sex from SEXID or equivalent column into Male / Female / Unknown
-# TODO: add add_neuter_status - parse spay/neuter status from SEXID or equivalent into Yes / No / Unknown
-# TODO: add apply_categorize_size - map breed/weight to size category using data_utils.categorize_size (dogs)
 
+# TODO: add add_sex ???
+# TODO: add add_neuter_status???
+
+# TODO: add apply_categorize_size - map breed/weight to size category using data_utils.categorize_size (dogs)
 # TODO: breed map - before breed mapping, check the email from GEARS regarding affenpinscher breed comment
 # TODO: add categorize_color_and_breed - map PRIMARYCOLOUR / PRIMARYBREED using data_utils helpers
 
@@ -73,9 +74,42 @@ def add_intake_date_columns(df):
 # TODO: find edmonton data add add_population 
 # TODO: add add_unemployment - merge Edmonton unemployment CSV on intake_year + intake_month
 
-# TODO: add remove_columns - drop raw/intermediate columns not needed in final dataset
-# TODO: add rename_columns - standardize column names to match final dataset spec 
-# TODO: add reorder_columns - reorder to match final column order used in AAC cleaned output
+
+def remove_columns(df):
+    '''
+    Input: df - dataframe containing original and created columns
+    Output: df - dataframe with unused columns removed
+    Drop columns that are not needed in the final dataset
+    '''
+    df = df.drop(columns=[ "SHELTERCODE", "DATEOFBIRTH", "DATEBROUGHTIN", "OUTCOMEDATE"])
+    return df
+
+def rename_columns(df):
+    '''
+    Input: df - dataframe with original column names
+    Output: df - dataframe with renamed columns
+    Rename columns to match the final dataset specifications
+    '''
+    df = df.rename(columns={ "SPECIESNAME": "animal_species", "BREEDNAME": "breed", "REASONNAME": "intake_type", "OUTCOMENAME": "outcome_type"})
+    return df 
+
+def reorder_columns(df):
+    df = df[[
+        "age_intake",
+        "sex",
+        "spay_neuter",
+        "intake_month",
+        "intake_day",
+        "intake_year",
+        "animal_species",
+        "colour",
+        "breed",
+        "intake_condition",
+        "intake_type",
+        "outcome_type", 
+        "time_in_shelter",
+    ]]
+    return df
 
 # TODO: add split_cat_and_dog - split into df_cat and df_dog 
 # TODO: add save_data - write final_df_gears_dogs.csv and final_df_gears_cats.csv
