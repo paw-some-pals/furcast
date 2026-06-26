@@ -300,6 +300,7 @@ document.getElementById('predict-form').addEventListener('submit', async functio
         console.log('Prediction result:', result);
 
         document.getElementById('result-days').textContent = result.predicted_bin;
+        document.getElementById('result-longterm').textContent = result.longterm_days + ' days';
         document.getElementById('result-emoji').textContent = currentAnimal === 'cat' ? '🐱' : '🐶';
         showPage('page-result');
     } catch (err) {

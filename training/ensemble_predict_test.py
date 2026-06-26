@@ -5,6 +5,9 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 cat_test = pd.read_csv("datasets/final_ensemble/combined_cat_test.csv")
 dog_test = pd.read_csv("datasets/final_ensemble/combined_dog_test.csv")
 
+# cat_test = pd.read_csv("datasets/edmonton/final_df_gears_cats.csv")
+# dog_test = pd.read_csv("datasets/edmonton/final_df_gears_dogs.csv")
+
 with open("models/ensemble_part2/models/model_cat_aac.pkl", "rb") as f:
     aac_cat_model = pickle.load(f)
 with open("models/ensemble_part2/models/model_cat_adb.pkl", "rb") as f:
@@ -13,6 +16,8 @@ with open("models/ensemble_part2/models/model_dog_aac.pkl", "rb") as f:
     aac_dog_model = pickle.load(f)
 with open("models/ensemble_part2/models/model_dog_adb.pkl", "rb") as f:
     adb_dog_model = pickle.load(f)
+
+
 
 FEATURE_COLS_CATS_FULL = [
     "age_intake", "sex", "spay_neuter", "intake_month", "intake_day", "intake_year",
