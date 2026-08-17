@@ -1,4 +1,4 @@
-# FurCast
+# furcast
 
 <p align="center">
   <img src="images/furcast-logo.png" alt="FurCast logo" width="300">
@@ -8,8 +8,8 @@
   <strong>A forecasting application for animal shelters</strong>
 </p>
 
-FurCast is a machine learning project developed by Edmonton Team E1 during the **AI4Good Lab 2026**. 
-It predicts an animal’s expected length-of-stay category and likely outcome type, helping shelter staff data-informed decisions about care and resources.
+A machine learning project that predicts an animal’s expected length-of-stay category and likely outcome type, helping shelter staff data informed decisions about care and resources.
+Developed by Edmonton Team E1 during the **AI4Good Lab 2026**. 
 
 ## The Problem
 
